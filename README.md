@@ -37,7 +37,7 @@ Instructor: Prof. Dr. Hüseyin Taştan
     * Handout: [pdf](https://raw.githack.com/htastan/Econometrics-I/main/Slide-Handouts/Handout-07-Asymptotics.pdf)
     * Lab 08: [Large sample properties of OLS - Simulations in R](https://raw.githack.com/htastan/Econometrics-I/main/Labs/Lab-08-Asymptotics.html)
 
-8. **Further Issues in OLS regressions**
+8. **Further Topics in OLS regressions**
     * Handout: [pdf](https://raw.githack.com/htastan/Econometrics-I/main/Slide-Handouts/Handout-08-MLR-Further-Topics.pdf)
     * Lab 09: [R applications](https://raw.githack.com/htastan/Econometrics-I/main/Labs/Lab-09-MLR-further-topics.html)
     
