@@ -1,0 +1,165 @@
+---
+title: "Lab 06: Statistical Inference in Multiple Linear Regression - Part 1"
+subtitle: "Econometrics I - YTU"
+author: 
+  name: "Prof. Dr. Hüseyin Taştan"
+  affiliation: "Yıldız Technical University"
+# date: "`r format(Sys.time(), '%d %B %Y')`"
+date: 2020 Fall
+output: 
+  html_document:
+    number_sections: true
+    theme: readable
+    highlight: haddock 
+    # code_folding: show
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+    keep_md: true
+---
+<style type="text/css"> 
+body{
+  font-size: 12pt;
+}
+code.r{
+  font-size: 12pt;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, results = 'hold', fig.show = 'asis')
+``` 
+
+
+# t-test Examples
+
+## Wage Equation
+
+The model is given by 
+$$
+\log(wage) = \beta_0 + \beta_1 educ + \beta_2 exper + \beta_3 tenure + u
+$$
+Estimate the model using `wage1 ` data. 
+```{r, echo=TRUE, results="hold"}
+library(wooldridge)
+wagereg <- lm(log(wage) ~ educ + exper + tenure, data = wage1)
+summary(wagereg) 
+``` 
+Test the statistical significance of the coefficient on exper against one-sided alternative, i.e., 
+$$
+H_0: \beta_2 = 0
+$$
+$$
+H_1: \beta_2 > 0
+$$
+
+The t-statistic is already reported in the output, $t_{\hat{\beta}_2}=2.391$. We need 
+to compare this to the critical value from the t distribution with dof=522 degrees of freedom. Let's find the critical values at 5% and 1% significance levels using R:  
+```{r, echo=TRUE}
+# CV for alpha=5% and 1% using the t distribution with 522 d.f.
+# Using the quantile function for t (qt)
+alpha <- c(0.05, 0.01)
+qt(1-alpha, 522)
+
+# Critical values for alpha=5% and 1% using the normal approximation:
+# Using the quantile function for normal distribution (qnorm)
+qnorm(1-alpha)
+``` 
+
+Recall that for large degrees of freedom (approximately dof>120), the normal approximation gives practically the same answer. This is no surprise because as the sample size increases (assuming the number of parameters remain the same), t distribution approaches the standard normal distribution. Thus, for large samples we can just use the standard normal critical values. 
+
+Because the t test statistic is larger than the critical value, $t_{\hat{\beta}_2}=2.391>2.33$, at 1% significance level, we reject the null hypothesis in favor of the alternative. Although the coefficient estimate is small, it is statistically different from zero. 
+
+We can find the p-value using the distribution function of t in R (pt): 
+```{r, echo=TRUE}
+pt(2.391,522, lower.tail = FALSE)
+# or 
+1-pt(2.391,522)
+``` 
+
+Note that this is half the p-value reported in the regression output. 
+Because p-value<0.01, we can reject the null hypothesis at 1% significance level.
+
+## Student Performance Model, level-level
+
+```{r, echo=TRUE, results="hold"}
+library(wooldridge)
+sumres1 <- summary(lm(math10 ~ totcomp + staff + enroll, data = meap93))
+regtable1 <- sumres1$coefficients
+regtable1
+``` 
+
+Manual confirmation of test statistics: 
+```{r, echo=TRUE, results="hold"} 
+bhat <- regtable1[,1]
+se   <- regtable1[,2]
+
+# Reproduce t statistic
+( tstat <- bhat / se ) 
+``` 
+```{r, echo=TRUE, results="hold"}
+# Reproduce p value
+( pval  <- 2*pt(-abs(tstat),404) )
+``` 
+
+## Student Performance Model, level-log
+```{r, echo=TRUE, results="hold"}
+sumres2 <- summary (lm(math10 ~ log(totcomp) + log(staff) + log(enroll), data = meap93))
+regtable2 <- sumres2$coefficients
+regtable2
+``` 
+
+**Exercise**: Is log(enroll) statistically significant? Test this null hypothesis against the lower tail alternative hypothesis. Find the p-value and state your decision. 
+
+## College GPA 
+```{r, echo=TRUE, results="hold"}
+( sumres <- summary( lm(colGPA ~ hsGPA+ACT+skipped, data=gpa1) ) )
+``` 
+```{r, echo=TRUE, results="hold"}
+# Manually confirm the formulas: Extract coefficients and SE
+regtable <- sumres$coefficients
+bhat <- regtable[,1]
+se   <- regtable[,2]
+
+# Reproduce t statistic
+( tstat <- bhat / se )
+# Reproduce p value
+( pval  <- 2*pt(-abs(tstat),137) )
+``` 
+
+## Campus Crime Model 
+```{r, echo=TRUE, results="hold"}
+( crimeres <- summary( lm(log(crime) ~ log(enroll), data=campus) ) )
+``` 
+
+## House prices 
+```{r, echo=TRUE, results="hold"}
+( houseres <- summary( lm(log(price) ~ log(nox)+log(dist)+rooms+stratio, data=hprice2) ) )
+``` 
+
+# Confidence Interval Example: R&D Expenditures 
+$$
+\log (\mathrm{rd})=\beta_{0}+\beta_{1} \cdot \log (\mathrm{educ})+\beta_{2} \cdot \mathrm{profmarg}+u
+$$
+```{r, echo=TRUE, results="hold"}
+# OLS regression:
+myres <- lm(log(rd) ~ log(sales)+profmarg, data=rdchem)
+
+# Regression output:
+summary(myres)
+``` 
+
+```{r, echo=TRUE, results="hold"}
+# 95% CI:
+confint(myres)
+```
+```{r, echo=TRUE, results="hold"}
+# 99% CI:
+confint(myres, level=0.99)
+``` 
+
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
+
+

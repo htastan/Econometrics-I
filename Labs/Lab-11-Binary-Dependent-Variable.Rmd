@@ -1,0 +1,160 @@
+---
+title: "Lab 11: Binary Dependent Variable"
+subtitle: "Econometrics I - YTU"
+author: 
+  name: "Prof. Dr. Hüseyin Taştan"
+  affiliation: "Yıldız Technical University"
+# date: "`r format(Sys.time(), '%d %B %Y')`"
+date: 2020 Fall
+output: 
+  html_document:
+    number_sections: true
+    theme: readable
+    highlight: haddock 
+    # code_folding: show
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+    keep_md: true
+---
+<style type="text/css"> 
+body{
+  font-size: 12pt;
+}
+code.r{
+  font-size: 12pt;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, results = 'hold', fig.show = 'asis')
+``` 
+
+# Linear Probability Model 
+
+## Example: Women's Labor Force participation 
+
+In this example (also see your classnotes) we are interested in examining the labor supply decisions of married working women. Here is the frequencies of those working and not working
+```{r, echo=TRUE, eval=TRUE}
+library(wooldridge)
+data(mroz)
+inlffac <- factor(mroz$inlf, labels = c("Not in the labor force","In the labor force"))
+summary(inlffac)
+```
+
+
+Linear Probability Model (LPM) Estimation Results: 
+
+```{r}
+# Estimate linear probability model
+linprob <- lm(inlf ~ nwifeinc + educ + exper + I(exper^2) +
+                age + kidslt6 + kidsge6, data = mroz)
+summary(linprob)
+```
+
+**Exercise**: Interpret the parameter estimates. Which ones are statistically insignificant?
+
+**Note**: The standard errors are invalid due to heteroskedasticity. But we can use heteroskedasticity-robust standard errors. 
+
+Besides being heteroskedastic by definition (which can be easily fixed), there are several shortcomings of LPM. For example, in LPM predicted probabilities can be negative or larger than one. To see this consider the following point predictions: 
+
+```{r}
+# predictions for two "extreme" women 
+xpred <- list(nwifeinc=c(100,0), educ=c(5,17), exper=c(0,30),
+              age=c(20,52), kidslt6=c(2,0), kidsge6=c(0,0))
+predict(linprob,xpred)
+```
+
+As we saw in class, we can use specialized models that restrict the predicted probabilities between 0 and 1. These are (1) logit model which uses logistic distribution as the link (or index) function, and (2) probit model which uses normal distribution as the link function.  
+
+## Example: Mortgage Decisions
+
+(see class notes for details)
+
+
+```{r, echo=TRUE, eval=TRUE}
+# load `AER` package and attach the HMDA data
+library(AER)
+data(HMDA)
+
+# convert 'deny' to numeric
+HMDA$deny <- as.numeric(HMDA$deny) - 1
+
+# estimate a simple linear probabilty model
+denymod1 <- lm(deny ~ pirat, data = HMDA)
+denymod1
+```
+
+Add ethnicity dummy 
+
+```{r, echo=TRUE, eval=TRUE}
+colnames(HMDA)[colnames(HMDA) == "afam"] <- "black"
+
+# estimate the model
+denymod2 <- lm(deny ~ pirat + black, data = HMDA)
+coeftest(denymod2, vcov. = vcovHC)
+```
+
+
+# Logit Model
+
+For mathematical details see the class notes. Let us see a numerical example using `R`. 
+
+## Example: Women's Labor Force Participation
+
+```{r, echo=TRUE, eval=TRUE}
+# Estimate logit model
+logitres <- glm(inlf ~ nwifeinc + educ + exper + I(exper^2)
+                + age + kidslt6 + kidsge6,
+                family = binomial(link=logit), data = mroz)
+# Summary of results:
+summary(logitres)
+```
+
+Compare **predictions** from LPM and logit (using previously defined xpred)
+
+```{r}
+predict(linprob,  xpred,type = "response")
+predict(logitres, xpred,type = "response")
+```
+
+We need to compute partial effects to properly interpret the logit model. 
+We need to insert $x$ values to compute these effects. One option is to use sample averages of explanatory variables. This is called Partial Effects at the Average (PEA). The other option is to evaluate predictions for all observations and then taking the average. This is called Average Partial Effect (APE). 
+We can use mfx package to estimate these partial effects. APE can be computed using the atmean=FALSE option. PEA can be computed using the atmean=TRUE option. 
+
+```{r}
+# Automatic APE calculations with package mfx
+library(mfx)
+logitmfx(inlf ~ nwifeinc + educ + exper + I(exper^2) + 
+           age + kidslt6 + kidsge6, data=mroz, atmean=FALSE)
+```
+
+**Exercie:** Compute PEA and compare to APE. 
+
+## Example: Mortgage Decisions 
+
+```{r, echo=TRUE, eval=TRUE}
+# Automatic APE calculations with package mfx
+# estimate a Logit regression with multiple regressors
+denylogit2 <- glm(deny ~ pirat + black, 
+                  family = binomial(link = "logit"), 
+                  data = HMDA)
+
+coeftest(denylogit2, vcov. = vcovHC, type = "HC1")
+```
+
+Average Partial effects: 
+
+```{r, echo=TRUE, eval=TRUE}
+# Automatic APE calculations with package mfx
+library(mfx)
+logitmfx(deny ~ pirat + black, data = HMDA, atmean=FALSE)
+```
+
+
+
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
+
+

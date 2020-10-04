@@ -1,0 +1,255 @@
+---
+title: "Lab 09: Further Topics in Regression Analysis"
+subtitle: "Econometrics I - YTU"
+author: 
+  name: "Prof. Dr. Hüseyin Taştan"
+  affiliation: "Yıldız Technical University"
+# date: "`r format(Sys.time(), '%d %B %Y')`"
+date: 2020 Fall
+output: 
+  html_document:
+    number_sections: true
+    theme: readable
+    highlight: haddock 
+    # code_folding: show
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+    keep_md: true
+---
+<style type="text/css"> 
+body{
+  font-size: 12pt;
+}
+code.r{
+  font-size: 12pt;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, results = 'hold', fig.show = 'asis')
+``` 
+
+# Changing the Units of Measurement (Data Scaling)
+
+When we re-scale our data, OLS coefficient estimates and their standard errors change. But t-statistics, F statistics, and $R^2$ remain the same. In other words, the explanatory power of the model does not change. 
+
+As an example, we will replicate the birthweight model that we discussed in class. 
+The model results with the original units of measurements: 
+```{r, echo=TRUE, results="hold"}
+library(wooldridge)
+# estimate the original model
+# bwght is measured in ounces 
+model1 <- lm(bwght ~ cigs + faminc, data=bwght)
+summary(model1)
+``` 
+
+Now change birth weight from ounces to grams and re-estimate the model: 
+```{r, echo=TRUE, results="hold"}
+# 1 ounce = 28.3495231 grams 
+bwght$bwghtgrams <- bwght$bwght*28.3495231
+# regression with bwght in grams 
+model2 <- lm(bwghtgrams ~ cigs + faminc, data=bwght)
+summary(model2)
+``` 
+
+Compare the output. Do fitted values and residuals also change? check your ansswer.  
+
+Now let us change the family income from 1000 Dollars to Dollars. 
+```{r, echo=TRUE, results="hold"}
+# change faminc to dollars instead of 1000$ 
+bwght$famincdollars <- bwght$faminc*1000
+model3 <- lm(bwghtgrams ~ cigs + famincdollars, data=bwght)
+summary(model3)
+``` 
+
+Interpret the coefficient estimates. 
+
+Note: you can directly rescale your variables in R: 
+```{r, echo=TRUE, results="hold"}
+# directly changing units
+summary( lm(I(bwght*28.3495231) ~ cigs + I(faminc*1000), data=bwght) )
+``` 
+
+Let's see what happens if we change the number of cigarettes smoked per day to the pack of cigarettes: 
+```{r, echo=TRUE, results="hold"}
+# change cigs to packs 
+bwght$packs <- bwght$cigs/20
+model4 <- lm(bwghtgrams ~ packs + famincdollars, data=bwght)
+summary(model4, digits = 5)
+``` 
+
+Interpret the coefficient estimates. Compare them to the original units of measurements. Which one is easier to interpret and understand? 
+
+# Standardized Regression Example: Air pollution and house prices 
+
+In this model, we are interested in understanding the impact of air pollution on house values. In addition to air pollution (nox) we have a set of variables on neighborhood characteristics that may be important for house prices. 
+
+We estimate the model in standardized form. In R we can do that as follows: 
+```{r, echo=TRUE, results="hold"}
+# Estimate model with standardized variables:
+lm(scale(price) ~ 0+scale(nox)+scale(crime)+scale(rooms)+
+                              scale(dist)+scale(stratio), data=hprice2)
+``` 
+
+Original units of measurements: 
+
+```{r, echo=TRUE, results="hold"}
+res1 <- lm(price ~ nox + crime + rooms + dist + stratio, data=hprice2)
+summary(res1)
+``` 
+
+# Logarithmic Forms: Example 
+
+Consider a partially logarithmic house price model: 
+
+```{r, echo=TRUE, results="hold"}
+# Estimate model with logs:
+lm(log(price)~log(nox)+rooms, data=hprice2)
+``` 
+
+In class we saw that the actual effect of an additional room is not 30.6% but 
+$$
+\widehat{\% \Delta y}=100 \times[\exp (0.306)-1]= 35.8\%
+$$
+
+# Quadratic Terms
+
+## Example: House prices
+```{r, echo=TRUE, results="hold"}
+resquad <- lm(log(price)~log(nox)+log(dist)+rooms+I(rooms^2)+
+           stratio,data=hprice2)
+summary(resquad)
+``` 
+Exercise: What is the turning point? 
+
+## Example: Wage Equation 
+```{r, echo=TRUE, results="hold"}
+# scatter plot
+plot(wage1$exper, wage1$wage,
+     col = "steelblue",
+     pch = 20,
+     main = "Wage-Experience Relationship", 
+     cex.main = 1)
+# scatter plot with quadratic fit
+# requires ggplot2
+library(ggplot2)
+ggplot(wage1, aes(x=exper, y=wage)) + geom_point()+stat_smooth(se=F,method='lm', formula=y~poly(x,2))
+
+# OLS fit
+reswage <- lm(log(wage)~educ+exper+I(exper^2),data=wage1)
+summary(reswage)
+``` 
+
+Exercise: What is the turning point?
+
+# Models with Interaction Terms 
+
+## Example: Effects of attendance on final exam performance 
+```{r, echo=TRUE, results="hold"}
+# Estimate model with interaction effect:
+(myres<-lm(stndfnl~atndrte*priGPA+ACT+I(priGPA^2)+I(ACT^2), data=attend))
+```
+
+
+```{r, echo=TRUE, results="hold"}
+# Estimate for partial effect at priGPA=2.59:
+b <- coef(myres)
+b["atndrte"] + 2.59*b["atndrte:priGPA"] 
+```
+
+
+```{r, echo=TRUE, results="hold"}
+# Test partial effect for priGPA=2.59:
+library(car)
+linearHypothesis(myres,c("atndrte+2.59*atndrte:priGPA"))
+``` 
+
+# Prediction 
+When we plug the regressor values into the estimated model we get fitted values. Now, we generalize this to arbitrary values in order to predict the value of the dependent variable given certain values of the regressors.
+
+## Point Prediction 
+__predict__ command produces the predicted value of the dependent variable given by the specific regressor values. It also calculates the standard error and confidence intervals of the predicted value. Consider the following example.
+
+```{r, echo=TRUE, results="hold"}
+data(gpa2, package='wooldridge')
+
+# Regress and report coefficients
+reg <- lm(colgpa~sat+hsperc+hsize+I(hsize^2),data=gpa2)
+summary(reg)
+
+# Generate data set containing the regressor values for predictions
+cvalues <- data.frame(sat=1200, hsperc=30, hsize=5)
+
+# Point estimate of prediction
+predict(reg, cvalues)
+
+# Point estimate and 95% confidence interval
+predict(reg, cvalues, interval = "confidence")
+
+# Define three sets of regressor variables
+cvalues <- data.frame(sat=c(1200,900,1400), hsperc=c(30,20,5), hsize=c(5,3,1))
+cvalues
+# Point estimates and 99% confidence intervals for these
+predict(reg, cvalues, interval = "confidence", level=0.99)
+``` 
+
+## Interval Prediction 
+Confidence intervals reflect the uncertainty about the _expected value_ of the dependent variable. If we want to predict the college GPA of an individual, we have to account for the additional uncertainty reflected by the error term _u_. __predict__ command computes the prediction intervals with the option __interval="prediction"__ instead of __interval="confidence"__.
+```{r, echo=TRUE, results="hold"}
+data(gpa2, package='wooldridge')
+
+# Regress (as before)
+reg <- lm(colgpa~sat+hsperc+hsize+I(hsize^2),data=gpa2)
+
+# Define three sets of regressor variables (as before)
+cvalues <- data.frame(sat=c(1200,900,1400), hsperc=c(30,20,5), hsize=c(5,3,1))
+
+# Point estimates and 95% prediction intervals for these
+predict(reg, cvalues, interval = "prediction")
+```
+
+# Effect Plots for Nonlinear Specifications 
+In models with nonlinear terms, we need to do additional computations to get partial effects at different regressor values since the coefficients are difficult to insterpret directly. For a better understanding, we calculate different values of one regressor while keeping the others fixed.
+Consider the __house price__ example. We may visualize the effect of _rooms_ while other variables fixed to sample means. 
+
+Manual effects plot:
+```{r, echo=TRUE, results="hold"}
+# Repeating the regression from Example 6.2:
+data(hprice2, package='wooldridge')
+
+res <- lm( log(price) ~ log(nox)+log(dist)+rooms+I(rooms^2)+stratio, data=hprice2)
+
+# Predictions: Values of the regressors:
+# rooms = 4-8, all others at the sample mean:
+X <- data.frame(rooms=seq(4,8),nox=5.5498,dist=3.7958,stratio=18.4593)
+
+# Calculate predictions and confidence interval:
+pred <- predict(res, X, interval = "confidence")
+
+# Table of regressor values, predictions and CI:
+cbind(X,pred)
+
+# Plot 
+matplot(X$rooms, pred, type="l", lty=c(1,2,2))
+```
+
+Automatic effects plot:
+```{r, echo=TRUE, results="hold"}
+# Repeating the regression from Example 6.2:
+data(hprice2, package='wooldridge')
+
+res <- lm( log(price) ~ log(nox)+log(dist)+rooms+I(rooms^2)+stratio, data=hprice2)
+
+# Automatic effects plot using the package "effects"
+#install.packages('effects')
+library(effects)
+plot( effect("rooms",res) )
+```
+
+
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
+
+

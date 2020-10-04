@@ -1,0 +1,162 @@
+---
+title: "Lab 12: Heteroscedasticity"
+subtitle: "Econometrics I - YTU"
+author: 
+  name: "Prof. Dr. Hüseyin Taştan"
+  affiliation: "Yıldız Technical University"
+# date: "`r format(Sys.time(), '%d %B %Y')`"
+date: 2020 Fall
+output: 
+  html_document:
+    number_sections: true
+    theme: readable
+    highlight: haddock 
+    # code_folding: show
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+    keep_md: true
+---
+<style type="text/css"> 
+body{
+  font-size: 12pt;
+}
+code.r{
+  font-size: 12pt;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, results = 'hold', fig.show = 'asis')
+``` 
+
+# Heteroscedasticity-robust Statistical Inference  
+
+(Note: both heteroscedasticity and heteroskedasticity are valid spellings.)
+
+See Wooldridge ch.8 for formulas. 
+To implement these we can use **car** package in R. 
+
+## Example:  
+ 
+```{r, echo=TRUE, eval=TRUE}
+library(wooldridge)
+# load packages (which need to be installed!)
+library(lmtest) 
+library(car)
+
+# Estimate model (only for spring data)
+reg <- lm(cumgpa ~ sat + hsperc + tothrs + female + black + white, 
+          data=gpa3, subset=(spring==1))
+# Usual SE:
+coeftest(reg)
+# Refined White heteroscedasticity-robust SE:
+coeftest(reg, vcov=hccm)
+```
+
+F-tests: 
+
+```{r, echo=TRUE, eval=TRUE}
+# F-Tests using different variance-covariance formulas:
+myH0 <- c("black","white")
+# Variance-Covariance (VCOV) using the standard formula
+linearHypothesis(reg, myH0)
+# Refined White VCOV
+linearHypothesis(reg, myH0, vcov=hccm)
+# Classical White VCOV
+linearHypothesis(reg, myH0, vcov=hccm(reg, type="hc0"))
+
+```
+
+
+# Heteroscedasticity Tests 
+
+## Breusch-Pagan (BP) Test Example: House price model 
+
+Automatic computation of the BP het. test using bptest function in lmtest package: 
+
+```{r, echo=TRUE, eval=TRUE}
+# Estimate model
+reg <- lm(price ~ lotsize + sqrft + bdrms, data=hprice1)
+reg
+
+# Automatic BP test
+library(lmtest)
+bptest(reg)
+```
+
+Manual computation: 
+
+```{r, echo=TRUE, eval=TRUE}
+# Manual regression of squared residuals 
+summary(lm( resid(reg)^2 ~ lotsize + sqrft + bdrms, data=hprice1))
+```
+
+From these results, the LM statistic is $$LM=88\times 0.1601 =14.09\sim~\chi^2 (3) $$
+
+**Exercise:** Compute the p-value for LM. 
+
+**Exercise:** Re-run the BP tests using the logarithmic version of the house price model (see class notes). 
+
+## White Test Example: House price model
+
+We can use lmtest package to compute the White test. 
+Here is an example using the log house prices. We will use the second version of the White test (which uses fitted values and their squares in the test regression)
+
+```{r, echo=TRUE, eval=TRUE}
+# Estimate model
+reg <- lm(log(price) ~ log(lotsize) + log(sqrft) + bdrms, data=hprice1)
+reg
+
+# BP test
+library(lmtest)
+bptest(reg)
+
+# White test
+bptest(reg, ~ fitted(reg) + I(fitted(reg)^2) )
+
+```
+
+The White test statistic is 3.4473 and p-value = 0.18. Thus, we fail to reject the null hypothesis of constant variance. 
+
+
+# Weighted Least Squares 
+
+FGLS estimation of cigarette demand: 
+
+First: Estimate the model by OLS and check the BP test
+```{r, echo=TRUE, eval=TRUE}
+# OLS
+olsreg<-lm(cigs ~ log(income) + log(cigpric) + educ +
+             age + I(age^2) + restaurn, data = smoke)
+olsreg
+# BP test
+library(lmtest)
+bptest(olsreg)
+
+```
+
+Second: Regress logaritmic squared residuals from the first step on all x variables: 
+```{r, echo=TRUE, eval=TRUE}
+# FGLS: estimation of the variance function
+logu2 <- log(resid(olsreg)^2)
+varreg<-lm(logu2 ~ log(income) + log(cigpric) + educ + 
+             age + I(age^2) + restaurn, data=smoke)
+varreg
+```
+
+Third: Use the inverse of the exponentiated fitted values from the second step as weights:
+```{r, echo=TRUE, eval=TRUE}
+# FGLS: WLS
+w <- 1/exp(fitted(varreg))
+lm(cigs ~ log(income) + log(cigpric) + educ + 
+     age + I(age^2) + restaurn, weight=w ,data=smoke)
+```
+
+
+
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
+
+

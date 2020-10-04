@@ -1,0 +1,200 @@
+---
+title: "Lab 13: Misspecification and Data Problems"
+subtitle: "Econometrics I - YTU"
+author: 
+  name: "Prof. Dr. Hüseyin Taştan"
+  affiliation: "Yıldız Technical University"
+# date: "`r format(Sys.time(), '%d %B %Y')`"
+date: 2020 Fall
+output: 
+  html_document:
+    number_sections: true
+    theme: readable
+    highlight: haddock 
+    # code_folding: show
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+    keep_md: true
+---
+<style type="text/css"> 
+body{
+  font-size: 12pt;
+}
+code.r{
+  font-size: 12pt;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, results = 'hold', fig.show = 'asis')
+``` 
+
+# Functional Form Misspecification  
+ 
+We can use Ramsey's RESET test to detect functional form misspecification. 
+
+## RESET Test Example:  Housing Price Model
+
+Automatic computation of RESET test using `lmtest` package: 
+
+```{r, echo=TRUE, eval=TRUE}
+library(wooldridge)
+# don't forget to install lmtest before you load them
+library(lmtest)  
+# original linear regression
+orig <- lm(price ~ lotsize + sqrft + bdrms, data = hprice1)
+
+# RESET test
+library(lmtest)
+resettest(orig)
+```
+
+
+Manual computation of RESET test: 
+
+```{r, echo=TRUE, eval=TRUE}
+# original linear regression
+orig <- lm(price ~ lotsize + sqrft + bdrms, data = hprice1)
+
+# regression for RESET test
+RESETreg <- lm(price ~ lotsize + sqrft + bdrms + 
+                 I(fitted(orig)^2) + I(fitted(orig)^3), data=hprice1)
+# note that we added powers of fitted values
+RESETreg
+
+# RESET test. H0: all coeffs including "fitted" are=0 
+library(car)
+linearHypothesis(RESETreg, matchCoefs(RESETreg,"fitted"))
+```
+
+
+RESET F statistic is 4.67 with p-value=0.01. Thus, the null of no functional form misspecification is rejected at 5% level. 
+
+Use logarithmic functional form: 
+
+```{r, echo=TRUE, eval=TRUE}
+logreg <- lm(log(price) ~ log(lotsize) + log(sqrft) + bdrms, data = hprice1)
+
+# RESET test
+library(lmtest)
+resettest(logreg)
+
+```
+
+Interpret the RESET test result. Use 5% statistical significance level. 
+
+# Non-nested tests 
+
+Consider two house price models, model1 and model2, which are non-nested alternatives. 
+The model that includes both model1 and model2 as special cases (i.e., nested) is called the **encompassing** model. 
+
+
+```{r, echo=TRUE, eval=TRUE}
+# two alternative models
+model1 <- lm(price ~     lotsize  +     sqrft  + bdrms, data = hprice1)
+model2 <- lm(price ~ log(lotsize) + log(sqrft) + bdrms, data = hprice1)
+
+# Test against comprehensive model
+library(lmtest)
+encomptest(model1, model2, data = hprice1)
+
+```
+
+According to the encompassing test both models are rejected against the encompassing model. (note that the dependent variable must be the same in all models).
+
+# Missing Data 
+In many data sets, the existence of missing observations is usual. In R, missing data can be represented by different values.
+__NA__ (not available) refers to no information.
+__NaN__ (not a number) indicates that the value is not defined.
+The function __is.na()__ returns _TRUE_ if the observation is either __NA__ or __NaN__ and _FALSE_ otherwise. 
+
+Operaitons resulting in $\pm\infty$ like $log(0)$ or $1/0$ are not coded as __NaN__ but as __Inf__ or __-Inf__. R can do calculations with these numbers.
+
+```{r, echo=TRUE, results='hold'}
+x <- c(-1,0,1,NA,NaN,-Inf,Inf,9999)
+logx <- log(x)
+invx <- 1/x
+ncdf <- pnorm(x)
+isna <- is.na(x)
+mydata<-data.frame(x, logx, invx, ncdf, isna)
+mydata
+```
+
+Some data may include unusual observations. Assume that _9999_ is an impossible value which may be replaced by __NA__ with the help of following command.
+
+```{r, echo=TRUE, results='hold'}
+mydata[mydata==9999]<-NA
+mydata
+```
+It may be useful to count the missing observations. __colSums(is.na())__ command counts the missings in each variable while __complete.cases()__ generates a logical vector indicating the rows of the data frame which don't have any missing information.
+```{r, echo=TRUE, results='hold'}
+# Frequencies of the missings.
+table(is.na(mydata))
+# Number of the missings in each variable.
+colSums(is.na(mydata))
+# Information of complete cases by row.
+complete.cases(mydata)
+table(complete.cases(mydata))
+```
+Although there are advanced methods to deal with missing data a widely used strategy is to remove the observations with missing values. __lm__ command does this by default.
+```{r, echo=TRUE, results='hold'}
+data(lawsch85, package='wooldridge')
+
+# Mean of a variable with missings:
+mean(lawsch85$LSAT)
+mean(lawsch85$LSAT, na.rm=TRUE)
+
+# Regression with missings
+summary(lm(log(salary) ~ LSAT + cost + age, data = lawsch85))
+```
+# Outliers 
+
+Example: a model of R&D expenditures (see classnotes)
+
+```{r, echo=TRUE, eval=TRUE}
+library(wooldridge)
+data("rdchem")
+reg <- lm(rdintens ~ sales + profmarg, data = rdchem)
+plot(rdchem$sales, rdchem$rdintens)
+
+# Studentized residuals for all observations:
+studres <- rstudent(reg)
+
+# Display extreme values:
+min(studres)
+max(studres)
+
+# Histogram (and overlayed density plot):
+hist(studres, freq=FALSE)
+lines(density(studres), lwd=2)
+```
+
+Logarithmic Regression: 
+
+```{r, echo=TRUE, eval=TRUE}
+library(wooldridge)
+data("rdchem")
+reg <- lm(log(rd) ~ log(sales) + profmarg, data = rdchem)
+plot(log(rdchem$sales), log(rdchem$rd))
+
+
+# Studentized residuals for all observations:
+studres <- rstudent(reg)
+
+# Display extreme values:
+min(studres)
+max(studres)
+
+# Histogram (and overlayed density plot):
+hist(studres, freq=FALSE)
+lines(density(studres), lwd=2)
+```
+
+
+
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
+
+

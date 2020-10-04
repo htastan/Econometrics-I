@@ -1,0 +1,335 @@
+---
+title: "Lab 03: Simple Regression Analysis - Part 1"
+subtitle: "Econometrics I - YTU"
+author: 
+  name: "Prof. Dr. Hüseyin Taştan"
+  affiliation: "Yıldız Technical University"
+# date: "`r format(Sys.time(), '%d %B %Y')`"
+date: 2020 Fall
+output: 
+  html_document:
+    number_sections: true
+    theme: readable
+    highlight: haddock 
+    # code_folding: show
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+    keep_md: true
+---
+<style type="text/css"> 
+body{
+  font-size: 12pt;
+}
+code.r{
+  font-size: 12pt;
+}
+</style>
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(echo = TRUE, results = 'asis', fig.show = 'asis', fig.width = 3.5,                         fig.height = 3)
+knitr::opts_chunk$set(echo = TRUE)
+``` 
+```{r, include=FALSE} 
+# set working directory
+setwd("C:/Users/Acer/Google Drive (ht.econometrics@gmail.com)/Econometrics-I/Labs")
+``` 
+
+# In-class Example 1: CEO Salary
+```{r, echo=TRUE}
+library(wooldridge)
+data(ceosal1)
+# View(ceosal1)
+```
+Estimate a simple regression of `salary` on `roe` (return on equity)
+\[
+    salary = \beta_0 + \beta_1 roe + u
+\]
+Variable definitions:     
+**salary**: annual CEO salary (1000 US$), **roe**: average return on equity for the last three years.
+
+We can use `lm()` command to run the regression in `R`: 
+```{r, echo=TRUE}
+library(wooldridge)
+lm(salary ~ roe, data = ceosal1)
+``` 
+
+The resulting regression model can be written in equation form as follows: 
+$$
+    \widehat{salary} = 963.191 + 18.501 roe
+$$ 
+or
+$$
+    salary = 963.191 + 18.501 roe + \hat{u}
+$$ 
+where $\hat{u}$ is the residual. Note that 
+$$
+salary = \widehat{salary} + \widehat{u} 
+$$ 
+Please mind the hats. 
+
+We can compute the regression coefficient estimates manually for the simple linear regression model. We simply use the formula for the slope and intercept estimators: 
+```{r, echo=TRUE}
+attach(ceosal1)
+# intermediate computations 
+cov(roe,salary)
+var(roe)
+mean(salary)
+mean(roe)
+
+# manual calculation of OLS coefficients 
+( b1hat <- cov(roe,salary)/var(roe) )
+( b0hat <- mean(salary) - b1hat*mean(roe) )
+detach(ceosal1)
+``` 
+(Note: in general I do not suggest using `attach()` function). 
+
+The output of the base `R` function `lm()` is a list. 
+```{r, echo=TRUE, results="hold"}
+results1 <- lm(salary ~ roe, data = ceosal1)
+# View(results1)
+summary(results1) 
+``` 
+
+`results1` is a list of length 12 containing coefficient estimates, residuals, fitted values etc. (you can inspect its components by clicking on `results1` at the environment pane in RStudio).  
+
+Plot the data points and the regression line: 
+```{r, echo=TRUE}
+attach(ceosal1)
+plot(roe, salary, 
+     ylim = c(0,4000),
+     col = "steelblue",
+     pch = 20,
+     main = "Regression of salary on roe", 
+     cex.main = 1)
+abline(results1, 
+       col = "red", 
+       lwd = 2)
+``` 
+
+Reproduce Table 2.2 in Wooldridge's text: 
+```{r, echo=TRUE, results='hold'}
+salaryhat <- fitted(results1)
+uhat <- resid(results1)
+table2.2 <- cbind(roe, salary, salaryhat, uhat)
+head(table2.2,n=15)
+``` 
+
+# Algebraic properties of OLS estimators
+
+Demonstrate the algebraic properties of OLS estimators: 
+
+1. The sum of the residuals (hence the sample average) is zero 
+```{r, echo=TRUE}
+sum(results1$residuals)
+mean(results1$residuals)
+``` 
+
+2. Sample covariance between $x$ and residuals is zero:
+```{r, echo=TRUE}
+sum(results1$residuals*ceosal1$roe)
+cov(results1$residuals, ceosal1$roe)
+``` 
+
+3. The point $(\bar{x},\bar{y})$ is always on the regression line: 
+```{r, echo=TRUE}
+roemean <- mean(ceosal1$roe)
+salarymean <- mean(ceosal1$salary)
+salarymean
+salaryhatmean <- b0hat + b1hat*roemean
+salaryhatmean
+``` 
+
+4. Sample average of the fitted values is equal to the sample average of observed $y$ values: $\bar{y}=\bar{\hat{y}}$
+```{r, echo=TRUE}
+mean(results1$fitted.values)
+mean(ceosal1$salary)
+``` 
+
+Computation of $R^2$ in three ways: 
+```{r, echo=TRUE}
+data(ceosal1, package='wooldridge')
+
+CEOregres <- lm( salary ~ roe, data=ceosal1 )
+
+# Calculate predicted values & residuals:
+sal.hat <- fitted(CEOregres)
+u.hat <- resid(CEOregres)
+
+# Calculate R^2 in three different ways:
+sal <- ceosal1$salary
+var(sal.hat) / var(sal)
+1 - var(u.hat) / var(sal)
+cor(sal, sal.hat)^2
+``` 
+
+
+# In-class Example 2: GPA regression
+
+```{r, echo=TRUE, results="hold"} 
+gpareg <- lm(formula = colGPA ~ hsGPA, data = gpa1)
+summary(gpareg)
+``` 
+
+Obtaining R-squared manually:
+```{r, echo=TRUE} 
+# ratio of the variance of fitted values to the variance of x
+colGPAhat <- fitted(gpareg)
+var(colGPAhat)/var(gpa1$colGPA)
+# or
+cor(colGPAhat, gpa1$colGPA)^2
+``` 
+
+**Exercise**: Write the SRF in equation form. Plot the scatter diagram 
+and OLS fitted regression line on the same graph. 
+
+
+# Example: Wage Regression 
+```{r, echo=TRUE}
+data(wage1, package='wooldridge')
+
+# OLS regression:
+WAGEregres <- lm(wage ~ educ, data=wage1)
+
+# obtain coefficients, predicted values and residuals
+b.hat <- coef(WAGEregres)
+wage.hat <- fitted(WAGEregres)
+u.hat <- resid(WAGEregres)
+
+# Algebraic property (1):
+mean(u.hat)
+
+# Algebraic property (2):
+cor(wage1$educ , u.hat)
+
+#Algebraic property (3):
+mean(wage1$wage)
+b.hat[1] + b.hat[2] * mean(wage1$educ)
+``` 
+
+Regression output: 
+```{r, echo=TRUE, results="hold"} 
+summary(WAGEregres)
+``` 
+
+**Exercise**: Write the SRF in equation form. Interpret the coefficient estimates. 
+Interpret the coefficient of determination ($R^2$).  
+
+**Exercise**: Plot the SRF and data values.  
+
+
+
+# The importance of data visualization 
+
+```{r}
+library(datasets)
+anscombe
+```
+
+
+This is the famous "Anscombe's Quartet" (see F.J. Anscombe, 1973, Graphs in Statistical Analysis, The American Statistician, vol.27, No.1, pp.17-21, [click here for pdf version](http://www.jstor.com/stable/2682899)). It is a set of four $x,y$ pairs where $y$ is the dependent variable and $x$ is explanatory variable (($x1,y1$), ($x2,y2$), etc.). First, let's draw scatter diagram of each pair: 
+
+```{r, warning=FALSE}
+library(ggplot2)
+plot1 <- ggplot(anscombe) +
+  geom_point(aes(x1, y1)) +
+  labs(x="x1", y="y1", title="Dataset 1") +
+  theme_classic()
+plot1 
+```
+
+```{r} 
+plot2 <- ggplot(anscombe) +
+  geom_point(aes(x2, y2)) +
+  labs(x="x2", y="y2", title="Dataset 2") +
+  theme_classic()
+plot2 
+```
+```{r} 
+plot3 <- ggplot(anscombe) +
+  geom_point(aes(x3, y3)) +
+  labs(x="x3", y="y3", title="Dataset 3") +
+  theme_classic()
+plot3 
+```
+
+
+```{r} 
+plot4 <- ggplot(anscombe) +
+  geom_point(aes(x4, y4)) +
+  labs(x="x4", y="y4", title="Dataset 4") +
+  theme_classic()
+plot4 
+```
+
+All in one: 
+
+```{r, warning=FALSE}
+library(grid)
+library(gridExtra)
+grid.arrange(grobs=list(plot1, plot2, plot3, plot4), 
+             ncol=2, top="Anscombe's Quartet")
+```
+
+OLS estmation results for each data: 
+```{r}
+reg1 <- lm(y1 ~ x1, data = anscombe)
+reg1
+reg2 <- lm(y2 ~ x2, data = anscombe)
+reg2
+reg3 <- lm(y3 ~ x3, data = anscombe)
+reg3
+reg4 <- lm(y4 ~ x4, data = anscombe)
+reg4
+```
+
+Note that each regression model results in the solution
+$$
+    \widehat{y} = 3.00 + 0.5~x
+$$
+
+Now let's draw the fitted lines together with data points: 
+```{r}
+fplot1 <- plot1 + geom_abline(intercept = reg1$coefficients[1], 
+                              slope = reg1$coefficients[2], color = "red")
+fplot1
+```
+
+```{r}
+fplot2 <- plot2 + geom_abline(intercept = reg2$coefficients[1], 
+                              slope = reg2$coefficients[2], color = "red")
+fplot2
+```
+```{r}
+fplot3 <- plot3 + geom_abline(intercept = reg3$coefficients[1], 
+                              slope = reg3$coefficients[2], color = "red")
+fplot3
+```
+
+```{r}
+fplot4 <- plot4 + geom_abline(intercept = reg4$coefficients[1], 
+                              slope = reg4$coefficients[2], color = "red")
+fplot4
+```
+
+All in one plot: 
+```{r, warning=FALSE}
+library(grid)
+library(gridExtra)
+grid.arrange(grobs=list(fplot1, fplot2, fplot3, fplot4), 
+             ncol=2, top="Anscombe's Quartet")
+```
+
+As put succinctly by Anscombe (1973, p.17), graphs help us "perceive and appreciate some broad features of the data" and "let us look behind those broad features and see whate else is there". Based on this fictitious data sets, we can make the following observations: 
+
+Dataset1: linear regression fit passes through the data points and the OLS regression seems to be appropriate here. We note that when we run a linear regression, this is the kind of graph we imagine (read assume) that we have. 
+
+Dataset2: scatter diagram suggests a curved relationship (possibly quadratic) whereas we fitted a linear model. Thus, the fit is inappropriate. 
+
+Dataset3: scatter suggests that there is a linear relationship except for one point which seems to be an outlier. 
+
+Dataset4: this data is peculiar in that all $x$ values fall in one point except one at the right corner. If that observation is dropped there would be no variation in $x$. Can we estimate the slope parameter in this case? 
+
+**Exercise:** For each of the Anscombe's quartet, plot residuals against $x$. Interpret. 
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

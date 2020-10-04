@@ -1,0 +1,394 @@
+---
+title: "Lab 07: Statistical Inference in Multiple Linear Regression - Part 2"
+subtitle: "Econometrics I - YTU"
+author: 
+  name: "Prof. Dr. Hüseyin Taştan"
+  affiliation: "Yıldız Technical University"
+# date: "`r format(Sys.time(), '%d %B %Y')`"
+date: 2020 Fall
+output: 
+  html_document:
+    number_sections: true
+    theme: readable
+    highlight: haddock 
+    # code_folding: show
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+    keep_md: true
+---
+<style type="text/css"> 
+body{
+  font-size: 12pt;
+}
+code.r{
+  font-size: 12pt;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, results = 'hold', fig.show = 'asis')
+``` 
+
+
+# Testing a Single Linear Combination
+
+## Example: 2-year vs. 4-year college education
+
+Consider the model
+$$
+log(wage)=\beta_{0}+\beta_{1} jc+\beta_{2} univ+\beta_{3} exper+u
+$$
+
+The null and alternative hypotheses are 
+$$
+H_0: \beta_1 - \beta_2 = 0
+$$
+$$
+H_0: \beta_1 - \beta_2 < 0
+$$
+First, estimate the model using `twoyear ` data. 
+```{r, echo=TRUE, results="hold"}
+library(wooldridge)
+reg1 <- lm(lwage ~ jc + univ + exper, data = twoyear)
+summary(reg1)
+``` 
+Write the SRF in equaton form with standard errors underneath the coefficient 
+estimates: 
+$$
+ \widehat{lwage} = \underset{(0.021)} {1.47} + \underset{(0.0069)} {0.0667}~ jc + \underset{(0.0023)} {0.0769}~ univ +  \underset{(0.0002)} {0.0049}~ exper
+ $$
+ $$
+ n=6763,~~~~R^2 = 0.22
+$$
+This reproduces equation (4.21) on p. 125 of our textbook (the results presented in 
+class are different because we used a subsample of the original data set).
+
+As we saw in class to compute the t-ratio, we need to estimate $se(\hat{\beta}_1 - \hat{\beta}_2)$. For this we define a 
+new variable, totcoll = jc+univ, and estimate the following model (see the class notes).
+$$
+log(wage)=\beta_{0}+\theta jc+\beta_{2} totcoll+\beta_{3} exper+u
+$$
+where $\theta=\beta_1-\beta_2$. The standard error on $\theta$ is what we want to obtain from the following regression
+```{r, echo=TRUE, results="hold"} 
+reg2 <- lm(lwage ~ jc + totcoll + exper, data = twoyear)
+summary(reg2)
+``` 
+These results reproduce the equation (4.27) on page 126. From these results we get $se(jc)=0.0069$. Thus, the t statistic is simply
+$t=-0.0102/0.0069=-1.48$. The p-value is 
+
+```{r, echo=TRUE, results="asis"}
+# p-value = Probability of obtaining t-value less than -1.48 (lower-tail test)
+# given that t~dof=6759, practically standard normal
+pt(-1.48,6759)
+# or using standard normal cdf
+pnorm(-1.47,0,1)
+``` 
+
+Because p-value=0.07 is between 0.05 and 0.1, we fail to reject $H_0$ at $\alpha=0.05$ but reject at $\alpha=0.1$. As a result we may say there is some, but not strong, evidence against the null hypothesis. 
+
+The previous auxiliary regression was estimated just to obtain the standard error of
+$(\hat{\beta}_1 - \hat{\beta}_2)$. We can obtain that standard error more 
+directly using the variance-covariance matrix of the coefficient estimates. Recall the 
+formula for that standard error: 
+$$
+\operatorname{se}\left(\hat{\beta}_{1}-\hat{\beta}_{2}\right)=\sqrt{\operatorname{Var}\left(\hat{\beta}_{1}-\hat{\beta}_{2}\right)}=\sqrt{ \operatorname{Var}\left(\hat{\beta}_{1}\right)+\operatorname{Var}\left(\hat{\beta}_{2}\right)-2 \operatorname{Cov}\left(\hat{\beta}_{1}, \hat{\beta}_{2}\right) }
+$$
+
+After the estimation of the original model just run 
+```{r, echo=TRUE, results="hold"} 
+reg1 <- lm(lwage ~ jc + univ + exper, data = twoyear)
+covmat <- vcov(reg1)
+covmat
+``` 
+The main diagonal entries are the variances of associated coefficient estimates. 
+If you take the square root of the main diagonal you'd get the individual standard errors: 
+```{r, echo=TRUE, results="hold"} 
+sqrt(diag(covmat)) 
+``` 
+Compare these values to those underneath the SRF and regression output. The off-diagonal entries of the covmat are just covariances between the pairs of coefficient estimates. For example, $cov(\hat{\beta}_1,~ \hat{\beta}_2)=1.927929e-06=0.000001928$. Plugging into our standard error formula we get 
+$$
+se(\hat{\beta}_1 - \hat{\beta}_2)=\sqrt{ 0.0000466 + 0.00000533-2\times 0.000001928} \approx 0.0069 
+$$
+which is what we found using the auxiliary regression approach. Note that using 
+the structure of the covmat we can directly compute this using R: 
+```{r, echo=TRUE, results="hold"}
+sqrt( covmat[2,2] + covmat[3,3] - 2*covmat[2,3] )
+``` 
+
+Note that we can also define a $4\times 1$ selection matrix $v = [0, 1,-1,0]$ and compute the standard error of the linear combination using $v' S v$ where $S$ is the covariance matrix (covmat): 
+
+```{r, echo=TRUE, results="asis"}
+v <- matrix(c(0,1,-1,0),nrow=4,ncol=1)
+v
+sqrt( t(v) %*% covmat %*% v )
+``` 
+
+# F-test Approach
+
+We can also test the null hypothesis $H_0: \beta_1 - \beta_2 = 0$ using an F-test. 
+We need to estimate two regressions: unrestricted and restricted, and then plug in the respective SSR values in the F test formula and use the associated decision rule.
+
+The Unrestricted model was estimated above: 
+```{r, echo=TRUE, results="hold"} 
+unrest <- lm(lwage ~ jc + univ + exper, data = twoyear)
+anova(unrest)
+USSR <- sum(unrest$residuals^2)
+USSR
+``` 
+
+The Unrestricted Sum of Squared Residuals is $USSR = 1250.544$. Now, we need to estimate the Restricted regression.
+Under the null hypothesis (in other words if the null is correct), we must have 
+$\beta_1 = \beta_2$. This implies that 
+
+\begin{eqnarray} 
+  log(wage) &=& \beta_{0}+\beta_{1} jc+\beta_{1} univ+\beta_{3} exper+u \\
+            &=& \beta_{0}+\beta_{1} (jc+univ) + \beta_{3} exper+u \\
+            &=& \beta_{0}+\beta_{1} totcoll + \beta_{3} exper+u
+\end{eqnarray}
+
+where $totcoll=jc+univ$. The restricted regression is: 
+```{r, echo=TRUE, results="hold"} 
+rest <- lm(lwage ~ totcoll + exper, data = twoyear)
+anova(rest)
+RSSR <- sum(rest$residuals^2)
+RSSR
+``` 
+
+Now we are ready to compute the F-statistic. Using the formula we learned in class: 
+$$
+F=\frac{RSSR-USSR}{USSR}\cdot \frac{n-k-1}{q}=\frac{1250.942-1250.544}{1250.544}\cdot \frac{6763-3-1}{1} = 2.154336 \sim ~F(1,6759)
+$$
+where $q=1$ is the number of restrictions. R computations: 
+```{r, echo=TRUE, results="asis"} 
+n <- length(unrest$residuals)
+k <- length(unrest$coefficients)-1
+q <- 1
+F <- ((RSSR-USSR)/USSR) * (n-k-1)/q
+F
+``` 
+
+
+
+When the number of linear restrictions is just $1$ we know that the square of the t-statistic is equal to the F statistic: 
+$$
+t_{n-k-1}^2 = F(1,n-q-1)
+$$
+
+Exercise: verify the relationship above (note: pay attention to rounding errors). 
+
+
+# Exclusion Restrictions 
+
+## Example (data=bwght)
+
+We are interested in whether mother's and father's education levels are jointly 
+significant in a model for the weight of newly born babies. We first estimate the unrestricted model. But before that we need to drop observations with missing values on 
+father's education level: 
+
+```{r, echo=TRUE, results="hold"} 
+data(bwght, package='wooldridge')
+# omit missing observations (many missing values in fatheduc)
+bwght <- na.omit(bwght)
+``` 
+
+Now we can estimate the unrestricted model: 
+```{r, echo=TRUE, results="hold"} 
+unrest.bwght <- lm(bwght ~  cigs + parity + faminc + motheduc + fatheduc, data=bwght)
+summary(unrest.bwght)
+``` 
+
+Exclude motheduc and fatheduc and estimate the restricted model: 
+```{r, echo=TRUE, results="hold"} 
+rest.bwght <- lm(bwght ~  cigs + parity + faminc, data=bwght)
+summary(rest.bwght)
+``` 
+
+Hand calculations to compute the F statistic: 
+```{r, echo=TRUE, results="asis"} 
+n <- length(unrest.bwght$residuals)
+k.unrest <- length(unrest.bwght$coefficients)-1
+k.rest <- length(rest.bwght$coefficients)-1
+q <- k.unrest - k.rest
+q
+USSR <- sum(unrest.bwght$residuals^2)
+RSSR <- sum(rest.bwght$residuals^2)
+F <- ((RSSR-USSR)/USSR) * (n - k.unrest - 1)/q
+F
+``` 
+
+Because the dependent variable is the same in the restricted model, we can also use the $R^2$ version of the F-statistic. 
+```{r, echo=TRUE, results="asis"}
+# Unrestricted model's Rsquared
+URsq <- summary(unrest.bwght)$r.squared
+# Restricted model's Rsquared
+RRsq <- summary(rest.bwght)$r.squared
+# Compute the F statistic
+F <- ((URsq-RRsq)/(1-URsq)) * (n - k.unrest - 1)/q
+F
+``` 
+
+
+The decision rule: reject F if the computed test statistic larger than F(q,n-k-1) critical value at some $\alpha$ level. E.g., 5% c.v. is: 
+
+Critical Value at 5% significance level: 
+```{r, echo=TRUE, results="asis"} 
+alpha <- 0.05
+Fcv05 <- qf(alpha, q, n-k.unrest-1, lower.tail = FALSE)
+Fcv05
+``` 
+
+Note that this is the same as 
+```{r, echo=TRUE, results="asis"} 
+qf(1-alpha, q, n-k.unrest-1, lower.tail = TRUE)
+``` 
+
+F critical value at $\alpha = 0.1$: 
+```{r, echo=TRUE, results="asis"} 
+qf(0.9, q, n-k.unrest-1)
+``` 
+
+Because calculated F statistic is less than the C.V. at 10% we fail to reject the null hypothesis. Mother's and father's education levels are **jointly insignificant**.
+
+Let's calculate the p-value: 
+```{r, echo=TRUE, results="asis"} 
+# p-value 
+1-pf(F,q,n-k.unrest-1)
+``` 
+
+Because p-value=0.238>0.1, we do not reject $H_0$. 
+
+
+# F testing using `linearHypothesis()` function
+
+F-test for linear restrictions is widely used in practice. User-written R function, 
+`linearHypothesis `, which is a part of R package `car ` can be used to carry out F tests. For example, to test the null hypothesis above use the following command: 
+
+```{r, echo=TRUE, results="hold"}
+# install.packages("car")
+library(car)
+linearHypothesis(unrest.bwght, c("motheduc=0","fatheduc=0"))
+``` 
+
+
+# F-test Example: House Price Valuations 
+
+Estimate the Unrestricted model: 
+```{r, echo=TRUE, results="hold"}
+data(hprice1, package='wooldridge')
+# unrestricted regression
+unrest <- lm(lprice ~  lassess + llotsize + lsqrft + bdrms, data=hprice1)
+summary(unrest)
+anova(unrest)
+``` 
+Save the Unrestricted SSR and other quantities 
+```{r, echo=TRUE, results="hold"}  
+SSRu <- sum(unrest$residuals^2)
+SSRu
+``` 
+Estimate the Restricted model 
+```{r, echo=TRUE, results="hold"}  
+# restricted regression
+# define the new dependent variable 
+pricedif <- hprice1$lprice - hprice1$lassess
+rest <- lm(pricedif ~  1, data=hprice1) 
+anova(rest)
+# Restricted SSR 
+SSRr <- sum(resid(rest)^2)
+SSRr
+``` 
+Now compute the F statistic: 
+
+```{r, echo=TRUE, results="asis"} 
+n <- nobs(unrest)
+k <- length(unrest$coefficients)-1
+q <- 4
+F <- ((SSRr-SSRu)/SSRu) * (n-k-1)/q
+F
+``` 
+
+The decision rule: reject $H_0$ if the computed test statistic larger than F(q,n-k-1) critical value at some $\alpha$ level. E.g., 5% c.v. is: 
+
+```{r, echo=TRUE, results="asis"} 
+alpha <- 0.05
+Fcv05 <- qf(alpha, q, n-k-1, lower.tail = FALSE)
+Fcv05
+``` 
+
+or
+```{r, echo=TRUE, results="asis"} 
+qf(1-alpha, q, n-k-1, lower.tail = TRUE)
+``` 
+
+And the p-value is 
+```{r, echo=TRUE, results="asis"} 
+1-pf(F,q,n-k-1)
+``` 
+
+P-value is larger than any reasonable levels of significance. Thus, we fail to reject the null hypothesis. 
+
+Automatic computation of F-statistic: 
+```{r, echo=TRUE, results="hold"} 
+linearHypothesis(unrest, c("lassess=1","llotsize=0","lsqrft=0","bdrms=0"))
+``` 
+
+# Lagrange Multiplier (LM) Test Example: data=bwght
+
+LM Test of exclusion restrictions using bwght data example. Following the steps 
+we learned in class we obtain: 
+
+```{r, echo=TRUE, results="asis"} 
+# 1. Estimate restricted model:
+restr <- lm(bwght ~ cigs + parity + faminc, data=bwght) 
+
+# 2. Regression of residuals from restricted model:
+uhatrest <- resid(restr)
+# Regress residuals on ALL variables: 
+LMreg <- lm(uhatrest ~  cigs + parity + faminc + motheduc + fatheduc, data=bwght)
+
+# R-squared from the 2nd step
+R2 <- summary(LMreg)$r.squared 
+R2
+# 3. Compute the LM test statistic:
+LM <- R2 * nobs(LMreg)
+LM
+``` 
+
+Compute the p-value (Remember $LM\sim~\chi^2(q)$). In our case the number of 
+restrictions is $q=2$. 
+```{r, echo=TRUE, results="asis"} 
+1-pchisq(LM, 2)
+``` 
+
+P-value is larger than reasonable levels of significance. Thus, we do not reject $H_0$. 
+
+Exercise: What is the critical value at 5% level. State your decision rule and decision. 
+
+# Reporting Regression Results 
+
+Reproduce Table 4.1 on page 138 (need to install `stargazer` package) 
+
+```{r, echo=TRUE, results="hold"} 
+data(meap93, package='wooldridge')
+
+# define new variable within data frame
+meap93$b_s <- meap93$benefits / meap93$salary
+
+# Estimate three different models
+model1<- lm(log(salary) ~ b_s                       , data=meap93)
+model2<- lm(log(salary) ~ b_s+log(enroll)+log(staff), data=meap93)
+model3<- lm(log(salary) ~ b_s+log(enroll)+log(staff)+droprate+gradrate
+                                                    , data=meap93)
+# Load package and display table of results
+# install.packages("stargazer")
+library(stargazer)
+stargazer(list(model1,model2,model3),type="text",keep.stat=c("n","rsq"))
+
+``` 
+
+
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
+
+

@@ -1,0 +1,203 @@
+---
+title: "Lab 10: Dummy Variables"
+subtitle: "Econometrics I - YTU"
+author: 
+  name: "Prof. Dr. Hüseyin Taştan"
+  affiliation: "Yıldız Technical University"
+# date: "`r format(Sys.time(), '%d %B %Y')`"
+date: 2020 Fall
+output: 
+  html_document:
+    number_sections: true
+    theme: readable
+    highlight: haddock 
+    # code_folding: show
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+    keep_md: true
+---
+<style type="text/css"> 
+body{
+  font-size: 12pt;
+}
+code.r{
+  font-size: 12pt;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, results = 'hold', fig.show = 'asis')
+``` 
+
+# Qualitative Explanatory Variables 
+
+There are several types of qualitative variables, for example, binary variables, ordinal variables, count variables, etc. In class we saw how to incorporate qualitative information in the form of binary (or dummy) variables. 
+ 
+Dummy variables are just binary variables that take value 1 for one group and 0 for the other. In R, factor variables are simply categorical variables defined in a specific way. They can easily be defined from an existing binary variables using:  
+```{r, echo=TRUE, eval=TRUE}
+library(wooldridge)
+data(wage1)
+femfac <- factor(wage1$female, labels = c("male","female"))
+summary(femfac)
+```
+
+Let us visualize wages of men and women in the data: 
+```{r, echo=TRUE, fig.show = 'asis', fig.width = 4, fig.height = 3}
+# wages over female dummy
+library(ggplot2)
+ggplot(wage1, aes(femfac, wage))+geom_point() 
+```
+
+
+Another way to visualize this is to draw scatter plot over observations: 
+```{r, echo=TRUE, fig.width = 4.5, fig.height = 3}
+# scatter plot over observation index 
+ggplot(wage1, aes(as.numeric(rownames(wage1)), wage)) +
+  geom_point(aes(color = femfac)) + 
+  labs(x = "Observation Index") 
+```
+
+Log wages: 
+```{r, echo=TRUE, fig.width = 4.5, fig.height = 3} 
+# scatter plot of log wages over observation index 
+ggplot(wage1, aes(as.numeric(rownames(wage1)), log(wage))) +
+  geom_point(aes(color = femfac)) + 
+  labs(x = "Observation Index")  
+``` 
+
+
+Wage densities over gender: 
+```{r, echo=TRUE, fig.width = 6, fig.height = 4} 
+# wage density over female dummy
+ggplot(wage1, aes(wage, colour = femfac)) + geom_density()  
+``` 
+```{r, echo=TRUE, fig.width = 6, fig.height = 4} 
+# compare to the logarithmic wages: 
+ggplot(wage1, aes(log(wage), colour = femfac)) + geom_density()   
+``` 
+
+
+
+# Regression with a single dummy variable
+
+Here is the regression of wage on female dummy without any continuous X variables: 
+```{r, echo=TRUE, results='hold'}
+(lm(wage ~ female, data=wage1))
+```
+
+As we learned in class, when there are no X variables in the regression, the intercept will be sample average of the base group. Because female=1 for female workers, the base group (female=0) is men. So, the average wage in the sample is 7.099 for men. The coefficient on female is negative indicating that women earn about 2.512 USD less than men on average. The following graph depicts this:
+```{r, echo=FALSE} 
+# compute group means 
+library(plyr)
+wagemean <- ddply(wage1, "femfac", summarise, wage.mean=mean(wage))
+# same graph with arrow annotations 
+ggplot(wage1, aes(as.numeric(rownames(wage1)), wage)) +
+  geom_point(aes(color = femfac)) +
+  geom_hline(data=wagemean, aes(yintercept=wage.mean, colour=femfac)) +
+  annotate("text", label = "Sample Mean (Male) = 7.099", y = 13, x=250) +
+  annotate("text", label = "Sample Mean (Female) = 4.588", y = 0.5, x=200) +
+  annotate(geom = "curve", x = 250, y = 12.5, xend = 250, yend = 7.099, 
+           curvature = .3, arrow = arrow(length = unit(2, "mm")) ) +
+  annotate(geom = "curve", x = 200, y = 0.7, xend = 200, yend = 4.588, 
+           curvature = .3, arrow = arrow(length = unit(2, "mm")) ) +
+  labs(x = "Observation Index") +
+  labs(y = "wage (USD/hour)") +
+  theme(legend.position = c(0.9,0.9)) + 
+  theme_classic()
+``` 
+
+
+# Regression with a single dummy variable and continuous X
+
+Here is the logarithmic wage regression with female dummy and education levels: 
+```{r, echo=TRUE, results='hold'}
+(lm(log(wage) ~ female + educ, data=wage1))
+```
+
+Now, we can compare two workers of opposite genders at the same level of education. 
+Given that education level is fixed, women earn almost 36.09% less than men. The return to an extra year of education is 7.7% for both men and women. 
+
+
+We can visualize this regression as follows: 
+
+```{r, echo=FALSE} 
+# scatter plot with regression lines 
+ggplot(wage1, aes(educ, log(wage), color=femfac, lty=femfac)) + 
+  geom_point(aes(shape = femfac, color=femfac)) + 
+  geom_smooth(method="lm", se=FALSE, fullrange=TRUE) +
+  scale_x_continuous("educ", breaks = seq(0,18,by = 2)) + 
+  theme_classic()
+```
+
+
+**Exercise**: locate the intercept of the base group. What is the intercept for the women?
+
+We can add more continuous X variables in our regression model. Now the coefficient on the dummy variable will be interpreted conditional on those X variables (ceteris paribus). For example, consider the wage regression: 
+```{r, echo=TRUE, results='hold'}
+(lm(log(wage) ~ female + educ + exper + tenure, data=wage1))
+```
+
+**Exercise**: Interpret the coefficient on the female dummy. 
+
+
+# Multiple dummy variables
+
+**Example**: Wage regression with only female and married dummies: 
+```{r, echo=TRUE, results='hold'}
+summary(lm(log(wage) ~ female + married, data=wage1))
+```
+
+**Exercise**: Interpret the coefficients on female and married dummies. What is the base group?
+
+**Example**: Dummy variables with multiple categories 
+```{r, echo=TRUE, results='hold'}
+# create new dummies from female and married 
+wage1$marrmale <- wage1$married*(1-wage1$female)
+wage1$marrfem <- wage1$married*wage1$female
+wage1$singfem <- (1-wage1$married)*wage1$female
+wage1$singmale <- (1-wage1$married)*(1-wage1$female)
+summary(lm(log(wage) ~ marrmale+marrfem+singfem+educ+exper+I(exper^2)+
+      tenure+I(tenure^2), data=wage1))
+```
+
+
+**Exercise**: Write the model in equation form and interpret the coefficients. 
+
+# Allowing for Different Slopes 
+
+
+```{r, echo=TRUE, results='hold'}
+# create interactions manually 
+wage1$femeduc <- wage1$female*wage1$educ
+summary(lm(log(wage) ~ female+educ+femeduc+exper+I(exper^2)+
+      tenure+I(tenure^2), data=wage1))
+```
+
+Using built-in R function 
+```{r, echo=TRUE, results='hold'}
+# use R function to add interactions 
+summary(lm(log(wage) ~ female+educ+I(female*educ)+exper+I(exper^2)+
+      tenure+I(tenure^2), data=wage1))
+```
+
+Interaction at the sample mean of education: 
+```{r, echo=TRUE, results='hold'}
+# Interaction with education in deviation from sample average 
+summary(lm(log(wage) ~ female + I(educ-12.5) + I(female*(educ-12.5)) +
+             exper+I(exper^2) + tenure+I(tenure^2), data=wage1))
+```
+
+**Exercise**: Interpret the coefficient on female. Is it statistically significant? 
+Test the joint significance of the coefficients on female and the interaction term. 
+
+
+
+
+
+
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
+
+
