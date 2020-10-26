@@ -50,17 +50,17 @@ Instructor: Prof. Dr. Hüseyin Taştan
     * Handout: [pdf](https://raw.githack.com/htastan/Econometrics-I/main/Slide-Handouts/Handout-10-Binary-Dependent-Variable.pdf)
     * Lab 11: [R applications](https://raw.githack.com/htastan/Econometrics-I/main/Labs/Lab-11-Binary-Dependent-Variable.html)
 
-11. **Heteroscedasticity**
+11. **Heteroskedasticity**
     * Handout: [pdf](https://raw.githack.com/htastan/Econometrics-I/main/Slide-Handouts/Handout-11-Heteroscedasticity.pdf)
     * Lab 12: [R applications](https://raw.githack.com/htastan/Econometrics-I/main/Labs/Lab-12-Heteroscedasticity.html)
 
-12. **Missepicification and Data Problems**
+12. **Misspecification and Data Problems**
     * Handout: [pdf](https://raw.githack.com/htastan/Econometrics-I/main/Slide-Handouts/Handout-12-Misspecification-and-Data-Problems.pdf)
     * Lab 13: [R applications](https://raw.githack.com/htastan/Econometrics-I/main/Labs/Lab-13-Misspecification.html)
     
 ## Scope and Purpose 
 
-The purpose of this course is to teach fundamental methods of analysis in econometrics at an undergraduate level. Econometrics basically deals with developing statistical methods for estimating and testing economic relationships and theories. This is reflected in the following definition of econometrics: “Econometrics may be defined as the social science in which the tools of economic theory, mathematics, and statistical inference are applied to the analysis of economic phenomena” (A. Goldberger). 
+The purpose of this course is to teach fundamental methods of analysis in econometrics at an undergraduate level. Econometrics deals with developing statistical methods for estimating and testing economic relationships and theories. This is reflected in the following definition of econometrics: “Econometrics may be defined as the social science in which the tools of economic theory, mathematics, and statistical inference are applied to the analysis of economic phenomena” (A. Goldberger). 
 
 Econometrics focuses on the analysis of nonexperimental economic data. Although some social experiments can be devised, it is usually impossible to conduct economic experiments. Unlike statistical methods employed in natural sciences, econometrics develops special methods to handle nonexperimental economic data. 
 
