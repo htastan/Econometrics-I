@@ -1,10 +1,12 @@
 # Econometrics-I
-Undergraduate Introductory Econometrics (Wednesday 10.00-12.50)
+Undergraduate Introductory Econometrics 
+
+Summer School (Tuesday: 09.00-12.50, Wednesday: 13.00-17.50)
 
 Instructor: Prof. Dr. Hüseyin Taştan 
 (Yıldız Technical University, Department of Economics)
 
-## Weekly Class Schedule 
+## Lecture Schedule 
 
 1. **Introduction**: 
     * Syllabus: [pdf](https://raw.githack.com/htastan/Econometrics-I/main/syllabus.pdf) | [handout](https://raw.githack.com/htastan/Econometrics-I/main/Slide-Handouts/Handout-00-Intro-Syllabus.pdf)
