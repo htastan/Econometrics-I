@@ -1,7 +1,7 @@
 # Econometrics-I
 Undergraduate Introductory Econometrics 
 
-Summer School (Tuesday: 09.00-12.50, Wednesday: 13.00-17.50)
+2021 Fall (Wednesday: 13.00-15.50)
 
 Instructor: Prof. Dr. Hüseyin Taştan 
 (Yıldız Technical University, Department of Economics)
