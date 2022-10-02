@@ -1,7 +1,7 @@
 # Econometrics-I
 Undergraduate Introductory Econometrics 
 
-2021 Fall (Wednesday: 13.00-15.50)
+2022-23 Fall (Wednesday: 10.00-12.50)
 
 Instructor: Prof. Dr. Hüseyin Taştan 
 (Yıldız Technical University, Department of Economics)
@@ -73,7 +73,7 @@ And R-studio may be used as an integrated development environment for `R`:
 
 ## Prerequisites
 
-Statistics I-II (you need to pass both); also basic knowledge of algebra and calculus at the college level (Maths I-II) but passing is not required. 
+Statistics I-II also basic knowledge of algebra and calculus at the college level (Maths I-II) but passing is not required. 
 
 ## Textbook
 
