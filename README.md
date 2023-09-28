@@ -1,7 +1,7 @@
 # Econometrics-I
 Undergraduate Introductory Econometrics 
 
-2022-23 Fall (Wednesday: 10.00-12.50)
+2023-24 Fall (Tuesday: 10.00-12.50)
 
 Instructor: Prof. Dr. Hüseyin Taştan 
 (Yıldız Technical University, Department of Economics)
@@ -86,7 +86,17 @@ Online version and other materials available at: [http://www.urfie.net/](http://
 
 
     
+## Datacamp for the classroom 
 
+<a href='https://www.datacamp.com/'><img src='datacamp1.PNG' align="left"  width="200"/></a>
+
+This class is supported by <https://www.datacamp.com/> through the "DataCamp for the Classroom" program.  
+
+<br>
+
+<a href='https://www.datacamp.com/groups/classrooms'><img src="datacamp2.PNG" width="100%" /></a>
+
+<br>
     
 
 
