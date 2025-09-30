@@ -1,7 +1,7 @@
 # Econometrics-I
 Undergraduate Introductory Econometrics 
 
-2024-25 Fall (Thursday: 10.00-12.50)
+2025-26 Fall (Wednesday: 10.00-12.50)
 
 Instructor: Prof. Dr. Hüseyin Taştan 
 (Yıldız Technical University, Department of Economics)
