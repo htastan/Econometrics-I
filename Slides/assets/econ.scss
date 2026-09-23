@@ -1,0 +1,284 @@
+/*-- scss:defaults --*/
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap');
+
+$font-family-sans-serif: "Source Sans Pro", "Segoe UI", Helvetica, Arial, sans-serif;
+$font-family-monospace: "JetBrains Mono", Consolas, monospace;
+$presentation-font-size-root: 30px;
+$presentation-h2-font-size: 1.45em;
+$presentation-h3-font-size: 1.1em;
+$presentation-heading-font: $font-family-sans-serif;
+$presentation-heading-font-weight: 700;
+$presentation-heading-color: #14324f;
+$body-color: #1d2733;
+$link-color: #1f5fa8;
+$code-color: #a8431a;
+$presentation-line-height: 1.35;
+$code-block-font-size: 0.72em;
+
+/*-- scss:rules --*/
+$ink: #1d2733; $muted: #6b7785; $blue: #1f5fa8; $navy: #14324f; $orange: #d9622b; $green: #2f8f5b; $red: #c0392b; $line: #dfe5ec; $soft: #f4f7fa;
+
+.reveal { color: $ink; }
+.reveal .slides section { text-align: left; }
+.reveal h2 { border-bottom: 3px solid $orange; padding-bottom: .18em; margin-bottom: .5em; display: block; width: fit-content; }
+.reveal h3 { color: $blue; margin-top: .3em; }
+.reveal strong { color: $navy; }
+.reveal .muted, .muted { color: $muted; }
+.reveal .small, .small { font-size: .8em; }
+.reveal .tiny { font-size: .65em; }
+.reveal .accent { color: $orange; font-weight: 600; }
+.reveal .blue { color: $blue; font-weight: 600; }
+.reveal .hl { background: linear-gradient(transparent 55%, rgba(217,98,43,.28) 55%); padding: 0 .1em; }
+.reveal ul, .reveal ol { margin-left: 1em; }
+.reveal li { margin-bottom: .22em; }
+.reveal .slide-number { font-size: 16px; }
+.reveal table { font-size: .78em; }
+.reveal table th { border-bottom: 2px solid $navy; }
+
+/* title slide */
+#title-slide { text-align: left !important; }
+#title-slide .title { font-size: 1.9em; color: $navy; border-bottom: 4px solid $orange; display: inline-block; padding-bottom: .15em; }
+#title-slide .subtitle { color: $blue; font-size: 1.1em; margin-top: .4em; }
+#title-slide .quarto-title-author-name { font-size: .95em; }
+
+/* section divider slides: ## Title {.section-slide} */
+.reveal section.section-slide { display: flex !important; flex-direction: column; justify-content: center; }
+.reveal section.section-slide h2 { font-size: 2.1em; border-bottom: 5px solid $orange; }
+.reveal .kicker { text-transform: uppercase; letter-spacing: .12em; color: $orange; font-weight: 700; font-size: .7em; margin-bottom: .2em; }
+
+/* reading tags */
+.reveal .tags { margin: .2em 0 .6em; }
+.reveal .tag { display: inline-block; font-size: .62em; font-weight: 600; padding: .12em .6em; border-radius: 999px; background: $soft; border: 1px solid $line; color: $navy; margin-right: .35em; }
+
+/* learning objectives */
+.reveal .objectives ul { list-style: none; margin-left: 0; }
+.reveal .objectives li { padding-left: 1.5em; position: relative; }
+.reveal .objectives li::before { content: "✓"; position: absolute; left: 0; color: $green; font-weight: 700; }
+
+/* generic cards */
+.reveal .card { border: 1px solid $line; border-radius: 10px; padding: .55em .8em; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+.reveal .card h4 { margin: 0 0 .3em; font-size: .85em; color: $blue; text-transform: none; }
+.reveal .flow { display: flex; gap: .4em; align-items: stretch; flex-wrap: wrap; }
+.reveal .flow .step { flex: 1 1 0; min-width: 5.5em; background: $soft; border: 1px solid $line; border-radius: 10px; padding: .45em .5em; font-size: .62em; text-align: center; position: relative; }
+.reveal .flow .step b { display: block; color: $navy; font-size: 1.15em; margin-bottom: .2em; }
+.reveal .flow .step .n { display: inline-block; width: 1.6em; height: 1.6em; line-height: 1.6em; border-radius: 50%; background: $orange; color: #fff; font-weight: 700; margin-bottom: .25em; }
+
+/* hotspots (clickable equation parts) */
+.reveal .hotspots .hot { cursor: pointer; border-bottom: 3px dotted $orange; padding: 0 .08em; border-radius: 4px; transition: background .15s; }
+.reveal .hotspots .hot:hover { background: rgba(217,98,43,.12); }
+.reveal .hotspots .hot.on { background: rgba(217,98,43,.22); border-bottom-style: solid; }
+.reveal .tip-panel { margin-top: .5em; min-height: 2.6em; font-size: .78em; background: $soft; border-left: 5px solid $orange; padding: .45em .8em; border-radius: 6px; }
+
+/* ---------------- widgets ---------------- */
+.reveal .widget { border: 1px solid $line; border-radius: 12px; padding: .5em .6em; background: #fff; font-size: .62em; line-height: 1.35; }
+.reveal .widget p { margin: .2em 0; }
+.reveal .wgrid { display: grid; grid-template-columns: 1.55fr 1fr; gap: .9em; align-items: start; }
+.reveal .wgrid.stack { grid-template-columns: 1fr; }
+.reveal .wgrid.wide { grid-template-columns: 2fr 1fr; }
+.reveal .wplot svg.eplot { width: 100%; height: auto; display: block; }
+.reveal .wcontrols { display: flex; flex-direction: column; gap: .45em; }
+.reveal .wcontrols .row { display: flex; gap: .4em; flex-wrap: wrap; align-items: center; }
+.reveal .ctrl { display: grid; grid-template-columns: 7.5em 1fr 4.2em; align-items: center; gap: .5em; margin: 0; }
+.reveal .ctrl-label { color: $navy; font-weight: 600; }
+.reveal .ctrl-val { font-family: $font-family-monospace; text-align: right; color: $orange; font-weight: 600; }
+.reveal .ctrl input[type=range] { width: 100%; accent-color: $orange; }
+.reveal .ctrl-toggle { display: flex; gap: .45em; align-items: center; grid-template-columns: none; cursor: pointer; }
+.reveal .ctrl-toggle input { width: 1.1em; height: 1.1em; accent-color: $orange; }
+.reveal .ctrl-select { grid-template-columns: 7.5em 1fr; }
+.reveal .ctrl-select select { font: inherit; padding: .15em .3em; border-radius: 6px; border: 1px solid $line; }
+.reveal .seg { display: inline-flex; border: 1px solid $line; border-radius: 8px; overflow: hidden; flex-wrap: wrap; }
+.reveal .seg button { font: inherit; border: 0; background: #fff; padding: .3em .7em; cursor: pointer; color: $navy; border-right: 1px solid $line; }
+.reveal .seg button:last-child { border-right: 0; }
+.reveal .seg button.on { background: $navy; color: #fff; }
+.reveal .ebtn { font: inherit; font-weight: 600; background: $navy; color: #fff; border: 0; border-radius: 8px; padding: .35em .85em; cursor: pointer; margin: .1em .2em .1em 0; }
+.reveal .ebtn:hover { background: $blue; }
+.reveal .ebtn.orange { background: $orange; }
+.reveal .ebtn.ghost { background: #fff; color: $navy; border: 1px solid $navy; }
+.reveal .ebtn.small { font-size: .85em; padding: .25em .7em; }
+.reveal .ebtn.on { background: $orange; color: #fff; border-color: $orange; }
+.reveal .linkbtn { font: inherit; background: none; border: 0; color: $blue; text-decoration: underline; cursor: pointer; padding: 0 .3em; }
+.reveal .readout { font-size: 1em; background: $soft; border-radius: 8px; padding: .45em .7em; line-height: 1.5; }
+.reveal .readout .big { font-size: 1.5em; font-weight: 700; color: $navy; font-family: $font-family-monospace; }
+.reveal .readout .good { color: $green; font-weight: 700; }
+.reveal .readout .bad { color: $red; font-weight: 700; }
+.reveal .readout .or { color: $orange; font-weight: 700; }
+.reveal .readout .bl { color: $blue; font-weight: 700; }
+.reveal .mono { font-family: $font-family-monospace; }
+.reveal .legend-inline span { display: inline-flex; align-items: center; gap: .3em; margin-right: .9em; }
+.reveal .legend-inline i { display: inline-block; width: 1.4em; height: .3em; border-radius: 2px; }
+.reveal .meter { height: 1.1em; display: flex; border-radius: 6px; overflow: hidden; border: 1px solid $line; margin: .25em 0; }
+.reveal .meter > div { height: 100%; transition: width .2s; }
+
+svg.eplot { font-family: "Source Sans Pro", "Segoe UI", sans-serif; }
+svg.eplot .grid { stroke: #e7ebf0; stroke-width: 1; }
+svg.eplot .axis { stroke: #9aa5b1; stroke-width: 1.2; }
+svg.eplot .tick { font-size: 13px; fill: #6b7785; }
+svg.eplot .alab { font-size: 15px; fill: #1d2733; font-weight: 600; }
+svg.eplot .ptext { font-size: 14px; fill: #1d2733; }
+svg.eplot .ltext { font-size: 14px; fill: #1d2733; }
+svg.eplot .handle { fill: #fff; stroke: #d9622b; stroke-width: 3; cursor: grab; }
+svg.eplot .handle:hover { fill: #fde6da; }
+
+/* regression table inside widgets */
+.reveal table.regtab { font-family: $font-family-monospace; font-size: .9em; border-collapse: collapse; margin: .2em 0; }
+.reveal table.regtab th, .reveal table.regtab td { padding: .12em .55em; text-align: right; border: 0; }
+.reveal table.regtab th { border-bottom: 1.5px solid $navy; font-weight: 600; }
+.reveal table.regtab td.nm { text-align: left; color: $navy; }
+.reveal table.regtab td.st { color: $orange; text-align: left; }
+.reveal table.regtab tr.hl td { background: rgba(217,98,43,.12); }
+.reveal .regfoot { font-size: .85em; color: $muted; }
+
+/* ---------------- quizzes ---------------- */
+.reveal .quiz, .reveal .numq { position: relative; border: 1px solid $line; border-left: 6px solid $blue; border-radius: 10px; padding: .45em .8em .5em; background: #fff; font-size: .72em; margin: .3em 0; }
+.reveal .quiz > p:first-child, .reveal .numq > p:first-child { margin-top: .1em; }
+.reveal .quiz p { margin: .25em 0; }
+.reveal .quiz .qopt { display: block; cursor: pointer; border: 1px solid $line; border-radius: 8px; padding: .28em .7em; background: $soft; transition: all .15s; }
+.reveal .quiz .qopt:hover { border-color: $blue; background: #eaf1f9; }
+.reveal .quiz .qopt.picked { border-color: $navy; background: #e3ebf5; }
+.reveal .quiz.answered .qopt { cursor: default; }
+.reveal .quiz.answered .qopt.correct { border-color: $green; background: #e5f4ec; }
+.reveal .quiz.answered .qopt.correct::after { content: "  ✓"; color: $green; font-weight: 700; }
+.reveal .quiz .qopt.wrong { border-color: $red; background: #fbe9e7; }
+.reveal .quiz .qopt.wrong::after { content: "  ✗"; color: $red; font-weight: 700; }
+.reveal .qfeedback { display: inline-block; margin: .3em 0; }
+.reveal .qfeedback.ok { color: $green; }
+.reveal .qfeedback.no { color: $red; }
+.reveal .explain { display: none; background: $soft; border-radius: 8px; padding: .35em .7em; margin-top: .25em; font-size: .95em; }
+.reveal .explain.show { display: block; animation: fadein .3s; }
+.reveal .qreset { position: absolute; top: .3em; right: .4em; border: 0; background: none; color: $muted; cursor: pointer; font-size: 1.1em; }
+.reveal .quiz.done-before { border-left-color: $green; }
+.reveal .numrow { display: flex; gap: .5em; align-items: center; flex-wrap: wrap; }
+.reveal .numrow input { font: inherit; width: 8em; padding: .2em .4em; border: 1px solid $line; border-radius: 6px; }
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+
+/* sorter (classification exercise) */
+.reveal .sorter { font-size: .66em; }
+.reveal .sorter .bins { display: grid; grid-template-columns: repeat(auto-fit, minmax(8em, 1fr)); gap: .5em; margin-bottom: .5em; }
+.reveal .sorter .bin { border: 2px dashed #b9c4d0; border-radius: 10px; padding: .35em .45em; min-height: 5.2em; cursor: pointer; background: $soft; }
+.reveal .sorter .bin > p { margin: 0 0 .25em; font-weight: 700; color: $navy; text-align: center; }
+.reveal .sorter .bin:hover { border-color: $orange; }
+.reveal .sorter .bin-drop { display: flex; flex-direction: column; gap: .25em; }
+.reveal .sorter .items { display: flex; flex-wrap: wrap; gap: .35em; min-height: 2em; padding: .3em; border-radius: 8px; background: #fbfcfd; }
+.reveal .sorter .items > p { display: contents; }
+.reveal .sorter .item { display: inline-block; background: #fff; border: 1px solid #b9c4d0; border-radius: 8px; padding: .2em .55em; cursor: pointer; user-select: none; }
+.reveal .sorter .item.sel { outline: 3px solid $orange; }
+.reveal .sorter .item.ok { border-color: $green; background: #e5f4ec; }
+.reveal .sorter .item.no { border-color: $red; background: #fbe9e7; }
+.reveal .sorter-bar { margin-top: .4em; display: flex; align-items: center; gap: .3em; flex-wrap: wrap; }
+
+/* reveal-on-click */
+.reveal .reveal-box { display: none; }
+.reveal .reveal-box.open { display: block; animation: fadein .3s; }
+
+/* timer */
+.reveal .timer { display: inline-flex; align-items: center; gap: .6em; font-size: .7em; border: 1px solid $line; border-radius: 10px; padding: .25em .6em; background: #fff; }
+.reveal .timer-face { font-family: $font-family-monospace; font-size: 1.4em; font-weight: 700; color: $navy; }
+.reveal .timer-bar { width: 8em; height: .45em; background: $soft; border-radius: 4px; overflow: hidden; }
+.reveal .timer-bar > div { height: 100%; background: $orange; transition: width 1s linear; }
+.reveal .timer.done .timer-face { color: $red; }
+
+.reveal .score-box { font-size: .7em; background: $soft; border-radius: 10px; padding: .5em .8em; }
+
+/* think-pair-share / activity banner */
+.reveal .activity { border: 2px solid $orange; border-radius: 12px; padding: .5em .9em; background: #fff8f4; }
+.reveal .activity .label { color: $orange; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: .7em; }
+
+/* R code & output */
+.reveal div.sourceCode { border-radius: 8px; }
+.reveal pre code { max-height: 480px; }
+.reveal .cell-output pre code { background: #fbfcfd; }
+
+/* callout fine-tuning */
+.reveal .callout { font-size: .85em; margin: .45em 0; }
+.reveal .callout .callout-title-container { font-weight: 700; }
+
+/* level-1 headings (# Title) become section divider slides */
+.reveal .slides section.level1 { display: flex !important; flex-direction: column; justify-content: center; }
+.reveal .slides section.level1 h1 { font-size: 2.2em; color: $navy; border-bottom: 5px solid $orange; display: inline-block; padding-bottom: .15em; align-self: flex-start; }
+#title-slide .quarto-title-authors { justify-content: flex-start !important; display: flex; }
+#title-slide .quarto-title-author { padding-left: 0 !important; }
+.reveal .card .ct { display: block; font-weight: 700; color: $blue; font-size: .9em; margin-bottom: .15em; }
+.reveal .card p { margin: .2em 0; }
+.reveal .card + .card { margin-top: .45em; }
+
+/* size tuning (slides with {.smaller} already shrink text) */
+.reveal .quiz, .reveal .numq { font-size: .8em; }
+.reveal .smaller .quiz, .reveal .smaller .numq { font-size: .95em; }
+.reveal .widget { font-size: .68em; }
+.reveal .smaller .widget { font-size: .82em; }
+.reveal .sorter { font-size: .74em; }
+.reveal .smaller .sorter { font-size: .9em; }
+.reveal .timer { font-size: .75em; }
+.reveal .quiz .qopt { margin: .22em 0; }
+.reveal .flow .step { font-size: .72em; }
+.reveal .flow .step p { margin: 0; }
+.reveal .flow .step strong { display: block; color: $navy; font-size: 1.12em; margin-bottom: .15em; }
+.reveal .flow .step .n { display: block; margin: 0 auto .3em; }
+.reveal .explain { font-size: 1em; }
+.reveal .hotspots .chips { text-align: center; margin: .2em 0; }
+.reveal .hotspots .chips p { margin: 0; }
+.reveal .hotspots .chips .hot { display: inline-block; padding: .12em .65em; margin: .15em .2em; border: 1.5px solid $orange; border-bottom-width: 1.5px; border-bottom-style: solid; border-radius: 999px; background: #fff; }
+.reveal .hotspots .chips .hot.on { background: $orange; color: #fff; }
+.reveal .smaller .callout { font-size: .95em; }
+.reveal .smaller .tip-panel { font-size: .95em; }
+.reveal .smaller div.sourceCode pre, .reveal .smaller .cell-output pre, .reveal .smaller pre { font-size: .92em; }
+.reveal .smaller pre code { line-height: 1.3; }
+
+/* =====================================================================
+   PROJECTION READABILITY — minimum sizes (slide is 1280×760, base 30px)
+   targets: body ≥ 26px, exercises ≥ 24px, widget panels ≥ 21px
+   ===================================================================== */
+.reveal .slides section.smaller, .reveal .slides section .smaller { font-size: 0.86em; }
+.reveal .small, .small { font-size: .9em; }
+.reveal .tiny { font-size: .82em; }
+.reveal .tag { font-size: .72em; }
+.reveal .callout { font-size: .92em; }
+.reveal .smaller .callout { font-size: 1em; }
+.reveal .quiz, .reveal .numq { font-size: .84em; }
+.reveal .smaller .quiz, .reveal .smaller .numq { font-size: .96em; }
+.reveal .widget { font-size: .74em; }
+.reveal .smaller .widget { font-size: .86em; }
+.reveal .widget .small { font-size: .95em; }
+.reveal .sorter { font-size: .8em; }
+.reveal .smaller .sorter { font-size: .92em; }
+.reveal .flow .step { font-size: .8em; }
+.reveal .tip-panel { font-size: .88em; }
+.reveal .timer { font-size: .8em; }
+.reveal .card .ct { font-size: .95em; }
+.reveal table.regtab { font-size: 1em; }
+.reveal pre { font-size: .76em; }
+.reveal .smaller div.sourceCode pre, .reveal .smaller .cell-output pre, .reveal .smaller pre { font-size: .86em; }
+.reveal .ctrl { grid-template-columns: 8em 1fr 4.4em; }
+svg.eplot .tick { font-size: 16px; }
+svg.eplot .alab { font-size: 18px; }
+svg.eplot .ptext, svg.eplot .ltext { font-size: 17px; }
+.reveal div.callout { font-size: 24px !important; }
+.reveal .smaller div.callout { font-size: 23px !important; }
+.reveal div.callout .callout-title-container { font-size: 1em !important; }
+.reveal div.callout .callout-body-container, .reveal div.callout .callout-body { font-size: 1em !important; }
+.reveal .activity .label { font-size: .85em; }
+.reveal .ebtn.small { font-size: .92em; }
+.reveal .timer { font-size: .9em; }
+svg.eplot .tick { font-size: 18px; }
+svg.eplot .alab { font-size: 20px; }
+svg.eplot .ptext, svg.eplot .ltext { font-size: 19px; }
+
+/* horizontal control bars (form-sim and similar widgets) */
+.reveal .fs-bar { display: flex; flex-wrap: wrap; gap: .35em 1.3em; align-items: center; margin-bottom: .35em; }
+.reveal .fs-bar > div { display: flex; align-items: center; gap: .45em; }
+.reveal .fs-bar .ctrl { width: 17em; grid-template-columns: 3.6em 1fr 3em; }
+.reveal .fs-bar .row { display: flex; gap: .35em; }
+.reveal .wcontrols.compact .ctrl { grid-template-columns: 2.4em 1fr 4em; }
+.reveal .mc-grid { display: grid; grid-template-columns: 1fr 1fr 1.05fr; gap: .6em; align-items: start; }
+.reveal .mc-grid svg.eplot { width: 100%; height: auto; display: block; }
+.reveal table.regreader td.hot { cursor: pointer; border-bottom: 2px dotted $orange; }
+.reveal table.regreader td.hot:hover { background: rgba(217,98,43,.12); }
+.reveal table.regreader td.hot.on { background: rgba(217,98,43,.25); }
+.reveal .regfoot2 { margin-top: .4em; line-height: 1.7; }
+.reveal .regfoot2 .hot { cursor: pointer; border-bottom: 2px dotted $orange; }
+.reveal .regfoot2 .hot.on { background: rgba(217,98,43,.25); }
+.reveal .widget .regfoot { font-size: 1em; }
+svg.eplot foreignObject.texlabel { overflow: visible; }
+svg.eplot .texlabel-inner { font-family: "Source Sans Pro", "Segoe UI", sans-serif; font-size: 20px; font-weight: 600; color: #1d2733; line-height: 28px; white-space: nowrap; }
+svg.eplot .texlabel-inner .katex { font-size: 1.05em; }
+.reveal .tag.weektag { background: #14324f; color: #fff; border-color: #14324f; }

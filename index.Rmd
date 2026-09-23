@@ -16,58 +16,60 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Undergraduate Introductory Econometrics
 
-2025-26 Fall (Wednesday: 10.00-12.50)
+2026-27 Fall (Wednesday: 10.00-12.50)
+
+Each topic below has a PDF handout and a set of [interactive slides](Slides/) that run in the browser (simulations, quizzes and interactive figures).
 
 ## Lecture Schedule 
 
 1. **Introduction**: 
     * Syllabus: [pdf](syllabus.pdf) | [handout](Slide-Handouts/Handout-00-Intro-Syllabus.pdf)
-    * Purpose and scope: [handout](Slide-Handouts/Handout-01-Introduction.pdf)
+    * Purpose and scope: [handout](Slide-Handouts/Handout-01-Introduction.pdf) | [interactive slides](Slides/01-introduction.html)
     * Lab 01: [Introduction to R and RStudio](Labs/Lab-01-Intro-to-R-and-RStudio.html) | [.Rmd](Labs/Lab-01-Intro-to-R-and-RStudio.Rmd)
 
 2. **Simple Regression Analysis - Part I**
-    * Handout: [pdf](Slide-Handouts/Handout-02-Simple-Regression-Analysis-I.pdf)
+    * Handout: [pdf](Slide-Handouts/Handout-02-Simple-Regression-Analysis-I.pdf) | [interactive slides](Slides/02-slr-ols.html)
     * Lab 02: [Basic Data Analysis in R](Labs/Lab-02-Basic-Data-Analysis-in-R.html) | [.Rmd](Labs/Lab-02-Basic-Data-Analysis-in-R.Rmd)
     * Lab 03: [Simple Linear Regression in R - Part I](Labs/Lab-03-SLR-part-1.html) | [.Rmd](Labs/Lab-03-SLR-part-1.Rmd)
 
 3. **Simple Regression Analysis - Part II**
-    * Handout: [pdf](Slide-Handouts/Handout-03-Simple-Regression-Analysis-II.pdf)
+    * Handout: [pdf](Slide-Handouts/Handout-03-Simple-Regression-Analysis-II.pdf) | [interactive slides](Slides/03-slr-properties.html)
     * Lab 04: [Simple Linear Regression in R - Part II](Labs/Lab-04-SLR-part-2.html) | [.Rmd](Labs/Lab-04-SLR-part-2.Rmd)
 
 4. **Multiple Regression Analysis - Estimation**
-    * Handout: [pdf](Slide-Handouts/Handout-04-Multiple-Regression-Analysis-Estimation.pdf)
+    * Handout: [pdf](Slide-Handouts/Handout-04-Multiple-Regression-Analysis-Estimation.pdf) | [interactive slides](Slides/04-mlr-estimation.html)
     * Lab 05: [Estimation of Multiple Regression in R](Labs/Lab-05-MLR-estimation.html) | [.Rmd](Labs/Lab-05-MLR-estimation.Rmd)
 
 5. **Multiple Regression Analysis - Inference: PART 1**
-    * Handout: [pdf](Slide-Handouts/Handout-05-Multiple-Regression-Analysis-Inference.pdf)
+    * Handout: [pdf](Slide-Handouts/Handout-05-Multiple-Regression-Analysis-Inference.pdf) | [interactive slides](Slides/05-mlr-inference.html)
     * Lab 06: [Inference in Multiple Regression in R - t test](Labs/Lab-06-MLR-inference-part-1.html) | [.Rmd](Labs/Lab-06-MLR-inference-part-1.Rmd)
 
 6. **Multiple Regression Analysis - Inference: PART 2**
-    * Handout: [pdf](Slide-Handouts/Handout-06-Multiple-Regression-Analysis-Inference-II.pdf)
+    * Handout: [pdf](Slide-Handouts/Handout-06-Multiple-Regression-Analysis-Inference-II.pdf) | [interactive slides](Slides/06-mlr-inference-ii.html)
     * Lab 07: [Inference in Multiple Regression in R - F test](Labs/Lab-07-MLR-inference-part-2.html) | [.Rmd](Labs/Lab-07-MLR-inference-part-2.Rmd)
 
 7. **Asymptotic Properties of OLS**
-    * Handout: [pdf](Slide-Handouts/Handout-07-Asymptotics.pdf)
+    * Handout: [pdf](Slide-Handouts/Handout-07-Asymptotics.pdf) | [interactive slides](Slides/07-asymptotics.html)
     * Lab 08: [Large sample properties of OLS - Simulations in R](Labs/Lab-08-Asymptotics.html) | [.Rmd](Labs/Lab-08-Asymptotics.Rmd)
 
 8. **Further Topics in OLS regressions**
-    * Handout: [pdf](Slide-Handouts/Handout-08-MLR-Further-Topics.pdf)
+    * Handout: [pdf](Slide-Handouts/Handout-08-MLR-Further-Topics.pdf) | [interactive slides](Slides/08-further-topics.html)
     * Lab 09: [R applications](Labs/Lab-09-MLR-further-topics.html) | [.Rmd](Labs/Lab-09-MLR-further-topics.Rmd)
     
 9. **Qualitative Explanatory Variables**
-    * Handout: [pdf](Slide-Handouts/Handout-09-Qualitative-Variables.pdf)
+    * Handout: [pdf](Slide-Handouts/Handout-09-Qualitative-Variables.pdf) | [interactive slides](Slides/09-qualitative-variables.html)
     * Lab 10: [R applications](Labs/Lab-10-Dummy-Variables.html) | [.Rmd](Labs/Lab-10-Dummy-Variables.Rmd)
 
 10. **Binary Dependent Variable**
-    * Handout: [pdf](Slide-Handouts/Handout-10-Binary-Dependent-Variable.pdf)
+    * Handout: [pdf](Slide-Handouts/Handout-10-Binary-Dependent-Variable.pdf) | [interactive slides](Slides/10-binary-dependent-variable.html)
     * Lab 11: [R applications](Labs/Lab-11-Binary-Dependent-Variable.html) | [.Rmd](Labs/Lab-11-Binary-Dependent-Variable.Rmd)
 
 11. **Heteroskedasticity**
-    * Handout: [pdf](Slide-Handouts/Handout-11-Heteroscedasticity.pdf)
+    * Handout: [pdf](Slide-Handouts/Handout-11-Heteroscedasticity.pdf) | [interactive slides](Slides/11-heteroskedasticity.html)
     * Lab 12: [R applications](Labs/Lab-12-Heteroscedasticity.html) | [.Rmd](Labs/Lab-12-Heteroscedasticity.Rmd)
 
 12. **Misspecification and Data Problems**
-    * Handout: [pdf](Slide-Handouts/Handout-12-Misspecification-and-Data-Problems.pdf)
+    * Handout: [pdf](Slide-Handouts/Handout-12-Misspecification-and-Data-Problems.pdf) | [interactive slides](Slides/12-misspecification.html)
     * Lab 13: [R applications](Labs/Lab-13-Misspecification.html) | [.Rmd](Labs/Lab-13-Misspecification.Rmd)
     
 ## Scope and Purpose 
