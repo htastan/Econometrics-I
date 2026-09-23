@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.27">
+
+  <meta name="author" content="Prof.&nbsp;Dr.&nbsp;Hüseyin Taştan">
+  <title>Econometrics I – Further Topics in Regression Analysis</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #24292e;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #24292e; } /* Normal */
+    code span.al { color: #ff5555; font-weight: bold; } /* Alert */
+    code span.an { color: #6a737d; } /* Annotation */
+    code span.at { color: #d73a49; } /* Attribute */
+    code span.bn { color: #005cc5; } /* BaseN */
+    code span.bu { color: #d73a49; } /* BuiltIn */
+    code span.cf { color: #d73a49; } /* ControlFlow */
+    code span.ch { color: #032f62; } /* Char */
+    code span.cn { color: #005cc5; } /* Constant */
+    code span.co { color: #6a737d; } /* Comment */
+    code span.cv { color: #6a737d; } /* CommentVar */
+    code span.do { color: #6a737d; } /* Documentation */
+    code span.dt { color: #d73a49; } /* DataType */
+    code span.dv { color: #005cc5; } /* DecVal */
+    code span.er { color: #ff5555; text-decoration: underline; } /* Error */
+    code span.ex { color: #d73a49; font-weight: bold; } /* Extension */
+    code span.fl { color: #005cc5; } /* Float */
+    code span.fu { color: #6f42c1; } /* Function */
+    code span.im { color: #032f62; } /* Import */
+    code span.in { color: #6a737d; } /* Information */
+    code span.kw { color: #d73a49; } /* Keyword */
+    code span.op { color: #24292e; } /* Operator */
+    code span.ot { color: #6f42c1; } /* Other */
+    code span.pp { color: #d73a49; } /* Preprocessor */
+    code span.re { color: #6a737d; } /* RegionMarker */
+    code span.sc { color: #005cc5; } /* SpecialChar */
+    code span.ss { color: #032f62; } /* SpecialString */
+    code span.st { color: #032f62; } /* String */
+    code span.va { color: #e36209; } /* Variable */
+    code span.vs { color: #032f62; } /* VerbatimString */
+    code span.wa { color: #ff5555; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-70fcdf68ba588c6f83f9e4af10fa12ef.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <!-- shared interactive layer for all Econometrics I decks -->
+  <script src="assets/wooldridge-data.js"></script>
+  <script src="assets/hmda-data.js"></script>
+  <script src="assets/econ-core.js"></script>
+  <script src="assets/econ-ui.js"></script>
+  <script src="assets/widgets-shared.js"></script>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Further Topics in Regression Analysis</h1>
+  <p class="subtitle">Topic 8 · Scaling, functional form, interactions, adjusted R² and prediction</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Prof.&nbsp;Dr.&nbsp;Hüseyin Taştan 
+</div>
+        <p class="quarto-title-affiliation">
+            Yıldız Technical University · Department of Economics
+          </p>
+    </div>
+</div>
+
+  <p class="date">Fall 2026</p>
+</section>
+<section id="todays-roadmap" class="slide level2">
+<h2>Today’s roadmap</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<div class="objectives">
+<p><strong>By the end of this lecture you should be able to</strong></p>
+<ul>
+<li>say what changes when the <strong>units of measurement</strong> change</li>
+<li>interpret <strong>standardized (beta) coefficients</strong></li>
+<li>work with <strong>quadratic</strong> models: marginal effects and turning points</li>
+<li>interpret models with <strong>interaction terms</strong></li>
+<li>use the <strong>adjusted <span class="math inline">R^2</span></strong> to compare models</li>
+<li>build <strong>confidence intervals for predictions</strong> and <strong>prediction intervals</strong></li>
+</ul>
+</div>
+</div><div class="column" style="width:45%;">
+<div class="card">
+<p><span class="ct">Reading</span></p>
+<p><span class="tag weektag">Fall 2026 · Week 7</span></p>
+<p><span class="tag">Wooldridge ch.&nbsp;6</span> <span class="tag">Heiss ch.&nbsp;6</span></p>
+</div>
+<div class="card">
+<p><span class="ct">Lab</span></p>
+<p>R applications and exercises. See <em>Lab 09</em> on the course page.</p>
+</div>
+<div class="card">
+<p><span class="ct">Previously</span></p>
+<p>Estimation and inference for the linear model. Now we look more closely at <strong>how we write the model down</strong>.</p>
+</div>
+</div></div>
+</section>
+<section id="warm-up-is-more-experience-always-better" class="slide level2 smaller">
+<h2>Warm-up: is more experience always better?</h2>
+<p>From <code>wage1</code>: <span class="math inline">\;\widehat{wage} = 3.73 + 0.298\,exper - 0.0061\,exper^2</span></p>
+<div class="quiz" data-id="w8-warmup" data-answer="c">
+<p><strong>What does this equation say about the effect of one more year of experience?</strong></p>
+<p><span data-opt="a">A) Each year of experience raises the wage by $0.298</span></p>
+<p><span data-opt="b">B) Each year of experience lowers the wage by $0.0061</span></p>
+<p><span data-opt="c">C) The effect depends on how much experience the worker already has, and it gets smaller</span></p>
+<div class="explain">
+<p>With a quadratic term the slope is <strong>not constant</strong>: <span class="math inline">\Delta wage/\Delta exper \approx 0.298 - 2(0.0061)\,exper</span>. It is about $0.30 for a beginner, $0.18 at 10 years, and it turns negative after about 24 years. Reading <span class="math inline">\hat\beta_1</span> alone is a classic mistake.</p>
+</div>
+</div>
+</section>
+<section>
+<section id="units-of-measurement" class="title-slide slide level1 section-slide center">
+<h1>Units of measurement</h1>
+<p>What changes and what does not when the data are rescaled, and standardized (beta) coefficients.</p>
+</section>
+<section id="what-changes-when-we-rescale-the-data" class="slide level2 smaller">
+<h2>What changes when we rescale the data?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Changes</strong></p>
+<ul>
+<li>the coefficients and their standard errors</li>
+<li><span class="math inline">SSR</span> and <span class="math inline">\hat\sigma</span> if <span class="math inline">y</span> is rescaled</li>
+<li>the intercept</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><strong>Does not change</strong></p>
+<ul>
+<li><span class="math inline">t</span> statistics and p-values</li>
+<li><span class="math inline">R^2</span> and the <span class="math inline">F</span> statistic</li>
+<li>all substantive conclusions</li>
+</ul>
+</div></div>
+<div class="fragment">
+<p>Rescaling is <strong>cosmetic</strong>: it is used to avoid long strings of zeros and to make coefficients easier to read.</p>
+</div>
+</section>
+<section id="interactive-changing-the-units" class="slide level2 smaller">
+<h2>Interactive: changing the units</h2>
+<p>Birth weight on cigarettes and family income. Switch the units and watch the table:</p>
+<div class="widget" data-widget="scaling">
+
+</div>
+<aside class="notes">
+<p>ounces to grams multiplies every coefficient by 28.35; cigarettes to packs multiplies the smoking coefficient by 20; income in dollars divides its coefficient by 1000. The t statistics (-5.06 and 3.18) and R-squared never move.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="standardized-coefficients" class="slide level2 smaller">
+<h2>Standardized coefficients</h2>
+<p>What if we want to compare effects measured in completely different units (pollution, crime, rooms)?</p>
+<p><strong>Standardize</strong> every variable: subtract the mean and divide by the standard deviation,</p>
+<p><span class="math display">
+z_y = \frac{y - \bar y}{\hat\sigma_y}, \qquad z_j = \frac{x_j - \bar x_j}{\hat\sigma_j}
+\qquad\Longrightarrow\qquad
+\hat z_y = \hat b_1 z_1 + \dots + \hat b_k z_k, \quad \hat b_j = \left(\frac{\hat\sigma_j}{\hat\sigma_y}\right)\hat\beta_j
+</span></p>
+<p><strong>Interpretation:</strong> if <span class="math inline">x_j</span> increases by <strong>one standard deviation</strong>, <span class="math inline">y</span> changes by <span class="math inline">\hat b_j</span> <strong>standard deviations</strong>, <em>ceteris paribus</em>.</p>
+<div title="Also called beta coefficients">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Also called beta coefficients</strong></p>
+</div>
+<div class="callout-content">
+<p>The original units become irrelevant, so the <span class="math inline">\hat b_j</span> can be <strong>compared with each other</strong>.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="example-house-prices-hprice2" class="slide level2 smaller">
+<h2>Example: house prices (<code>hprice2</code>)</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"hprice2"</span>)</span>
+<span id="cb1-2"><a aria-hidden="true" tabindex="-1"></a>lvl <span class="ot">&lt;-</span> <span class="fu">lm</span>(price <span class="sc">~</span> nox <span class="sc">+</span> crime <span class="sc">+</span> rooms <span class="sc">+</span> dist <span class="sc">+</span> stratio, <span class="at">data =</span> hprice2)</span>
+<span id="cb1-3"><a aria-hidden="true" tabindex="-1"></a>std <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">scale</span>(price) <span class="sc">~</span> <span class="fu">scale</span>(nox) <span class="sc">+</span> <span class="fu">scale</span>(crime) <span class="sc">+</span> <span class="fu">scale</span>(rooms) <span class="sc">+</span></span>
+<span id="cb1-4"><a aria-hidden="true" tabindex="-1"></a>                         <span class="fu">scale</span>(dist) <span class="sc">+</span> <span class="fu">scale</span>(stratio), <span class="at">data =</span> hprice2)</span>
+<span id="cb1-5"><a aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">rbind</span>(<span class="at">level =</span> <span class="fu">coef</span>(lvl)[<span class="sc">-</span><span class="dv">1</span>], <span class="at">standardized =</span> <span class="fu">coef</span>(std)[<span class="sc">-</span><span class="dv">1</span>]), <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;                     nox     crime     rooms       dist    stratio
+#&gt; level        -2706.4326 -153.6010 6735.4983 -1026.8063 -1149.2038
+#&gt; standardized    -0.3404   -0.1433    0.5139    -0.2348    -0.2703</code></pre>
+</div>
+</div>
+<ul>
+<li>One standard deviation more <strong>pollution</strong> lowers the price by <strong>0.34</strong> standard deviations; one standard deviation more <strong>crime</strong> lowers it by 0.14.</li>
+<li>The effect of pollution is more than twice as large as that of crime, and <strong>rooms</strong> (0.51) has the largest standardized effect.</li>
+</ul>
+</section></section>
+<section>
+<section id="functional-form" class="title-slide slide level1 section-slide center">
+<h1>Functional form</h1>
+<p>Logs refined, <strong>quadratics</strong> and <strong>interactions</strong>: models where the effect of <span class="math inline">x</span> depends on <span class="math inline">x</span>.</p>
+</section>
+<section id="logarithms-a-quick-reminder-and-one-refinement" class="slide level2 smaller">
+<h2>Logarithms: a quick reminder and one refinement</h2>
+<p>For a <strong>log-level</strong> model, <span class="math inline">100\,\hat\beta_j</span> is the approximate percentage change. For <strong>large</strong> changes use the exact formula:</p>
+<p><span class="math display">
+\%\Delta \hat y = 100\,\big[\exp(\hat\beta_j) - 1\big]
+</span></p>
+<div class="fragment">
+<p>Example (<code>hprice2</code>): <span class="math inline">\widehat{\log(price)} = 9.23 - 0.718\log(nox) + 0.306\,rooms</span></p>
+<div class="numq" data-id="w8-exact" data-answer="35.8" data-tol="0.3">
+<p><strong>One more room: the approximation gives 30.6%. What does the exact formula give?</strong> (in %, one decimal)</p>
+<div class="explain">
+<p><span class="math inline">100[\exp(0.306) - 1] = 35.8\%</span>. The approximation understates the effect when the coefficient is large. It is a <strong>biased but consistent</strong> estimator of the percentage change.</p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Rules of thumb:</strong> log for positive amounts (wages, prices, sales); levels for years, rates and shares; if <span class="math inline">y \geq 0</span> with some zeros, <span class="math inline">\log(1+y)</span> is an option.</p>
+</div>
+</section>
+<section id="quadratic-models" class="slide level2 smaller">
+<h2>Quadratic models</h2>
+<p><span class="math display">
+\hat y = \hat\beta_0 + \hat\beta_1 x + \hat\beta_2 x^2
+\qquad\Longrightarrow\qquad
+\frac{\Delta \hat y}{\Delta x} \approx \hat\beta_1 + 2\hat\beta_2 x
+</span></p>
+<ul>
+<li>The <strong>marginal effect depends on <span class="math inline">x</span></strong>: reading <span class="math inline">\hat\beta_1</span> alone is meaningless unless <span class="math inline">x = 0</span> is relevant.</li>
+<li><span class="math inline">\hat\beta_1 &gt; 0,\ \hat\beta_2 &lt; 0</span>: <strong>concave</strong> (∩). <span class="math inline">\hat\beta_1 &lt; 0,\ \hat\beta_2 &gt; 0</span>: <strong>convex</strong> (∪).</li>
+<li><strong>Turning point:</strong> <span class="math inline">\;x^* = \left|\hat\beta_1 / (2\hat\beta_2)\right|</span></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"wage1"</span>)</span>
+<span id="cb3-2"><a aria-hidden="true" tabindex="-1"></a>wq <span class="ot">&lt;-</span> <span class="fu">lm</span>(wage <span class="sc">~</span> exper <span class="sc">+</span> <span class="fu">I</span>(exper<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> wage1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><span class="math display">
+\begin{aligned} \widehat{wage} &amp;=  \underset{\small (0.346)}{3.73} + \underset{\small (0.0410)}{0.298}\,exper - \underset{\small (0.000903)}{0.00613}\,exper^2 \\ &amp; n = 526,\quad R^2 = 0.0928 \end{aligned}
+</span></p>
+</section>
+<section id="interactive-quadratic-models" class="slide level2 smaller">
+<h2>Interactive: quadratic models</h2>
+<div class="widget" data-widget="quadratic">
+
+</div>
+<aside class="notes">
+<p>wage: the tangent is steep at 0, flatter at 10, flat at the turning point of 24.3 years and negative afterwards. Ask whether we believe wages fall after 24 years of experience: only 28% of the sample lies beyond it, and other variables are omitted here. house prices: the relationship is U-shaped, with a turning point at 4.4 rooms; below it there are almost no observations, so in the relevant range the effect of rooms is positive and increasing.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="turning-points-always-ask-whether-they-matter" class="slide level2 smaller">
+<h2>Turning points: always ask whether they matter</h2>
+<p><code>hprice2</code>, with <span class="math inline">\log(price)</span> on <span class="math inline">\log(nox)</span>, <span class="math inline">\log(dist)</span>, <span class="math inline">rooms</span>, <span class="math inline">rooms^2</span> and <span class="math inline">stratio</span>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a aria-hidden="true" tabindex="-1"></a>hq <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(price) <span class="sc">~</span> <span class="fu">log</span>(nox) <span class="sc">+</span> <span class="fu">log</span>(dist) <span class="sc">+</span> rooms <span class="sc">+</span> <span class="fu">I</span>(rooms<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> stratio,</span>
+<span id="cb4-2"><a aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> hprice2)</span>
+<span id="cb4-3"><a aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(hq)[<span class="fu">c</span>(<span class="st">"rooms"</span>, <span class="st">"I(rooms^2)"</span>)], <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;      rooms I(rooms^2) 
+#&gt;    -0.5451     0.0623</code></pre>
+</div>
+</div>
+<p><span class="math display">
+\frac{\Delta\widehat{\log(price)}}{\Delta\, rooms} = -0.545 + 2(0.0623)\,rooms
+\qquad\Rightarrow\qquad rooms^* = \frac{0.545}{0.1246} = 4.4
+</span></p>
+<ul>
+<li>Going from 5 to 6 rooms: <span class="math inline">\;-54.5 + 12.4(5) = 7.5\%</span>. From 6 to 7: <span class="math inline">\;19.9\%</span>.</li>
+<li>Fewer than 4.4 rooms happens for a handful of communities, so in practice the effect is <strong>positive and increasing</strong>.</li>
+</ul>
+</section>
+<section id="models-with-interaction-terms" class="slide level2 smaller">
+<h2>Models with interaction terms</h2>
+<p><span class="math display">
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3\,\underbrace{x_1 x_2}_{\text{interaction}} + u
+\qquad\Longrightarrow\qquad
+\frac{\partial y}{\partial x_1} = \beta_1 + \beta_3 x_2
+</span></p>
+<ul>
+<li>The effect of <span class="math inline">x_1</span> <strong>depends on the level of <span class="math inline">x_2</span></strong> (and vice versa).</li>
+<li><span class="math inline">\hat\beta_1</span> alone is the effect when <span class="math inline">x_2 = 0</span>, which is often meaningless.</li>
+</ul>
+<div class="fragment">
+<p><strong>Fix: center the interaction.</strong> Replace <span class="math inline">x_1x_2</span> by <span class="math inline">x_1(x_2 - \bar x_2)</span>. Then the coefficient on <span class="math inline">x_1</span> is the partial effect <strong>at the average</strong> <span class="math inline">x_2</span>, and its <span class="math inline">t</span> statistic tests exactly that effect.</p>
+</div>
+</section>
+<section id="example-attendance-and-final-exam-score" class="slide level2 smaller">
+<h2>Example: attendance and final exam score</h2>
+<p><code>attend</code> (<span class="math inline">n = 680</span>): <code>stndfnl</code> on attendance rate, prior GPA, ACT, their squares and <span class="math inline">priGPA \times atndrte</span>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"attend"</span>)</span>
+<span id="cb6-2"><a aria-hidden="true" tabindex="-1"></a>ai <span class="ot">&lt;-</span> <span class="fu">lm</span>(stndfnl <span class="sc">~</span> atndrte <span class="sc">+</span> priGPA <span class="sc">+</span> ACT <span class="sc">+</span> <span class="fu">I</span>(priGPA<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(ACT<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb6-3"><a aria-hidden="true" tabindex="-1"></a>           priGPA<span class="sc">:</span>atndrte, <span class="at">data =</span> attend)</span>
+<span id="cb6-4"><a aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">summary</span>(ai)<span class="sc">$</span>coefficients[<span class="fu">c</span>(<span class="st">"atndrte"</span>, <span class="st">"atndrte:priGPA"</span>), ], <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;                Estimate Std. Error  t value Pr(&gt;|t|)
+#&gt; atndrte        -0.00671    0.01023 -0.65607  0.51201
+#&gt; atndrte:priGPA  0.00559    0.00432  1.29382  0.19617</code></pre>
+</div>
+</div>
+<ul>
+<li><span class="math inline">\hat\beta_{atndrte} = -0.0067</span> with <span class="math inline">t = -0.66</span>: this is the effect at <span class="math inline">priGPA = 0</span>, which does not exist in the data.</li>
+<li>The partial effect at the mean <span class="math inline">priGPA = 2.59</span> is <span class="math inline">\;-0.0067 + 0.0056(2.59) = 0.0077</span>.</li>
+</ul>
+</section>
+<section id="the-centered-model-makes-it-testable" class="slide level2 smaller">
+<h2>The centered model makes it testable</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a aria-hidden="true" tabindex="-1"></a>attend<span class="sc">$</span>pg <span class="ot">&lt;-</span> attend<span class="sc">$</span>priGPA <span class="sc">-</span> <span class="fu">mean</span>(attend<span class="sc">$</span>priGPA)     <span class="co"># centered</span></span>
+<span id="cb8-2"><a aria-hidden="true" tabindex="-1"></a>ac <span class="ot">&lt;-</span> <span class="fu">lm</span>(stndfnl <span class="sc">~</span> atndrte <span class="sc">+</span> priGPA <span class="sc">+</span> ACT <span class="sc">+</span> <span class="fu">I</span>(priGPA<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(ACT<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb8-3"><a aria-hidden="true" tabindex="-1"></a>           atndrte<span class="sc">:</span>pg, <span class="at">data =</span> attend)</span>
+<span id="cb8-4"><a aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">summary</span>(ac)<span class="sc">$</span>coefficients[<span class="st">"atndrte"</span>, ], <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;   Estimate Std. Error    t value   Pr(&gt;|t|) 
+#&gt;    0.00774    0.00263    2.93844    0.00341</code></pre>
+</div>
+</div>
+<p>Now the coefficient on <code>atndrte</code> <strong>is</strong> the effect at the average prior GPA: <span class="math inline">0.0077</span> with <span class="math inline">t = 2.94</span>, so it is significant at the 1% level.</p>
+<p><strong>Interpretation:</strong> for a student with average prior GPA, a <strong>10 percentage point</strong> higher attendance rate raises the standardized final score by about <span class="math inline">0.077</span> standard deviations.</p>
+</section>
+<section id="interactive-how-the-effect-varies" class="slide level2 smaller">
+<h2>Interactive: how the effect varies</h2>
+<div class="widget" data-widget="interaction">
+
+</div>
+<aside class="notes">
+<p>Move the slider from 1 to 4: the partial effect of attendance rises with prior GPA, and the confidence band is narrowest near the mean of priGPA, where the data are. At low priGPA the effect is not significantly different from zero. This also explains why the raw coefficient on atndrte (the effect at priGPA = 0) has a t statistic of only -0.66.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="goodness-of-fit-and-prediction" class="title-slide slide level1 section-slide center">
+<h1>Goodness of fit and prediction</h1>
+<p>Adjusted <span class="math inline">R^2</span>, predicting <span class="math inline">E(y\mid x)</span>, and the much wider interval for an individual outcome.</p>
+</section>
+<section id="adjusted-r2" class="slide level2 smaller">
+<h2>Adjusted <span class="math inline">R^2</span></h2>
+<p><span class="math inline">R^2</span> <strong>never falls</strong> when a regressor is added, so it cannot be used to choose between models with different numbers of regressors.</p>
+<p><span class="math display">
+\bar R^2 = 1 - \frac{SSR/(n-k-1)}{SST/(n-1)} = 1 - (1-R^2)\,\frac{n-1}{n-k-1}
+</span></p>
+<ul>
+<li>It imposes a <strong>penalty</strong> for extra parameters and can <strong>fall</strong>.</li>
+<li><span class="math inline">\bar R^2</span> rises when a variable is added <strong>if and only if</strong> its <span class="math inline">|t| &gt; 1</span>; for a group, if and only if its <span class="math inline">F &gt; 1</span>.</li>
+<li>Useful for comparing <strong>non-nested</strong> models, e.g.&nbsp;<span class="math inline">y = \beta_0 + \beta_1\log(x)</span> vs.&nbsp;<span class="math inline">y = \beta_0 + \beta_1 x + \beta_2 x^2</span>.</li>
+</ul>
+<div title="Two rules">
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Two rules</strong></p>
+</div>
+<div class="callout-content">
+<p>The <strong>dependent variable must be the same</strong> (<span class="math inline">y</span> vs.&nbsp;<span class="math inline">\log y</span> cannot be compared), and a higher <span class="math inline">\bar R^2</span> is never a reason to include a variable that theory rejects.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="interactive-adding-pure-noise" class="slide level2 smaller">
+<h2>Interactive: adding pure noise</h2>
+<div class="widget" data-widget="adjr2">
+
+</div>
+<div class="tiny muted">
+<p>The added variables are random numbers, unrelated to college GPA by construction.</p>
+</div>
+</section>
+<section id="prediction" class="slide level2 smaller">
+<h2>Prediction</h2>
+<p>We want to predict <span class="math inline">y</span> at given values <span class="math inline">x_1 = c_1, \dots, x_k = c_k</span>:</p>
+<p><span class="math display">
+\hat\theta_0 = \hat\beta_0 + \hat\beta_1 c_1 + \dots + \hat\beta_k c_k \qquad \text{estimates}\qquad \theta_0 = E(y \mid x = c)
+</span></p>
+<p><strong>How to get its standard error without matrix algebra:</strong> write <span class="math inline">\beta_0 = \theta_0 - \beta_1c_1 - \dots - \beta_kc_k</span> and substitute:</p>
+<p><span class="math display">
+y = \theta_0 + \beta_1 (x_1 - c_1) + \dots + \beta_k (x_k - c_k) + u
+</span></p>
+<p>Regress <span class="math inline">y</span> on the <strong>centered</strong> regressors: the intercept is <span class="math inline">\hat\theta_0</span> and R prints its standard error directly.</p>
+</section>
+<section id="example-predicting-college-gpa-gpa2" class="slide level2 smaller">
+<h2>Example: predicting college GPA (<code>gpa2</code>)</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"gpa2"</span>)</span>
+<span id="cb10-2"><a aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">lm</span>(colgpa <span class="sc">~</span> sat <span class="sc">+</span> hsperc <span class="sc">+</span> hsize <span class="sc">+</span> <span class="fu">I</span>(hsize<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> gpa2)</span>
+<span id="cb10-3"><a aria-hidden="true" tabindex="-1"></a>nd <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">sat =</span> <span class="dv">1200</span>, <span class="at">hsperc =</span> <span class="dv">30</span>, <span class="at">hsize =</span> <span class="dv">5</span>)</span>
+<span id="cb10-4"><a aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(g, nd, <span class="at">interval =</span> <span class="st">"confidence"</span>)   <span class="co"># for the average student of this type</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;        fit      lwr      upr
+#&gt; 1 2.700075 2.661104 2.739047</code></pre>
+</div>
+</div>
+<p><span class="math inline">\hat y = 2.70</span> with a 95% CI of <span class="math inline">[2.66, 2.74]</span> for the <strong>average</strong> GPA of students with these characteristics.</p>
+<div title="Where is the interval narrowest?">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Where is the interval narrowest?</strong></p>
+</div>
+<div class="callout-content">
+<p><span class="math inline">\text{Var}(\hat y)</span> is smallest at the <strong>means</strong> of the regressors and grows as <span class="math inline">c_j</span> moves away from them. Predicting far outside the data is risky.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="predicting-an-individual-outcome" class="slide level2 smaller">
+<h2>Predicting an individual outcome</h2>
+<p>For a <strong>new individual</strong>, <span class="math inline">\;y^0 = \beta_0 + \beta_1x_1^0 + \dots + \beta_kx_k^0 + u^0</span>, the prediction error is <span class="math inline">\hat e^0 = y^0 - \hat y^0</span> and</p>
+<p><span class="math display">
+\text{Var}(\hat e^0) = \text{Var}(\hat y^0) + \sigma^2
+\qquad\Longrightarrow\qquad
+\text{se}(\hat e^0) = \sqrt{\text{se}(\hat y^0)^2 + \hat\sigma^2}
+</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(g, nd, <span class="at">interval =</span> <span class="st">"prediction"</span>)   <span class="co"># for one individual student</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;        fit      lwr      upr
+#&gt; 1 2.700075 1.601749 3.798402</code></pre>
+</div>
+</div>
+<p>The interval <span class="math inline">[1.60, 3.80]</span> is <strong>much</strong> wider: <span class="math inline">\hat\sigma = 0.56</span> dominates <span class="math inline">\text{se}(\hat y^0) = 0.02</span>. More data shrinks the first term but <strong>not</strong> <span class="math inline">\hat\sigma</span>.</p>
+</section>
+<section id="interactive-two-very-different-intervals" class="slide level2 smaller">
+<h2>Interactive: two very different intervals</h2>
+<div class="widget" data-widget="prediction">
+
+</div>
+</section>
+<section id="check-your-understanding" class="slide level2 smaller">
+<h2>Check your understanding</h2>
+<div class="quiz" data-id="w8-ci-pi" data-answer="b">
+<p><strong>A university wants to predict the GPA of one particular incoming student. Which interval should it report?</strong></p>
+<p><span data-opt="a">A) The confidence interval for <span class="math inline">E(y\mid x)</span>, because it is more precise</span></p>
+<p><span data-opt="b">B) The prediction interval, because a single student also carries the unobserved <span class="math inline">u^0</span></span></p>
+<p><span data-opt="c">C) Either one: they answer the same question</span></p>
+<div class="explain">
+<p>The CI is about the <strong>average</strong> GPA of all students with these characteristics. For <strong>one</strong> student we must also account for their individual <span class="math inline">u^0</span>, which makes the interval much wider.</p>
+</div>
+</div>
+</section>
+<section id="r-toolkit-for-this-topic" class="slide level2 smaller">
+<h2>R toolkit for this topic</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(wage <span class="sc">~</span> exper <span class="sc">+</span> <span class="fu">I</span>(exper<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> wage1)          <span class="co"># quadratic</span></span>
+<span id="cb14-2"><a aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(stndfnl <span class="sc">~</span> atndrte <span class="sc">*</span> priGPA, <span class="at">data =</span> attend)        <span class="co"># interaction + main effects</span></span>
+<span id="cb14-3"><a aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(<span class="fu">scale</span>(price) <span class="sc">~</span> <span class="fu">scale</span>(nox) <span class="sc">+</span> <span class="fu">scale</span>(rooms), <span class="at">data =</span> hprice2)   <span class="co"># beta coefficients</span></span>
+<span id="cb14-4"><a aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)<span class="sc">$</span>adj.r.squared                              <span class="co"># adjusted R-squared</span></span>
+<span id="cb14-6"><a aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a aria-hidden="true" tabindex="-1"></a>nd <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">sat =</span> <span class="dv">1200</span>, <span class="at">hsperc =</span> <span class="dv">30</span>, <span class="at">hsize =</span> <span class="dv">5</span>)</span>
+<span id="cb14-8"><a aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(g, nd, <span class="at">interval =</span> <span class="st">"confidence"</span>)               <span class="co"># CI for E(y|x)</span></span>
+<span id="cb14-9"><a aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(g, nd, <span class="at">interval =</span> <span class="st">"prediction"</span>)               <span class="co"># PI for one individual</span></span>
+<span id="cb14-10"><a aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a aria-hidden="true" tabindex="-1"></a><span class="co"># turning point of a quadratic</span></span>
+<span id="cb14-12"><a aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">coef</span>(wq); <span class="fu">abs</span>(b[<span class="st">"exper"</span>] <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> b[<span class="st">"I(exper^2)"</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="key-takeaways" class="slide level2">
+<h2>Key takeaways</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<ol type="1">
+<li>Rescaling changes coefficients, <strong>not</strong> <span class="math inline">t</span> statistics, <span class="math inline">R^2</span> or conclusions.</li>
+<li><strong>Beta coefficients</strong> make effects comparable across variables.</li>
+<li>In <strong>quadratic</strong> models the effect is <span class="math inline">\hat\beta_1 + 2\hat\beta_2 x</span>, with turning point <span class="math inline">|\hat\beta_1/(2\hat\beta_2)|</span>.</li>
+<li>With <strong>interactions</strong> the effect of <span class="math inline">x_1</span> depends on <span class="math inline">x_2</span>; center the interaction to test the effect at the mean.</li>
+<li><span class="math inline">\bar R^2</span> penalizes extra regressors and can fall; compare only models with the <strong>same</strong> <span class="math inline">y</span>.</li>
+<li><strong>CI for <span class="math inline">E(y|x)</span></strong> ≠ <strong>prediction interval</strong> for an individual: the latter also contains <span class="math inline">\hat\sigma^2</span>.</li>
+</ol>
+</div><div class="column" style="width:40%;">
+<div class="card">
+<p><span class="ct">Next topic</span></p>
+<p><strong>Qualitative information</strong>: dummy variables, interactions with dummies and different slopes across groups.</p>
+<p><span class="tag">Wooldridge ch.&nbsp;7</span> <span class="tag">Heiss ch.&nbsp;7</span></p>
+</div>
+<div class="score-box">
+
+</div>
+</div></div>
+<script src="assets/deck08.js"></script>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p>Econometrics I · Yıldız Technical University</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true,"numbers":true},
+'chalkboard': {"buttons":true,"theme":"whiteboard","boardmarkerWidth":3},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'fast',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 760,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 4.0e-2,
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+
+    <script>
+
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+
+      // slide changes (different for each slide format).
+
+      (function () {
+
+        // dispatch for htmlwidgets
+
+        function fireSlideEnter() {
+
+          const event = window.document.createEvent("Event");
+
+          event.initEvent("slideenter", true, true);
+
+          window.document.dispatchEvent(event);
+
+        }
+
+    
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+
+          fireSlideEnter();
+
+    
+
+          // dispatch for shiny
+
+          if (window.jQuery) {
+
+            if (previousSlide) {
+
+              window.jQuery(previousSlide).trigger("hidden");
+
+            }
+
+            if (currentSlide) {
+
+              window.jQuery(currentSlide).trigger("shown");
+
+            }
+
+          }
+
+        }
+
+    
+
+        // hookup for slidy
+
+        if (window.w3c_slidy) {
+
+          window.w3c_slidy.add_observer(function (slide_num) {
+
+            // slide_num starts at position 1
+
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+
+          });
+
+        }
+
+    
+
+      })();
+
+    </script>
+
+    
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
