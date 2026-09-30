@@ -952,11 +952,18 @@
     "text": "Check: fertilizer on the best plots\n\nA farmer puts more fertilizer on the best plots. The estimated effect of fertilizer will most likely be…\nA) about right\nB) too large, because good soil raises yields too\nC) too small\n\nSoil quality is positively related to both fertilizer and yield. Part of the soil effect is then attributed to fertilizer, and the effect is overstated. It is the same mechanism as ability in the wage example."
   },
   {
+    "objectID": "01-introduction.html#interactive-the-fertilizer-experiment",
+    "href": "01-introduction.html#interactive-the-fertilizer-experiment",
+    "title": "Introduction to Econometrics",
+    "section": "Interactive: the fertilizer experiment",
+    "text": "Interactive: the fertilizer experiment\nA field cut into 48 plots. Some plots have better soil than others, and nobody measures the soil:\n\n\n\n\nKeep the soil hidden and let the farmer decide: the gap is around 18 kg although the fertilizer truly adds 10, and almost every fertilized plot turns out to be on good soil. Ask the class whether they would believe the 18. Then switch the soil quality on: the orange borders sit on the green plots near the stream. Switch to the coin flip: the orange borders scatter over the whole field, the count of “fertilized plots on good soil” drops to about half, and the gap falls to roughly 10. One sentence: randomization makes the fertilizer independent of the soil, so the comparison is fair. Press “Run the experiment again” a few times to show that the coin flip is not perfect in any single field, only on average."
+  },
+  {
     "objectID": "01-introduction.html#example-2-the-return-to-education",
     "href": "01-introduction.html#example-2-the-return-to-education",
     "title": "Introduction to Econometrics",
     "section": "Example 2: the return to education",
-    "text": "Example 2: the return to education\n\n\nQuestion: If a person is given one more year of education, by how much will his or her wage rise, holding everything else fixed?\nAn ideal (hypothetical) experiment:\n\nA social planner draws a random group of people.\nThe planner randomly assigns each person a level of education.\nYears later, the planner measures their wages.\n\nThis is a randomized controlled trial (RCT). Here education would be unrelated to ability.\n\n\n\n\n\n\n\n\nBut…\n\n\nThe experiment is impossible, for ethical and practical reasons. Imagine assigning random schooling to 6-year-olds!\n\n\n\n\nReality: people choose their education, so\n\nmore able people tend to get more education, and\nmore able people tend to earn higher wages.\n\nIt is hard to separate the effect of education from the effect of ability."
+    "text": "Example 2: the return to education\n\n\nQuestion: If a person is given one more year of education, by how much will his or her wage rise, holding everything else fixed?\nAn ideal (hypothetical) experiment:\n\nA social planner draws a random group of people.\nThe planner randomly assigns each person a level of education.\nYears later, the planner measures their wages.\n\nThis is a randomized controlled trial (RCT). Here education would be unrelated to ability.\n\n\n\n\n\n\n\n\nBut…\n\n\nThe experiment is impossible, for ethical and practical reasons. Imagine assigning random schooling to 6-year-olds!\n\n\n\n\nReality: people choose their education, so\n\nmore able people tend to get more education, and\nmore able people tend to earn higher wages.\n\nIt is hard to separate the effect of education from the effect of ability.\n\n\nThis is the fertilizer field again: ability plays the role of soil quality. The difference is that we can randomize fertilizer, but nobody can randomize schooling."
   },
   {
     "objectID": "01-introduction.html#example-3-police-and-city-crime",

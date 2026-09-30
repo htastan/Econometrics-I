@@ -76,4 +76,81 @@
     }
     assign();
   });
+
+  /* ------------------------------------------------------------------
+     The fertilizer experiment: a field cut into plots, soil quality hidden
+     ------------------------------------------------------------------ */
+  UI.widget('field-plots', host => {
+    const S = UI.scaffold(host);
+    const NC = 8, NR = 6, N = NC * NR, EFFECT = 10;
+    let mode = 'farmer', showSoil = false, seed = 5;
+
+    // the field never changes: a stream runs along the left edge, so the soil
+    // is better on the left. quality and weather noise are fixed once.
+    const r0 = E.RNG(7), soil = [], weather = [];
+    for (let i = 0; i < N; i++) {
+      const col = i % NC;
+      soil.push(1.15 - 0.32 * col + 0.45 * r0.norm());
+      weather.push(3.5 * r0.norm());
+    }
+    const soilMean = E.mean(soil);
+    // pale sand -> green; kept light enough to read the numbers on top
+    const soilColor = v => {
+      const t = E.clamp((v + 1.7) / 3.4, 0, 1);
+      const a = [246, 238, 216], b = [124, 176, 124];
+      const c = a.map((x, i) => Math.round(x + (b[i] - x) * t));
+      return `rgb(${c[0]},${c[1]},${c[2]})`;
+    };
+
+    UI.segmented(S.controls, {
+      label: 'Who decides where the fertilizer goes?',
+      options: [{ value: 'farmer', label: 'The farmer' }, { value: 'random', label: 'A coin flip' }],
+      value: mode, onChange: v => { mode = v; assign(); }
+    });
+    UI.toggle(S.controls, { label: 'show the <b>soil quality</b>', value: false, onChange: v => { showSoil = v; draw(); } });
+    UI.button(S.controls, 'Run the experiment again', () => { seed++; assign(); }, 'small');
+    const out = UI.readout(S.out);
+
+    const P = new UI.Plot(S.plotHost, {
+      w: 640, h: 238, xlim: [0, NC], ylim: [0, NR],
+      xticks: [], yticks: [], xlab: '', ylab: '', margin: { l: 16, r: 16, t: 10, b: 16 }
+    });
+    const cap = UI.el('p', { class: 'small muted', html: '' });
+    S.plotHost.appendChild(cap);
+
+    let fert = [], yield_ = [];
+    function assign() {
+      const r = E.RNG(seed);
+      // the farmer saves the fertilizer for the plots he knows are good
+      fert = soil.map(v => mode === 'random' ? r.bern(0.5) : r.bern(E.plogis(2.4 * v)));
+      yield_ = soil.map((v, i) => 55 + EFFECT * fert[i] + 8 * v + weather[i]);
+      draw();
+    }
+    function draw() {
+      P.clear();
+      const g = UI.svg('g'); P.gData.appendChild(g);
+      for (let i = 0; i < N; i++) {
+        const c = i % NC, rw = NR - 1 - Math.floor(i / NC);
+        P.rect(c + 0.04, rw + 0.04, c + 0.96, rw + 0.96, {
+          fill: showSoil ? soilColor(soil[i]) : '#ece6d8',
+          stroke: fert[i] ? C.orange : '#c3bcae', sw: fert[i] ? 3.5 : 1
+        }, g);
+        P.text(c + 0.5, rw + 0.42, E.fmt(yield_[i], 0), { anchor: 'middle', size: 15, color: '#2b3a4a' }, g);
+      }
+      const nF = E.sum(fert), good = fert.reduce((s, f, i) => s + (f && soil[i] > soilMean ? 1 : 0), 0);
+      cap.innerHTML = `<b style="color:${C.orange}">Orange border</b> = fertilized (${nF} of ${N}); numbers are yields in kg.` +
+        (showSoil ? ` Greener = better soil.` : ` Soil quality hidden.`);
+
+      const yF = yield_.filter((_, i) => fert[i]), yN = yield_.filter((_, i) => !fert[i]);
+      const mF = E.mean(yF), mN = E.mean(yN), gap = mF - mN;
+      out.innerHTML =
+        `Average yield - fertilized: <b>${E.fmt(mF, 1)}</b> kg, not fertilized: <b>${E.fmt(mN, 1)}</b> kg<br>` +
+        `Difference: <span class="big">${E.fmt(gap, 1)}</span> kg &nbsp;<span class="muted">(truly ${EFFECT} kg)</span><br>` +
+        `<b>${good} of the ${nF}</b> fertilized plots are on better-than-average soil.<br><br>` +
+        (mode === 'farmer'
+          ? `<span class="bad">Too big.</span> The farmer fertilized the plots whose soil was already good, so the gap mixes the fertilizer with the soil.${showSoil ? '' : ' Switch the soil quality on.'}`
+          : `<span class="good">About right.</span> The coin flip spreads the fertilizer over good and bad soil alike, so the soil cannot explain the gap.`);
+    }
+    assign();
+  });
 })();
