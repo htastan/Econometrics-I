@@ -1271,7 +1271,7 @@
     "href": "04-mlr-estimation.html#warm-up-a-coefficient-that-shrinks",
     "title": "Multiple Regression Analysis I",
     "section": "Warm-up: a coefficient that shrinks",
-    "text": "Warm-up: a coefficient that shrinks\ngpa1 (141 students): college GPA on the ACT score, with and without high-school GPA.\n\n\n\nACT alone\n\\widehat{colGPA} = 2.40 + \\mathbf{0.0271}\\,ACT\n\n\n\nACT and high-school GPA\n\\widehat{colGPA} = 1.29 + 0.453\\,hsGPA + \\mathbf{0.0094}\\,ACT\n\n\n\nThe ACT coefficient falls to about one-third after adding hsGPA. Why?\nA) Adding a variable always makes the other coefficients smaller\nB) High-ACT students also tend to have high hsGPA, so ACT alone picked up part of its effect\nC) The second regression uses fewer observations\n\nACT and hsGPA are correlated (0.35), so alone ACT “gets credit” for hsGPA. Multiple regression compares students with the same hsGPA."
+    "text": "Warm-up: a coefficient that shrinks\n\n\n\nACT alone (gpa1, n = 141)\n\\widehat{colGPA} = 2.40 + \\mathbf{0.0271}\\,ACT\n\n\n\nAdding high-school GPA\n\\widehat{colGPA} = 1.29 + 0.453\\,hsGPA + \\mathbf{0.0094}\\,ACT\n\n\n\nThe ACT coefficient falls to about one-third after adding hsGPA. Why?\nA) Adding a variable always makes the other coefficients smaller\nB) High-ACT students also tend to have high hsGPA, so ACT alone picked up part of its effect\nC) The second regression uses fewer observations\n\nACT and hsGPA are correlated (0.35), so alone ACT gets credit for hsGPA. Adding hsGPA compares students with the same hsGPA."
   },
   {
     "objectID": "04-mlr-estimation.html#holding-other-factors-fixed-explicitly",
@@ -1362,7 +1362,7 @@
     "href": "04-mlr-estimation.html#assumptions-mlr.1mlr.4",
     "title": "Multiple Regression Analysis I",
     "section": "Assumptions MLR.1–MLR.4",
-    "text": "Assumptions MLR.1–MLR.4\n\n\n\nMLR.1 · Linear in parameters\ny = \\beta_0 + \\beta_1 x_1 + \\dots + \\beta_k x_k + u\n\n\nMLR.2 · Random sampling\n\\{(x_{i1},\\dots,x_{ik},y_i): i=1,\\dots,n\\} is a random sample.\n\n\n\nMLR.3 · No perfect collinearity\nNo x is constant, and no exact linear relationship holds among the x’s. They may be correlated, just not perfectly.\n\n\nMLR.4 · Zero conditional mean\nE(u \\mid x_1, \\dots, x_k) = 0. It fails with a wrong functional form, omitted variables correlated with the x’s, or measurement error.\n\n\n\n\n\n\n\n\n\nTheorem 3.1: unbiasedness of OLS\n\n\nUnder MLR.1–MLR.4, \\;E(\\hat\\beta_j) = \\beta_j for j = 0, 1, \\dots, k."
+    "text": "Assumptions MLR.1–MLR.4\n\n\n\nMLR.1 · Linear in parameters\ny = \\beta_0 + \\beta_1 x_1 + \\dots + \\beta_k x_k + u\n\n\nMLR.2 · Random sampling\n\\{(x_{i1},\\dots,x_{ik},y_i): i=1,\\dots,n\\} is a random sample.\n\n\n\nMLR.3 · No perfect collinearity\nNo x is constant, and no exact linear relationship holds among the x’s. They may be correlated, just not perfectly.\n\n\nMLR.4 · Zero conditional mean\nE(u \\mid x_1, \\dots, x_k) = 0: the x’s are exogenous. An x_j correlated with u is endogenous, e.g., through a wrong functional form, an omitted variable or measurement error.\n\n\n\n\n\n\n\n\n\nTheorem 3.1: unbiasedness of OLS\n\n\nUnder MLR.1–MLR.4, \\;E(\\hat\\beta_j) = \\beta_j for j = 0, 1, \\dots, k."
   },
   {
     "objectID": "04-mlr-estimation.html#your-turn-perfect-collinearity",
@@ -1397,7 +1397,7 @@
     "href": "04-mlr-estimation.html#example-ability-bias-in-the-wage-equation",
     "title": "Multiple Regression Analysis I",
     "section": "Example: ability bias in the wage equation",
-    "text": "Example: ability bias in the wage equation\n\nwage = \\beta_0 + \\beta_1 educ + \\beta_2 abil + u\n\nAbility is unobserved, so we estimate wage = \\beta_0 + \\beta_1 educ + v with v = \\beta_2 abil + u.\n\nWhat is the likely direction of the bias in \\tilde\\beta_1?\nA) Upward: \\beta_2 &gt; 0 and ability is positively correlated with education\nB) Downward: ability lowers wages\nC) No bias, because ability is unobserved\n\nMore able people earn more (\\beta_2&gt;0) and tend to get more schooling (\\text{Corr}&gt;0). The simple regression overstates the return to education: part of the ability effect is attributed to education. Being unobserved is exactly what causes the problem.\n\n\n\nMore than two regressors: if the omitted x3 is correlated with x1 only, all the estimated slopes are generally biased, unless x1 and x2 are uncorrelated."
+    "text": "Example: ability bias in the wage equation\n\nwage = \\beta_0 + \\beta_1 educ + \\beta_2 abil + u\n\nAbility is unobserved, so we estimate wage = \\beta_0 + \\beta_1 educ + v with v = \\beta_2 abil + u.\n\nWhat is the likely direction of the bias in \\tilde\\beta_1?\nA) Upward: \\beta_2 &gt; 0 and ability is positively correlated with education\nB) Downward: ability lowers wages\nC) No bias, because ability is unobserved\n\nMore able people earn more (\\beta_2&gt;0) and tend to get more schooling (\\text{Corr}&gt;0). The simple regression overstates the return to education: part of the ability effect is attributed to education. Being unobserved is exactly what causes the problem."
   },
   {
     "objectID": "04-mlr-estimation.html#mlr.5-and-the-gaussmarkov-assumptions",
@@ -1425,7 +1425,7 @@
     "href": "04-mlr-estimation.html#estimating-sigma2-and-standard-errors",
     "title": "Multiple Regression Analysis I",
     "section": "Estimating \\sigma^2 and standard errors",
-    "text": "Estimating \\sigma^2 and standard errors\n\n\\hat\\sigma^2 = \\frac{\\sum_i \\hat u_i^2}{n - k - 1} = \\frac{SSR}{n - k - 1}, \\qquad\n\\text{se}(\\hat\\beta_j) = \\frac{\\hat\\sigma}{\\sqrt{SST_j\\,(1 - R_j^2)}}\n\n\nDegrees of freedom: n - (k+1) = observations − estimated parameters. The k+1 first-order conditions put k+1 restrictions on the residuals.\n\\hat\\sigma is the standard error of the regression (SER). It can rise or fall when a variable is added."
+    "text": "Estimating \\sigma^2 and standard errors\n\n\\hat\\sigma^2 = \\frac{\\sum_i \\hat u_i^2}{n - k - 1} = \\frac{SSR}{n - k - 1}\n\n\n\\text{sd}(\\hat\\beta_j) = \\frac{\\sigma}{\\sqrt{SST_j\\,(1 - R_j^2)}}\n\\quad\\xrightarrow{\\;\\text{replace } \\sigma \\text{ by } \\hat\\sigma\\;}\\quad\n\\text{se}(\\hat\\beta_j) = \\frac{\\hat\\sigma}{\\sqrt{SST_j\\,(1 - R_j^2)}}\n\n\nsd vs. se: the standard deviation is a fixed but unknown number. The standard error is its estimate, it changes from sample to sample, and it is what R reports as Std. Error.\nDegrees of freedom: n - (k+1) = observations − estimated parameters. The k+1 first-order conditions put k+1 restrictions on the residuals.\n\\hat\\sigma is the standard error of the regression (SER). It can rise or fall when a variable is added."
   },
   {
     "objectID": "04-mlr-estimation.html#standard-errors-in-r-and-in-equation-form",
@@ -1453,7 +1453,7 @@
     "href": "04-mlr-estimation.html#r-toolkit-for-this-topic",
     "title": "Multiple Regression Analysis I",
     "section": "R toolkit for this topic",
-    "text": "R toolkit for this topic\n\nres &lt;- lm(colGPA ~ hsGPA + ACT, data = gpa1)   # multiple regression\nsummary(res)                                      # estimates, se, R^2\n\n# partialling out: the same coefficient on hsGPA\nr1 &lt;- resid(lm(hsGPA ~ ACT, data = gpa1))\ncoef(lm(gpa1$colGPA ~ r1))\n\n# omitted variable bias identity: beta_tilde = beta_hat + beta2_hat * delta\ndelta &lt;- coef(lm(ACT ~ hsGPA, data = gpa1))[2]\ncoef(res)[\"hsGPA\"] + coef(res)[\"ACT\"] * delta     # = simple slope on hsGPA\ncar::vif(res)                                     # variance inflation factors"
+    "text": "R toolkit for this topic\n\nres &lt;- lm(colGPA ~ hsGPA + ACT, data = gpa1)   # multiple regression\nsummary(res)                                      # estimates, se, R^2\n\n# partialling out: the same coefficient on hsGPA\nr1 &lt;- resid(lm(hsGPA ~ ACT, data = gpa1))\ncoef(lm(gpa1$colGPA ~ r1))\n\n# the identity beta1_tilde = beta1_hat + beta2_hat * delta1_tilde, for ACT\ndelta &lt;- coef(lm(hsGPA ~ ACT, data = gpa1))[2]   # slope of hsGPA on ACT\ncoef(res)[\"ACT\"] + coef(res)[\"hsGPA\"] * delta     # 0.0271 = simple slope on ACT\ncar::vif(res)                                     # variance inflation factors"
   },
   {
     "objectID": "04-mlr-estimation.html#key-takeaways",
@@ -2077,5 +2077,19 @@
     "title": "Misspecification and Data Problems",
     "section": "Key takeaways",
     "text": "Key takeaways\n\n\n\nWrong functional form is an omitted variable problem: use logs, quadratics, interactions and the RESET test.\nA proxy variable can cut omitted variable bias: with IQ in the model, the return to education falls from 6.5% to 5.4%.\nMeasurement error in y: harmless on average. In x: attenuation bias and inconsistency.\nMissing data and nonrandom samples are harmless only if unrelated to y given the regressors.\nOutliers: investigate, report with and without, and consider logs.\n\n\n\nWhere this course ends\nThe remaining problems (endogeneity, simultaneity) need instrumental variables and 2SLS: Econometrics II.\nWooldridge ch. 15"
+  },
+  {
+    "objectID": "04-mlr-estimation.html#omitted-variables-with-more-regressors",
+    "href": "04-mlr-estimation.html#omitted-variables-with-more-regressors",
+    "title": "Multiple Regression Analysis I",
+    "section": "Omitted variables with more regressors",
+    "text": "Omitted variables with more regressors\nTrue model: y = \\beta_0 + \\beta_1 x_1 + \\beta_2 x_2 + \\beta_3 x_3 + u. We omit x_3 and estimate \\tilde y = \\tilde\\beta_0 + \\tilde\\beta_1 x_1 + \\tilde\\beta_2 x_2. Suppose x_3 is correlated with x_1 but not with x_2.\n\nIn general both \\tilde\\beta_1 and \\tilde\\beta_2 are biased. x_2 is correlated with x_1, so the bias in \\tilde\\beta_1 spills over to \\tilde\\beta_2 as well.\nOnly if x_1 and x_2 are uncorrelated is \\tilde\\beta_2 unbiased. Then the bias in \\tilde\\beta_1 is \\beta_3\\tilde\\delta_1, and the 2\\times 2 table still gives its sign.\n\n\n\n\n\n\n\n\nIn practice\n\n\nWith many regressors the direction of the bias is hard to work out exactly. We use the two-variable table as an approximation, assuming the other regressors are unrelated to x_1 and to the omitted variable, and we say so."
+  },
+  {
+    "objectID": "04-mlr-estimation.html#check-ability-bias-with-experience-in-the-model",
+    "href": "04-mlr-estimation.html#check-ability-bias-with-experience-in-the-model",
+    "title": "Multiple Regression Analysis I",
+    "section": "Check: ability bias with experience in the model",
+    "text": "Check: ability bias with experience in the model\n\nwage = \\beta_0 + \\beta_1 educ + \\beta_2 exper + \\beta_3 abil + u, and ability is omitted. Ability is correlated with educ but not with exper; in wage1, \\text{Corr}(educ, exper) = -0.30. Which estimates are biased?\nA) Only the coefficient on educ\nB) Both, because exper is correlated with educ\nC) Neither, because ability is unrelated to exper\n\nThe omitted ability biases \\tilde\\beta_{educ} upward. Since exper moves with educ, part of that bias passes to \\tilde\\beta_{exper}, even though ability itself is unrelated to experience. Only if educ and exper were uncorrelated would \\tilde\\beta_{exper} be unbiased."
   }
 ]

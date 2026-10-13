@@ -265,16 +265,15 @@ Prof.&nbsp;Dr.&nbsp;Hüseyin Taştan
 </section>
 <section id="warm-up-a-coefficient-that-shrinks" class="slide level2">
 <h2>Warm-up: a coefficient that shrinks</h2>
-<p><code>gpa1</code> (141 students): college GPA on the ACT score, with and without high-school GPA.</p>
 <div class="columns">
-<div class="column" style="width:50%;">
+<div class="column" style="width:42%;">
 <div class="card">
-<p><span class="ct">ACT alone</span></p>
+<p><span class="ct">ACT alone (<code>gpa1</code>, n = 141)</span></p>
 <p><span class="math inline">\widehat{colGPA} = 2.40 + \mathbf{0.0271}\,ACT</span></p>
 </div>
-</div><div class="column" style="width:50%;">
+</div><div class="column" style="width:58%;">
 <div class="card">
-<p><span class="ct">ACT and high-school GPA</span></p>
+<p><span class="ct">Adding high-school GPA</span></p>
 <p><span class="math inline">\widehat{colGPA} = 1.29 + 0.453\,hsGPA + \mathbf{0.0094}\,ACT</span></p>
 </div>
 </div></div>
@@ -284,7 +283,7 @@ Prof.&nbsp;Dr.&nbsp;Hüseyin Taştan
 <p><span data-opt="b">B) High-ACT students also tend to have high hsGPA, so ACT alone picked up part of its effect</span></p>
 <p><span data-opt="c">C) The second regression uses fewer observations</span></p>
 <div class="explain">
-<p>ACT and hsGPA are correlated (0.35), so alone ACT “gets credit” for hsGPA. Multiple regression compares students with the <strong>same</strong> hsGPA.</p>
+<p>ACT and hsGPA are correlated (0.35), so alone ACT gets credit for hsGPA. Adding hsGPA compares students with the <strong>same</strong> hsGPA.</p>
 </div>
 </div>
 </section>
@@ -560,7 +559,7 @@ R^2 = \frac{SSE}{SST} = 1 - \frac{SSR}{SST} = \big[\text{Corr}(y, \hat y)\big]^2
 </div>
 <div class="card">
 <p><span class="ct">MLR.4 · Zero conditional mean</span></p>
-<p><span class="math inline">E(u \mid x_1, \dots, x_k) = 0</span>. It fails with a wrong functional form, omitted variables correlated with the <span class="math inline">x</span>’s, or measurement error.</p>
+<p><span class="math inline">E(u \mid x_1, \dots, x_k) = 0</span>: the <span class="math inline">x</span>’s are <strong>exogenous</strong>. An <span class="math inline">x_j</span> correlated with <span class="math inline">u</span> is <strong>endogenous</strong>, e.g., through a wrong functional form, an omitted variable or measurement error.</p>
 </div>
 </div></div>
 <div title="Theorem 3.1: unbiasedness of OLS">
@@ -685,19 +684,41 @@ wage = \beta_0 + \beta_1 educ + \beta_2 abil + u
 <p>More able people earn more (<span class="math inline">\beta_2&gt;0</span>) and tend to get more schooling (<span class="math inline">\text{Corr}&gt;0</span>). The simple regression <strong>overstates</strong> the return to education: part of the ability effect is attributed to education. Being unobserved is exactly what causes the problem.</p>
 </div>
 </div>
-<aside class="notes">
-<p>More than two regressors: if the omitted x3 is correlated with x1 only, all the estimated slopes are generally biased, unless x1 and x2 are uncorrelated.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
+</section>
+<section id="omitted-variables-with-more-regressors" class="slide level2 smaller">
+<h2>Omitted variables with more regressors</h2>
+<p>True model: <span class="math inline">y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + u</span>. We omit <span class="math inline">x_3</span> and estimate <span class="math inline">\tilde y = \tilde\beta_0 + \tilde\beta_1 x_1 + \tilde\beta_2 x_2</span>. Suppose <span class="math inline">x_3</span> is correlated with <span class="math inline">x_1</span> but <strong>not</strong> with <span class="math inline">x_2</span>.</p>
+<ul>
+<li><strong>In general both <span class="math inline">\tilde\beta_1</span> and <span class="math inline">\tilde\beta_2</span> are biased.</strong> <span class="math inline">x_2</span> is correlated with <span class="math inline">x_1</span>, so the bias in <span class="math inline">\tilde\beta_1</span> <strong>spills over</strong> to <span class="math inline">\tilde\beta_2</span> as well.</li>
+<li>Only if <span class="math inline">x_1</span> and <span class="math inline">x_2</span> are <strong>uncorrelated</strong> is <span class="math inline">\tilde\beta_2</span> unbiased. Then the bias in <span class="math inline">\tilde\beta_1</span> is <span class="math inline">\beta_3\tilde\delta_1</span>, and the <span class="math inline">2\times 2</span> table still gives its sign.</li>
+</ul>
+<div title="In practice">
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>In practice</strong></p>
+</div>
+<div class="callout-content">
+<p>With many regressors the direction of the bias is hard to work out exactly. We use the two-variable table as an <strong>approximation</strong>, assuming the other regressors are unrelated to <span class="math inline">x_1</span> and to the omitted variable, and we say so.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="check-ability-bias-with-experience-in-the-model" class="slide level2 smaller">
+<h2>Check: ability bias with experience in the model</h2>
+<div class="quiz" data-id="w4-ovb3" data-answer="b">
+<p><strong><span class="math inline">wage = \beta_0 + \beta_1 educ + \beta_2 exper + \beta_3 abil + u</span>, and ability is omitted. Ability is correlated with <span class="math inline">educ</span> but not with <span class="math inline">exper</span>; in <code>wage1</code>, <span class="math inline">\text{Corr}(educ, exper) = -0.30</span>. Which estimates are biased?</strong></p>
+<p><span data-opt="a">A) Only the coefficient on <span class="math inline">educ</span></span></p>
+<p><span data-opt="b">B) Both, because <span class="math inline">exper</span> is correlated with <span class="math inline">educ</span></span></p>
+<p><span data-opt="c">C) Neither, because ability is unrelated to <span class="math inline">exper</span></span></p>
+<div class="explain">
+<p>The omitted ability biases <span class="math inline">\tilde\beta_{educ}</span> upward. Since <span class="math inline">exper</span> moves with <span class="math inline">educ</span>, part of that bias passes to <span class="math inline">\tilde\beta_{exper}</span>, even though ability itself is unrelated to experience. Only if <span class="math inline">educ</span> and <span class="math inline">exper</span> were uncorrelated would <span class="math inline">\tilde\beta_{exper}</span> be unbiased.</p>
+</div>
+</div>
 </section></section>
 <section>
 <section id="the-variance-of-ols" class="title-slide slide level1 section-slide center">
@@ -791,10 +812,15 @@ E(y\mid \mathbf x) = \beta_0 + \beta_1 x_1 + \dots + \beta_k x_k, \qquad \text{V
 <section id="estimating-sigma2-and-standard-errors" class="slide level2 smaller">
 <h2>Estimating <span class="math inline">\sigma^2</span> and standard errors</h2>
 <p><span class="math display">
-\hat\sigma^2 = \frac{\sum_i \hat u_i^2}{n - k - 1} = \frac{SSR}{n - k - 1}, \qquad
+\hat\sigma^2 = \frac{\sum_i \hat u_i^2}{n - k - 1} = \frac{SSR}{n - k - 1}
+</span></p>
+<p><span class="math display">
+\text{sd}(\hat\beta_j) = \frac{\sigma}{\sqrt{SST_j\,(1 - R_j^2)}}
+\quad\xrightarrow{\;\text{replace } \sigma \text{ by } \hat\sigma\;}\quad
 \text{se}(\hat\beta_j) = \frac{\hat\sigma}{\sqrt{SST_j\,(1 - R_j^2)}}
 </span></p>
 <ul>
+<li><strong>sd vs.&nbsp;se:</strong> the standard deviation is a fixed but unknown number. The <strong>standard error</strong> is its estimate, it changes from sample to sample, and it is what R reports as <code>Std. Error</code>.</li>
 <li><strong>Degrees of freedom:</strong> <span class="math inline">n - (k+1)</span> = observations − estimated parameters. The <span class="math inline">k+1</span> first-order conditions put <span class="math inline">k+1</span> restrictions on the residuals.</li>
 <li><span class="math inline">\hat\sigma</span> is the <strong>standard error of the regression</strong> (SER). It can rise or fall when a variable is added.</li>
 </ul>
@@ -871,9 +897,9 @@ E(y\mid \mathbf x) = \beta_0 + \beta_1 x_1 + \dots + \beta_k x_k, \qquad \text{V
 <span id="cb5-5"><a aria-hidden="true" tabindex="-1"></a>r1 <span class="ot">&lt;-</span> <span class="fu">resid</span>(<span class="fu">lm</span>(hsGPA <span class="sc">~</span> ACT, <span class="at">data =</span> gpa1))</span>
 <span id="cb5-6"><a aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">lm</span>(gpa1<span class="sc">$</span>colGPA <span class="sc">~</span> r1))</span>
 <span id="cb5-7"><a aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a aria-hidden="true" tabindex="-1"></a><span class="co"># omitted variable bias identity: beta_tilde = beta_hat + beta2_hat * delta</span></span>
-<span id="cb5-9"><a aria-hidden="true" tabindex="-1"></a>delta <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">lm</span>(ACT <span class="sc">~</span> hsGPA, <span class="at">data =</span> gpa1))[<span class="dv">2</span>]</span>
-<span id="cb5-10"><a aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(res)[<span class="st">"hsGPA"</span>] <span class="sc">+</span> <span class="fu">coef</span>(res)[<span class="st">"ACT"</span>] <span class="sc">*</span> delta     <span class="co"># = simple slope on hsGPA</span></span>
+<span id="cb5-8"><a aria-hidden="true" tabindex="-1"></a><span class="co"># the identity beta1_tilde = beta1_hat + beta2_hat * delta1_tilde, for ACT</span></span>
+<span id="cb5-9"><a aria-hidden="true" tabindex="-1"></a>delta <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">lm</span>(hsGPA <span class="sc">~</span> ACT, <span class="at">data =</span> gpa1))[<span class="dv">2</span>]   <span class="co"># slope of hsGPA on ACT</span></span>
+<span id="cb5-10"><a aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(res)[<span class="st">"ACT"</span>] <span class="sc">+</span> <span class="fu">coef</span>(res)[<span class="st">"hsGPA"</span>] <span class="sc">*</span> delta     <span class="co"># 0.0271 = simple slope on ACT</span></span>
 <span id="cb5-11"><a aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">vif</span>(res)                                     <span class="co"># variance inflation factors</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
