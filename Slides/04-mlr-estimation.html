@@ -687,22 +687,26 @@ wage = \beta_0 + \beta_1 educ + \beta_2 abil + u
 </section>
 <section id="omitted-variables-with-more-regressors" class="slide level2 smaller">
 <h2>Omitted variables with more regressors</h2>
-<p>True model: <span class="math inline">y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + u</span>. We omit <span class="math inline">x_3</span> and estimate <span class="math inline">\tilde y = \tilde\beta_0 + \tilde\beta_1 x_1 + \tilde\beta_2 x_2</span>. Suppose <span class="math inline">x_3</span> is correlated with <span class="math inline">x_1</span> but <strong>not</strong> with <span class="math inline">x_2</span>.</p>
+<p>True model: <span class="math inline">y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + u</span>. We omit <span class="math inline">x_3</span> and estimate <span class="math inline">\tilde y = \tilde\beta_0 + \tilde\beta_1 x_1 + \tilde\beta_2 x_2</span>.</p>
+<p>The identity carries over <strong>exactly</strong>. Regress the omitted <span class="math inline">x_3</span> on <strong>all</strong> included regressors, <span class="math inline">\tilde x_3 = \tilde\delta_0 + \tilde\delta_1 x_1 + \tilde\delta_2 x_2</span>. Then</p>
+<p><span class="math display">
+E(\tilde\beta_1) = \beta_1 + \beta_3\,\tilde\delta_1, \qquad E(\tilde\beta_2) = \beta_2 + \beta_3\,\tilde\delta_2
+</span></p>
 <ul>
-<li><strong>In general both <span class="math inline">\tilde\beta_1</span> and <span class="math inline">\tilde\beta_2</span> are biased.</strong> <span class="math inline">x_2</span> is correlated with <span class="math inline">x_1</span>, so the bias in <span class="math inline">\tilde\beta_1</span> <strong>spills over</strong> to <span class="math inline">\tilde\beta_2</span> as well.</li>
-<li>Only if <span class="math inline">x_1</span> and <span class="math inline">x_2</span> are <strong>uncorrelated</strong> is <span class="math inline">\tilde\beta_2</span> unbiased. Then the bias in <span class="math inline">\tilde\beta_1</span> is <span class="math inline">\beta_3\tilde\delta_1</span>, and the <span class="math inline">2\times 2</span> table still gives its sign.</li>
+<li><strong>Every</strong> included regressor can be biased: <span class="math inline">\tilde\beta_j</span> is unbiased only if <span class="math inline">\beta_3 = 0</span> or <span class="math inline">\tilde\delta_j = 0</span>.</li>
+<li><span class="math inline">\tilde\delta_j</span> is a <strong>partial</strong> slope: how <span class="math inline">x_3</span> moves with <span class="math inline">x_j</span> <strong>holding the other included regressors fixed</strong>. The <span class="math inline">2\times 2</span> table still gives the sign, with this partial relationship in place of <span class="math inline">\text{Corr}(x_j, x_3)</span>.</li>
 </ul>
-<div title="In practice">
-<div class="callout callout-tip callout-titled callout-style-default">
+<div title="The simple correlation can mislead">
+<div class="callout callout-warning callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>In practice</strong></p>
+<p><strong>The simple correlation can mislead</strong></p>
 </div>
 <div class="callout-content">
-<p>With many regressors the direction of the bias is hard to work out exactly. We use the two-variable table as an <strong>approximation</strong>, assuming the other regressors are unrelated to <span class="math inline">x_1</span> and to the omitted variable, and we say so.</p>
+<p>Even if <span class="math inline">x_3</span> is uncorrelated with <span class="math inline">x_2</span>, <span class="math inline">\tilde\delta_2 \neq 0</span> when <span class="math inline">x_1</span> and <span class="math inline">x_2</span> are correlated, so the bias <strong>spills over</strong> to <span class="math inline">\tilde\beta_2</span>. Only when the included regressors are uncorrelated with each other does each <span class="math inline">\tilde\delta_j</span> equal the simple slope.</p>
 </div>
 </div>
 </div>
@@ -716,7 +720,7 @@ wage = \beta_0 + \beta_1 educ + \beta_2 abil + u
 <p><span data-opt="b">B) Both, because <span class="math inline">exper</span> is correlated with <span class="math inline">educ</span></span></p>
 <p><span data-opt="c">C) Neither, because ability is unrelated to <span class="math inline">exper</span></span></p>
 <div class="explain">
-<p>The omitted ability biases <span class="math inline">\tilde\beta_{educ}</span> upward. Since <span class="math inline">exper</span> moves with <span class="math inline">educ</span>, part of that bias passes to <span class="math inline">\tilde\beta_{exper}</span>, even though ability itself is unrelated to experience. Only if <span class="math inline">educ</span> and <span class="math inline">exper</span> were uncorrelated would <span class="math inline">\tilde\beta_{exper}</span> be unbiased.</p>
+<p>What matters is the <strong>partial</strong> slope of <span class="math inline">abil</span> on each regressor, holding the other fixed. On <span class="math inline">educ</span> it is positive, so <span class="math inline">\tilde\beta_{educ}</span> is biased upward. On <span class="math inline">exper</span> it is positive too, because <span class="math inline">exper</span> and <span class="math inline">educ</span> move in opposite directions, so <span class="math inline">\tilde\beta_{exper}</span> is also biased upward. Reading the sign from <span class="math inline">\text{Corr}(abil, exper) = 0</span> would wrongly suggest no bias.</p>
 </div>
 </div>
 </section></section>
