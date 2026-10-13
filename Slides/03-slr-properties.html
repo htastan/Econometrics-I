@@ -381,25 +381,23 @@ y = \beta_0 + \beta_1 \log(x) + u \quad\Longrightarrow\quad \Delta y \approx \fr
 <div class="columns">
 <div class="column" style="width:52%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"CASchools"</span>, <span class="at">package =</span> <span class="st">"AER"</span>)</span>
-<span id="cb4-2"><a aria-hidden="true" tabindex="-1"></a>CASchools<span class="sc">$</span>score <span class="ot">&lt;-</span> (CASchools<span class="sc">$</span>read <span class="sc">+</span></span>
-<span id="cb4-3"><a aria-hidden="true" tabindex="-1"></a>                    CASchools<span class="sc">$</span>math) <span class="sc">/</span> <span class="dv">2</span></span>
-<span id="cb4-4"><a aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">lm</span>(score <span class="sc">~</span> <span class="fu">log</span>(income),</span>
-<span id="cb4-5"><a aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> CASchools))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">lm</span>(score <span class="sc">~</span> <span class="fu">log</span>(income),</span>
+<span id="cb4-2"><a aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> CASchools))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; (Intercept) log(income) 
 #&gt;   557.83228    36.41968</code></pre>
 </div>
 </div>
-</div><div class="column" style="width:48%;">
 <p><span class="math display">\widehat{score} = 557.8 + 36.42\,\log(income)</span></p>
+</div><div class="column" style="width:48%;">
 <p><span class="math inline">n = 420</span> California school districts, <span class="math inline">R^2 = 0.56</span> (Stock &amp; Watson)</p>
 <ul>
 <li>+1% in district income → score +0.364 points</li>
 <li>+10% in income → score +3.6 points</li>
 </ul>
 </div></div>
-</section>
+
+<img data-src="03-slr-properties_files/figure-revealjs/unnamed-chunk-5-1.png" width="1800" class="r-stretch"></section>
 <section id="log-log-the-constant-elasticity-model" class="slide level2 smaller">
 <h2>Log-log: the constant elasticity model</h2>
 <p><span class="math display">
@@ -746,19 +744,23 @@ E(\hat\beta_1) = \beta_1 + \frac{\sum_i (x_i-\bar x)\,\color{#c0392b}{E(u_i\mid 
 </section>
 <section id="estimating-the-error-variance" class="slide level2 smaller">
 <h2>Estimating the error variance</h2>
-<p><span class="math inline">\sigma^2 = E(u^2)</span> is unknown, and the errors <span class="math inline">u_i</span> are unobserved. We replace them with the <strong>residuals</strong>:</p>
-<p><span class="math display">
-\hat u_i = u_i - (\hat\beta_0 - \beta_0) - (\hat\beta_1 - \beta_1)\,x_i
-</span></p>
+<p><span class="math inline">\sigma^2 = E(u^2)</span> is unknown. Three steps lead to its estimator.</p>
+<ol type="1">
+<li><strong>If we could see the errors</strong>, <span class="math inline">\frac{1}{n}\sum_i u_i^2</span> would be unbiased for <span class="math inline">\sigma^2</span>. But the <span class="math inline">u_i</span> are unobserved.</li>
+</ol>
 <div class="fragment">
-<p>The unbiased estimator uses a <strong>degrees-of-freedom correction</strong>:</p>
+<ol start="2" type="1">
+<li><strong>Use the residuals instead</strong>, <span class="math inline">\hat u_i = u_i - (\hat\beta_0 - \beta_0) - (\hat\beta_1 - \beta_1)\,x_i</span>. Now <span class="math inline">\frac{1}{n}\sum_i \hat u_i^2 = SSR/n</span> can be computed, but it is <strong>biased downward</strong>: OLS picks the line that makes the residuals as small as possible, so they are on average smaller than the errors.</li>
+</ol>
+</div>
+<div class="fragment">
+<ol start="3" type="1">
+<li><strong>Correct the degrees of freedom.</strong> The residuals satisfy <strong>two</strong> restrictions, the first-order conditions <span class="math inline">\sum_i \hat u_i = 0</span> and <span class="math inline">\sum_i x_i \hat u_i = 0</span>, so only <span class="math inline">n - 2</span> of them are free:</li>
+</ol>
 <p><span class="math display">
 \hat\sigma^2 = \frac{1}{n-2}\sum_{i=1}^n \hat u_i^2 = \frac{SSR}{n-2}, \qquad E(\hat\sigma^2) = \sigma^2
 </span></p>
-<ul>
-<li><span class="math inline">n - 2</span> = number of observations − number of estimated parameters. The residuals must satisfy <strong>two</strong> restrictions (the first-order conditions).</li>
-<li><span class="math inline">\hat\sigma = \sqrt{\hat\sigma^2}</span> is the <strong>standard error of the regression</strong> (SER), also called the <em>residual standard error</em> in R.</li>
-</ul>
+<p><span class="math inline">\hat\sigma = \sqrt{\hat\sigma^2}</span> is the <strong>standard error of the regression</strong> (SER), the <em>residual standard error</em> in R.</p>
 </div>
 </section>
 <section id="standard-errors" class="slide level2 smaller">
@@ -815,12 +817,11 @@ E(\hat\beta_1) = \beta_1 + \frac{\sum_i (x_i-\bar x)\,\color{#c0392b}{E(u_i\mid 
 </section>
 <section id="a-first-t-test" class="slide level2 smaller">
 <h2>A first <span class="math inline">t</span> test</h2>
-<p>Reading the estimate and its standard error off the equation above:</p>
 <p><span class="math display">
 H_0: \beta_1 = 0 \quad\text{vs.}\quad H_1: \beta_1 \neq 0, \qquad
 t = \frac{\hat\beta_1 - 0}{\text{se}(\hat\beta_1)} = \frac{0.54136}{0.05325} = 10.17
 </span></p>
-<p>Under <span class="math inline">H_0</span>, <span class="math inline">t \sim t_{n-2}</span>. <strong>Reject</strong> <span class="math inline">H_0</span> if <span class="math inline">|t| &gt; c</span>, where <span class="math inline">c \approx 1.96</span> at the 5% level in large samples.</p>
+<p>If <span class="math inline">H_0</span> is true <strong>and the errors are normal</strong> (MLR.6, Week 5), <span class="math inline">t \sim t_{n-2}</span>; in large samples <span class="math inline">t</span> is approximately <span class="math inline">N(0,1)</span> even without normality. <strong>Reject</strong> <span class="math inline">H_0</span> if <span class="math inline">|t| &gt; c</span>, where <span class="math inline">c \approx 1.96</span> at the 5% level in large samples.</p>
 <div class="widget" data-widget="t-preview">
 
 </div>

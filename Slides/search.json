@@ -669,7 +669,7 @@
     "href": "03-slr-properties.html#level-log-diminishing-returns",
     "title": "The Simple Regression Model II",
     "section": "Level-log: diminishing returns",
-    "text": "Level-log: diminishing returns\n\ny = \\beta_0 + \\beta_1 \\log(x) + u \\quad\\Longrightarrow\\quad \\Delta y \\approx \\frac{\\beta_1}{100}\\,\\%\\Delta x\n\nInterpretation: a 1% increase in x changes y by \\beta_1/100 units of y.\n\n\n\ndata(\"CASchools\", package = \"AER\")\nCASchools$score &lt;- (CASchools$read +\n                    CASchools$math) / 2\ncoef(lm(score ~ log(income),\n        data = CASchools))\n\n#&gt; (Intercept) log(income) \n#&gt;   557.83228    36.41968\n\n\n\n\\widehat{score} = 557.8 + 36.42\\,\\log(income)\nn = 420 California school districts, R^2 = 0.56 (Stock & Watson)\n\n+1% in district income → score +0.364 points\n+10% in income → score +3.6 points"
+    "text": "Level-log: diminishing returns\n\ny = \\beta_0 + \\beta_1 \\log(x) + u \\quad\\Longrightarrow\\quad \\Delta y \\approx \\frac{\\beta_1}{100}\\,\\%\\Delta x\n\nInterpretation: a 1% increase in x changes y by \\beta_1/100 units of y.\n\n\n\ncoef(lm(score ~ log(income),\n        data = CASchools))\n\n#&gt; (Intercept) log(income) \n#&gt;   557.83228    36.41968\n\n\n\\widehat{score} = 557.8 + 36.42\\,\\log(income)\n\nn = 420 California school districts, R^2 = 0.56 (Stock & Watson)\n\n+1% in district income → score +0.364 points\n+10% in income → score +3.6 points"
   },
   {
     "objectID": "03-slr-properties.html#log-log-the-constant-elasticity-model",
@@ -774,7 +774,7 @@
     "href": "03-slr-properties.html#estimating-the-error-variance",
     "title": "The Simple Regression Model II",
     "section": "Estimating the error variance",
-    "text": "Estimating the error variance\n\\sigma^2 = E(u^2) is unknown, and the errors u_i are unobserved. We replace them with the residuals:\n\n\\hat u_i = u_i - (\\hat\\beta_0 - \\beta_0) - (\\hat\\beta_1 - \\beta_1)\\,x_i\n\n\nThe unbiased estimator uses a degrees-of-freedom correction:\n\n\\hat\\sigma^2 = \\frac{1}{n-2}\\sum_{i=1}^n \\hat u_i^2 = \\frac{SSR}{n-2}, \\qquad E(\\hat\\sigma^2) = \\sigma^2\n\n\nn - 2 = number of observations − number of estimated parameters. The residuals must satisfy two restrictions (the first-order conditions).\n\\hat\\sigma = \\sqrt{\\hat\\sigma^2} is the standard error of the regression (SER), also called the residual standard error in R."
+    "text": "Estimating the error variance\n\\sigma^2 = E(u^2) is unknown. Three steps lead to its estimator.\n\nIf we could see the errors, \\frac{1}{n}\\sum_i u_i^2 would be unbiased for \\sigma^2. But the u_i are unobserved.\n\n\n\nUse the residuals instead, \\hat u_i = u_i - (\\hat\\beta_0 - \\beta_0) - (\\hat\\beta_1 - \\beta_1)\\,x_i. Now \\frac{1}{n}\\sum_i \\hat u_i^2 = SSR/n can be computed, but it is biased downward: OLS picks the line that makes the residuals as small as possible, so they are on average smaller than the errors.\n\n\n\n\nCorrect the degrees of freedom. The residuals satisfy two restrictions, the first-order conditions \\sum_i \\hat u_i = 0 and \\sum_i x_i \\hat u_i = 0, so only n - 2 of them are free:\n\n\n\\hat\\sigma^2 = \\frac{1}{n-2}\\sum_{i=1}^n \\hat u_i^2 = \\frac{SSR}{n-2}, \\qquad E(\\hat\\sigma^2) = \\sigma^2\n\n\\hat\\sigma = \\sqrt{\\hat\\sigma^2} is the standard error of the regression (SER), the residual standard error in R."
   },
   {
     "objectID": "03-slr-properties.html#standard-errors",
@@ -795,7 +795,7 @@
     "href": "03-slr-properties.html#a-first-t-test",
     "title": "The Simple Regression Model II",
     "section": "A first t test",
-    "text": "A first t test\nReading the estimate and its standard error off the equation above:\n\nH_0: \\beta_1 = 0 \\quad\\text{vs.}\\quad H_1: \\beta_1 \\neq 0, \\qquad\nt = \\frac{\\hat\\beta_1 - 0}{\\text{se}(\\hat\\beta_1)} = \\frac{0.54136}{0.05325} = 10.17\n\nUnder H_0, t \\sim t_{n-2}. Reject H_0 if |t| &gt; c, where c \\approx 1.96 at the 5% level in large samples.\n\n\n\n\nHypotheses are always about the unknown betas, never about the estimates. The full treatment of tests comes in Week 5."
+    "text": "A first t test\n\nH_0: \\beta_1 = 0 \\quad\\text{vs.}\\quad H_1: \\beta_1 \\neq 0, \\qquad\nt = \\frac{\\hat\\beta_1 - 0}{\\text{se}(\\hat\\beta_1)} = \\frac{0.54136}{0.05325} = 10.17\n\nIf H_0 is true and the errors are normal (MLR.6, Week 5), t \\sim t_{n-2}; in large samples t is approximately N(0,1) even without normality. Reject H_0 if |t| &gt; c, where c \\approx 1.96 at the 5% level in large samples.\n\n\n\n\nHypotheses are always about the unknown betas, never about the estimates. The full treatment of tests comes in Week 5."
   },
   {
     "objectID": "03-slr-properties.html#regression-through-the-origin",
