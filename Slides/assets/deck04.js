@@ -115,28 +115,40 @@
      ------------------------------------------------------------------ */
   UI.widget('fwl', host => {
     const S = UI.scaffold(host);
-    const d = W.gpa1, y = d.colGPA, x1 = d.hsGPA, x2 = d.ACT;
-    const aux = E.slr(x2, x1), r1 = x1.map((v, i) => v - aux.b0 - aux.b1 * x2[i]);
-    const simple = E.slr(x1, y), step3 = E.slr(r1, y), full = E.ols(y, { hsGPA: x1, ACT: x2 });
-    let step = 1;
-    UI.segmented(S.controls, { label: 'Step', options: [{ value: 1, label: '① simple' }, { value: 2, label: '② partial out ACT' }, { value: 3, label: '③ regress on residuals' }], value: 1, onChange: v => { step = +v; draw(); } });
-    const out = UI.readout(S.out);
+    const d = W.gpa1, y = d.colGPA, full = E.ols(y, { hsGPA: d.hsGPA, ACT: d.ACT });
+    const lim = (a, p = 0.06) => { const lo = Math.min(...a), hi = Math.max(...a), m = (hi - lo) * p; return [lo - m, hi + m]; };
+    // everything the three steps need, for either variable of interest
+    const setup = v => {
+      const o = v === 'hsGPA' ? 'ACT' : 'hsGPA', x1 = d[v], x2 = d[o];
+      const aux = E.slr(x2, x1), r1 = x1.map((t, i) => t - aux.b0 - aux.b1 * x2[i]);
+      return { v, o, x1, x2, aux, r1, simple: E.slr(x1, y), step3: E.slr(r1, y), multi: full.coef[v === 'hsGPA' ? 1 : 2] };
+    };
+    let cur = setup('hsGPA'), step = 1;
+    UI.segmented(S.controls, { label: 'Variable of interest', options: ['hsGPA', 'ACT'], value: 'hsGPA', onChange: v => { cur = setup(v); draw(); } });
+    UI.segmented(S.controls, { label: 'Step', options: [{ value: 1, label: '① simple' }, { value: 2, label: '② partial out' }, { value: 3, label: '③ on residuals' }], value: 1, onChange: v => { step = +v; draw(); } });
+    const out = UI.readout(S.out), sum = UI.readout(S.out);
     function draw() {
+      const { v, o, x1, x2, aux, r1, simple, step3, multi } = cur;
       S.plotHost.innerHTML = '';
       if (step === 1) {
-        const P = new UI.Plot(S.plotHost, { w: 640, h: 300, xlim: [2.3, 4.05], ylim: [2, 4.1], xlab: 'hsGPA', ylab: 'colGPA' });
-        P.points(x1, y, { r: 4 }); P.fn(v => simple.b0 + simple.b1 * v, { color: C.orange, width: 3.5 });
-        out.innerHTML = `Simple regression of colGPA on hsGPA:<br>slope = <span class="big">${E.fmt(simple.b1, 4)}</span><br>This slope mixes the effect of hsGPA with that of ACT, because the two are correlated (corr = ${E.fmt(E.cor(x1, x2), 2)}).`;
+        const P = new UI.Plot(S.plotHost, { w: 640, h: 300, xlim: lim(x1), ylim: lim(y), xlab: v, ylab: 'colGPA' });
+        P.points(x1, y, { r: 4 }); P.fn(t => simple.b0 + simple.b1 * t, { color: C.orange, width: 3.5 });
+        out.innerHTML = `<b>① Simple regression</b> of colGPA on ${v} alone. It ignores ${o}, which moves with ${v} (corr = ${E.fmt(E.cor(x1, x2), 2)}), so the slope also picks up part of the effect of ${o}.`;
       } else if (step === 2) {
-        const P = new UI.Plot(S.plotHost, { w: 640, h: 300, xlim: [15, 34], ylim: [2.3, 4.05], xlab: 'ACT', ylab: 'hsGPA' });
-        x2.forEach((v, i) => P.line(v, x1[i], v, aux.b0 + aux.b1 * v, { color: C.red, width: 1.3, opacity: 0.7 }));
-        P.points(x2, x1, { r: 4, fill: 'rgba(112,72,168,.45)', stroke: C.purple }); P.fn(v => aux.b0 + aux.b1 * v, { color: C.purple, width: 3.5 });
-        out.innerHTML = `Regress hsGPA on ACT and keep the residuals \\(\\hat r_{i1}\\) (red lines).<br><br>\\(\\hat r_{i1}\\) is the part of hsGPA that <b>cannot</b> be explained by ACT: hsGPA "net of" ACT.`;
+        const P = new UI.Plot(S.plotHost, { w: 640, h: 300, xlim: lim(x2), ylim: lim(x1), xlab: o, ylab: v });
+        x2.forEach((t, i) => P.line(t, x1[i], t, aux.b0 + aux.b1 * t, { color: C.red, width: 1.3, opacity: 0.7 }));
+        P.points(x2, x1, { r: 4, fill: 'rgba(112,72,168,.45)', stroke: C.purple }); P.fn(t => aux.b0 + aux.b1 * t, { color: C.purple, width: 3.5 });
+        out.innerHTML = `<b>② Partial out ${o}</b>: regress ${v} on ${o} and keep the residuals \\(\\hat r_{i1}\\) (red lines), the part of ${v} that ${o} <b>cannot</b> explain.`;
       } else {
-        const P = new UI.Plot(S.plotHost, { w: 640, h: 300, xlim: [-1, 1], ylim: [2, 4.1], xlab: '\\(\\hat r_1\\) = hsGPA with ACT partialled out', ylab: 'colGPA' });
-        P.points(r1, y, { r: 4, fill: 'rgba(47,143,91,.45)', stroke: C.green }); P.fn(v => step3.b0 + step3.b1 * v, { color: C.green, width: 3.5 });
-        out.innerHTML = `Regress colGPA on \\(\\hat r_{i1}\\):<br>slope = <span class="big">${E.fmt(step3.b1, 4)}</span><br>Multiple regression coefficient on hsGPA: <b>${E.fmt(full.coef[1], 4)}</b> <span class="good">identical!</span><br><br>\\(\\hat\\beta_1\\) measures the relationship between \\(y\\) and \\(x_1\\) <b>after the effect of \\(x_2\\) has been removed</b>.`;
+        const P = new UI.Plot(S.plotHost, { w: 640, h: 300, xlim: lim(r1), ylim: lim(y), xlab: `\\(\\hat r_1\\) = ${v} with ${o} partialled out`, ylab: 'colGPA' });
+        P.points(r1, y, { r: 4, fill: 'rgba(47,143,91,.45)', stroke: C.green }); P.fn(t => step3.b0 + step3.b1 * t, { color: C.green, width: 3.5 });
+        out.innerHTML = `<b>③ Regress colGPA on \\(\\hat r_{i1}\\)</b>. Only the part of ${v} unrelated to ${o} is used: students are compared as if they had the same ${o}.`;
       }
+      const row = (lab, val, color) => `<tr><td style="padding:.1em 0">${lab}</td><td style="text-align:right;padding-left:.8em;color:${color}"><b>${val}</b></td></tr>`;
+      sum.innerHTML = `<table style="border-collapse:collapse;font-size:inherit;margin:0">` +
+        row('① simple regression', E.fmt(simple.b1, 4), C.orange) +
+        row('③ regression on residuals', step === 3 ? `${E.fmt(step3.b1, 4)} ✓` : '—', C.green) +
+        row(`multiple regression, ${v}`, E.fmt(multi, 4), C.green) + `</table>`;
       UI.renderMath(out);
     }
     draw();

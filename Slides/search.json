@@ -1334,7 +1334,7 @@
     "href": "04-mlr-estimation.html#partialling-out",
     "title": "Multiple Regression Analysis I",
     "section": "“Partialling out”",
-    "text": "“Partialling out”\nWith two regressors, the OLS slope on x_1 can be written as\n\n\\hat\\beta_1 = \\frac{\\sum_i \\hat r_{i1}\\, y_i}{\\sum_i \\hat r_{i1}^2}\n\nwhere \\hat r_{i1} are the residuals from regressing x_1 on x_2: the part of x_1 not explained by x_2."
+    "text": "“Partialling out”\nWith two regressors, the OLS slope on x_1 can be written as\n\n\\hat\\beta_1 = \\frac{\\sum_i \\hat r_{i1}\\, y_i}{\\sum_i \\hat r_{i1}^2}\n\nwhere \\hat r_{i1} are the residuals from regressing x_1 on x_2: the part of x_1 not explained by x_2. So \\hat\\beta_1 is the slope of a simple regression of y on \\hat r_1.\n\ngpa1 with x_1 = hsGPA and x_2 = ACT, in three regressions:\n\n\\begin{aligned}\n&\\text{(1) ignore } ACT\\text{:} && \\widehat{colGPA} = 1.415 + \\textcolor{#d9622b}{0.4824}\\,hsGPA \\\\[2pt]\n&\\text{(2) partial out } ACT\\text{:} && \\widehat{hsGPA} = 2.463 + 0.0389\\,ACT, \\qquad \\hat r_{i1} = hsGPA_i - \\widehat{hsGPA}_i \\\\[2pt]\n&\\text{(3) regress on } \\hat r_1\\text{:} && \\widehat{colGPA} = 3.057 + \\textcolor{#2f8f5b}{0.4535}\\,\\hat r_1\n\\end{aligned}\n\n\n\nStep (3) reproduces the multiple regression coefficient, \\widehat{colGPA} = 1.29 + \\textcolor{#2f8f5b}{0.4535}\\,hsGPA + 0.0094\\,ACT. Step (1) does not: it also credits hsGPA with the part that moves together with ACT."
   },
   {
     "objectID": "04-mlr-estimation.html#simple-vs.-multiple-regression-estimates",
@@ -2091,5 +2091,19 @@
     "title": "Multiple Regression Analysis I",
     "section": "Check: ability bias with experience in the model",
     "text": "Check: ability bias with experience in the model\n\nwage = \\beta_0 + \\beta_1 educ + \\beta_2 exper + \\beta_3 abil + u, and ability is omitted. Ability is correlated with educ but not with exper; in wage1, \\text{Corr}(educ, exper) = -0.30. Which estimates are biased?\nA) Only the coefficient on educ\nB) Both, because exper is correlated with educ\nC) Neither, because ability is unrelated to exper\n\nWhat matters is the partial slope of abil on each regressor, holding the other fixed. On educ it is positive, so \\tilde\\beta_{educ} is biased upward. On exper it is positive too, because exper and educ move in opposite directions, so \\tilde\\beta_{exper} is also biased upward. Reading the sign from \\text{Corr}(abil, exper) = 0 would wrongly suggest no bias."
+  },
+  {
+    "objectID": "04-mlr-estimation.html#interactive-partialling-out-step-by-step",
+    "href": "04-mlr-estimation.html#interactive-partialling-out-step-by-step",
+    "title": "Multiple Regression Analysis I",
+    "section": "Interactive: partialling out step by step",
+    "text": "Interactive: partialling out step by step\n\n\n\n\nGo through the three steps with hsGPA, then switch the variable to ACT: there the simple slope 0.0271 falls to 0.0094 once hsGPA is partialled out, the same drop as in the warm-up. The bottom line keeps all three numbers in view."
+  },
+  {
+    "objectID": "04-mlr-estimation.html#where-the-formula-comes-from",
+    "href": "04-mlr-estimation.html#where-the-formula-comes-from",
+    "title": "Multiple Regression Analysis I",
+    "section": "Where the formula comes from",
+    "text": "Where the formula comes from\nSplit x_1 into the part explained by x_2 and the rest: \\;x_{i1} = \\hat x_{i1} + \\hat r_{i1}, with \\hat x_{i1} = \\hat\\alpha_0 + \\hat\\alpha_1 x_{i2}. The auxiliary regression’s own first-order conditions give \\sum_i \\hat r_{i1} = 0 and \\sum_i x_{i2}\\hat r_{i1} = 0.\n\nStep 1. OLS gives \\sum_i x_{i1}\\hat u_i = 0 and \\sum_i \\hat x_{i1}\\hat u_i = 0 (\\hat x_{i1} is linear in x_{i2}), so \\sum_i \\hat r_{i1}\\hat u_i = 0.\n\n\nStep 2. Write out \\hat u_i:\n\n\\sum_i \\hat r_{i1}\\big(y_i - \\hat\\beta_0 - \\hat\\beta_1 x_{i1} - \\hat\\beta_2 x_{i2}\\big) = 0\n\nThe \\hat\\beta_0 term drops since \\sum_i \\hat r_{i1} = 0, the \\hat\\beta_2 term since \\sum_i x_{i2}\\hat r_{i1} = 0, and \\sum_i \\hat r_{i1}x_{i1} = \\sum_i \\hat r_{i1}^2 since \\sum_i \\hat r_{i1}\\hat x_{i1} = 0:\n\n\\sum_i \\hat r_{i1}\\,y_i - \\hat\\beta_1 \\sum_i \\hat r_{i1}^2 = 0\n\\quad\\Longrightarrow\\quad\n\\hat\\beta_1 = \\frac{\\sum_i \\hat r_{i1}\\, y_i}{\\sum_i \\hat r_{i1}^2}\n\nMLR.3 guarantees \\sum_i \\hat r_{i1}^2 &gt; 0. Wooldridge, Appendix 3A.2."
   }
 ]

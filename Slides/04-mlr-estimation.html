@@ -469,9 +469,58 @@ E(u \mid x_1, x_2, \dots, x_k) = 0
 <p><span class="math display">
 \hat\beta_1 = \frac{\sum_i \hat r_{i1}\, y_i}{\sum_i \hat r_{i1}^2}
 </span></p>
-<p>where <span class="math inline">\hat r_{i1}</span> are the residuals from regressing <span class="math inline">x_1</span> on <span class="math inline">x_2</span>: the part of <span class="math inline">x_1</span> <strong>not explained by <span class="math inline">x_2</span></strong>.</p>
+<p>where <span class="math inline">\hat r_{i1}</span> are the residuals from regressing <span class="math inline">x_1</span> on <span class="math inline">x_2</span>: the part of <span class="math inline">x_1</span> <strong>not explained by <span class="math inline">x_2</span></strong>. So <span class="math inline">\hat\beta_1</span> is the slope of a <strong>simple</strong> regression of <span class="math inline">y</span> on <span class="math inline">\hat r_1</span>.</p>
+<div class="fragment">
+<p><code>gpa1</code> with <span class="math inline">x_1 = hsGPA</span> and <span class="math inline">x_2 = ACT</span>, in three regressions:</p>
+<p><span class="math display">
+\begin{aligned}
+&amp;\text{(1) ignore } ACT\text{:} &amp;&amp; \widehat{colGPA} = 1.415 + \textcolor{#d9622b}{0.4824}\,hsGPA \\[2pt]
+&amp;\text{(2) partial out } ACT\text{:} &amp;&amp; \widehat{hsGPA} = 2.463 + 0.0389\,ACT, \qquad \hat r_{i1} = hsGPA_i - \widehat{hsGPA}_i \\[2pt]
+&amp;\text{(3) regress on } \hat r_1\text{:} &amp;&amp; \widehat{colGPA} = 3.057 + \textcolor{#2f8f5b}{0.4535}\,\hat r_1
+\end{aligned}
+</span></p>
+</div>
+<div class="fragment">
+<p>Step (3) reproduces the multiple regression coefficient, <span class="math inline">\widehat{colGPA} = 1.29 + \textcolor{#2f8f5b}{0.4535}\,hsGPA + 0.0094\,ACT</span>. Step (1) does not: it also credits hsGPA with the part that moves together with ACT.</p>
+</div>
+</section>
+<section id="interactive-partialling-out-step-by-step" class="slide level2 smaller">
+<h2>Interactive: partialling out step by step</h2>
 <div class="widget" data-widget="fwl">
 
+</div>
+<aside class="notes">
+<p>Go through the three steps with hsGPA, then switch the variable to ACT: there the simple slope 0.0271 falls to 0.0094 once hsGPA is partialled out, the same drop as in the warm-up. The bottom line keeps all three numbers in view.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="where-the-formula-comes-from" class="slide level2 smaller">
+<h2>Where the formula comes from</h2>
+<p>Split <span class="math inline">x_1</span> into the part explained by <span class="math inline">x_2</span> and the rest: <span class="math inline">\;x_{i1} = \hat x_{i1} + \hat r_{i1}</span>, with <span class="math inline">\hat x_{i1} = \hat\alpha_0 + \hat\alpha_1 x_{i2}</span>. The auxiliary regression’s own first-order conditions give <span class="math inline">\sum_i \hat r_{i1} = 0</span> and <span class="math inline">\sum_i x_{i2}\hat r_{i1} = 0</span>.</p>
+<div class="fragment">
+<p><strong>Step 1.</strong> OLS gives <span class="math inline">\sum_i x_{i1}\hat u_i = 0</span> and <span class="math inline">\sum_i \hat x_{i1}\hat u_i = 0</span> (<span class="math inline">\hat x_{i1}</span> is linear in <span class="math inline">x_{i2}</span>), so <span class="math inline">\sum_i \hat r_{i1}\hat u_i = 0</span>.</p>
+</div>
+<div class="fragment">
+<p><strong>Step 2.</strong> Write out <span class="math inline">\hat u_i</span>:</p>
+<p><span class="math display">
+\sum_i \hat r_{i1}\big(y_i - \hat\beta_0 - \hat\beta_1 x_{i1} - \hat\beta_2 x_{i2}\big) = 0
+</span></p>
+<p>The <span class="math inline">\hat\beta_0</span> term drops since <span class="math inline">\sum_i \hat r_{i1} = 0</span>, the <span class="math inline">\hat\beta_2</span> term since <span class="math inline">\sum_i x_{i2}\hat r_{i1} = 0</span>, and <span class="math inline">\sum_i \hat r_{i1}x_{i1} = \sum_i \hat r_{i1}^2</span> since <span class="math inline">\sum_i \hat r_{i1}\hat x_{i1} = 0</span>:</p>
+<p><span class="math display">
+\sum_i \hat r_{i1}\,y_i - \hat\beta_1 \sum_i \hat r_{i1}^2 = 0
+\quad\Longrightarrow\quad
+\hat\beta_1 = \frac{\sum_i \hat r_{i1}\, y_i}{\sum_i \hat r_{i1}^2}
+</span></p>
+<p><span class="muted">MLR.3 guarantees <span class="math inline">\sum_i \hat r_{i1}^2 &gt; 0</span>. Wooldridge, Appendix 3A.2.</span></p>
 </div>
 </section>
 <section id="simple-vs.-multiple-regression-estimates" class="slide level2 smaller">
