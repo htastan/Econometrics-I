@@ -3,54 +3,82 @@
   const { E, UI } = window; const C = UI.C; const W = window.WDATA;
 
   /* ------------------------------------------------------------------
-     t test explorer: alternatives, alpha, p-value, textbook presets
+     t versus N(0,1): fatter tails for small df (one control: df)
      ------------------------------------------------------------------ */
-  UI.widget('t-explorer', host => {
-    host.innerHTML = ''; host.classList.add('widget-live');
-    const bar1 = UI.el('div', { class: 'fs-bar' }), bar2 = UI.el('div', { class: 'fs-bar' });
-    const grid = UI.el('div', { class: 'wgrid wide' }), left = UI.el('div', { class: 'wplot' }), side = UI.el('div', { class: 'wside' });
-    grid.append(left, side); host.append(bar1, bar2, grid);
-    let alt = 'two', alpha = 0.05, df = 60, t = 2.1, showN = false, label = '';
-    const bA = UI.el('div'); bar1.appendChild(bA);
-    const segA = UI.segmented(bA, { label: '\\(H_1\\)', options: [{ value: 'right', label: 'β > a (right tail)' }, { value: 'left', label: 'β < a (left tail)' }, { value: 'two', label: 'β ≠ a (two-sided)' }], value: alt, onChange: v => { alt = v; label = ''; draw(); } });
-    const sT = UI.slider(bar2, { label: 't statistic', min: -5, max: 5, step: 0.01, value: t, fmt: v => v.toFixed(2), onInput: v => { t = v; label = ''; draw(); } });
-    const sA = UI.slider(bar2, { label: '\\(\\alpha\\)', min: 0.001, max: 0.2, step: 0.001, value: alpha, fmt: v => (100 * v).toFixed(1) + '%', onInput: v => { alpha = v; draw(); } });
-    const sD = UI.slider(bar2, { label: 'df', min: 2, max: 600, step: 1, value: df, fmt: v => v, onInput: v => { df = v; label = ''; draw(); } });
-    [sT, sA, sD].forEach(s => { s.el.style.width = '15.5em'; s.el.style.gridTemplateColumns = '4.6em 1fr 3.6em'; });
-    const pre = UI.el('div', { class: 'row' }); bar1.appendChild(pre);
-    pre.appendChild(UI.el('span', { class: 'ctrl-label', text: 'Examples:' }));
-    const PRESETS = [
-      { k: 'exper', alt: 'right', t: 2.391, df: 522, lab: 'wage1: H₀ β_exper = 0 vs > 0' },
-      { k: 'enroll', alt: 'left', t: -0.918, df: 404, lab: 'meap93: H₀ β_enroll = 0 vs < 0' },
-      { k: 'skipped', alt: 'two', t: -3.197, df: 137, lab: 'gpa1: H₀ β_skipped = 0 vs ≠ 0' },
-      { k: 'crime', alt: 'right', t: 2.458, df: 95, lab: 'campus: H₀ elasticity = 1 vs > 1' },
-      { k: 'nox', alt: 'two', t: 0.398, df: 501, lab: 'hprice2: H₀ β_log(nox) = −1 vs ≠ −1' }
-    ];
-    PRESETS.forEach(p => UI.button(pre, p.k, () => { alt = p.alt; t = p.t; df = p.df; label = p.lab; segA.set(alt); sT.set(t); sD.set(df); draw(); }, 'small ghost'));
-    UI.toggle(bar1, { label: 'N(0,1) for comparison', value: false, onChange: v => { showN = v; draw(); } });
-    const out = UI.readout(side);
+  UI.widget('t-vs-normal', host => {
+    const S = UI.scaffold(host); let df = 5;
+    UI.segmented(S.controls, { label: 'degrees of freedom', options: [3, 5, 10, 30, 120].map(v => ({ value: v, label: String(v) })), value: df, onChange: v => { df = +v; draw(); } });
+    const out = UI.readout(S.out);
     function draw() {
-      const L = Math.max(4.2, Math.abs(t) + 0.8);
-      left.innerHTML = '';
-      const P = new UI.Plot(left, { w: 640, h: 300, xlim: [-L, L], ylim: [0, 0.43], xlab: 't', ylab: 'density under H₀', margin: { t: 10 } });
-      const f = v => E.dt(v, df);
-      const cR = E.qt(1 - alpha, df), cT = E.qt(1 - alpha / 2, df);
-      let p, rej, cTxt;
-      if (alt === 'right') { p = 1 - E.pt(t, df); rej = t > cR; cTxt = `c = ${E.fmt(cR, 3)}`; P.area(f, cR, L, { fill: 'rgba(192,57,43,.3)' }); }
-      else if (alt === 'left') { p = E.pt(t, df); rej = t < -cR; cTxt = `−c = ${E.fmt(-cR, 3)}`; P.area(f, -L, -cR, { fill: 'rgba(192,57,43,.3)' }); }
-      else { p = 2 * (1 - E.pt(Math.abs(t), df)); rej = Math.abs(t) > cT; cTxt = `c = ±${E.fmt(cT, 3)}`; P.area(f, -L, -cT, { fill: 'rgba(192,57,43,.3)' }); P.area(f, cT, L, { fill: 'rgba(192,57,43,.3)' }); }
-      // p-value area (hatched look via orange outline)
-      const pv = (a, b) => P.area(f, a, b, { fill: 'rgba(217,98,43,.35)' });
-      if (alt === 'right') pv(t, L); else if (alt === 'left') pv(-L, t); else { pv(Math.abs(t), L); pv(-L, -Math.abs(t)); }
-      if (showN) P.fn(v => E.dnorm(v), { color: C.muted, width: 2, dash: '6 5', n: 300 });
+      S.plotHost.innerHTML = '';
+      const L = 4.5, f = v => E.dt(v, df), c = E.qt(0.975, df);
+      const P = new UI.Plot(S.plotHost, { w: 640, h: 300, xlim: [-L, L], ylim: [0, 0.43], xlab: 'value of the statistic', ylab: 'density', margin: { t: 10 } });
+      // tail areas of t beyond +-1.96: what a normal-based test would call "5%"
+      P.area(f, -L, -1.96, { fill: 'rgba(192,57,43,.32)' }); P.area(f, 1.96, L, { fill: 'rgba(192,57,43,.32)' });
+      P.fn(v => E.dnorm(v), { color: C.blue, width: 3, n: 300 });
+      P.fn(f, { color: C.ink, width: 3, dash: '8 5', n: 300 });
+      [-1.96, 1.96].forEach(v => P.vline(v, { color: C.blue, width: 1.5, dash: '3 4' }));
+      P.text(2.12, 0.36, 'N(0,1)', { color: C.blue, weight: 700 });
+      P.text(2.12, 0.32, `t, df = ${df} (dashed)`, { color: C.ink, weight: 700 });
+      const tail = 2 * (1 - E.pt(1.96, df));
+      out.innerHTML = `Area beyond \\(\\pm 1.96\\) (red):<br>` +
+        `<span style="color:${C.blue};font-weight:700">N(0,1)</span>: 5.0% &nbsp;·&nbsp; <b>t, df = ${df}</b>: <span class="big">${E.fmt(100 * tail, 1)}%</span><br><br>` +
+        `5% two-sided critical value:<br><span style="color:${C.blue};font-weight:700">N(0,1)</span>: 1.960 &nbsp;·&nbsp; <b>t, df = ${df}</b>: <b>${E.fmt(c, 3)}</b><br><br>` +
+        `<span class="muted small">Because σ is estimated, t has <b>fatter tails</b>, so the critical value must be larger. As df grows, t approaches N(0,1).</span>`;
+      UI.renderMath(out);
+    }
+    draw();
+  });
+
+  /* ------------------------------------------------------------------
+     One t test, one picture: the examples of the lecture
+     data-preset = exper | enroll | skipped | crime | nox | all
+     data-alt overrides the alternative; data-p="true" shades the p-value
+     ------------------------------------------------------------------ */
+  const PRESETS = {
+    exper: { alt: 'right', t: 2.391, df: 522, par: '\\beta_{exper}', a: '0', lab: 'wage1: experience' },
+    enroll: { alt: 'left', t: -0.918, df: 404, par: '\\beta_{enroll}', a: '0', lab: 'meap93: school size' },
+    skipped: { alt: 'two', t: -3.197, df: 137, par: '\\beta_{skipped}', a: '0', lab: 'gpa1: skipped classes' },
+    crime: { alt: 'right', t: 2.457, df: 95, par: '\\beta_{\\log(enroll)}', a: '1', lab: 'campus: crime elasticity' },
+    nox: { alt: 'two', t: 0.398, df: 501, par: '\\beta_{\\log(nox)}', a: '-1', lab: 'hprice2: pollution elasticity' }
+  };
+  const REL = { right: '>', left: '<', two: '\\neq' };
+
+  UI.widget('t-fig', host => {
+    const S = UI.scaffold(host), ds = host.dataset, all = ds.preset === 'all', showP = ds.p === 'true';
+    let cur = { ...PRESETS[all ? 'exper' : ds.preset] }, alpha = 0.05;
+    if (ds.alt) cur.alt = ds.alt;
+    if (all) UI.segmented(S.controls, { label: 'Example', options: Object.keys(PRESETS), value: 'exper', onChange: k => { cur = { ...PRESETS[k] }; draw(); } });
+    UI.segmented(S.controls, { label: 'significance level \\(\\alpha\\)', options: [{ value: 0.1, label: '10%' }, { value: 0.05, label: '5%' }, { value: 0.01, label: '1%' }], value: 0.05, onChange: v => { alpha = +v; draw(); } });
+    const out = UI.readout(S.out);
+    function draw() {
+      const { alt, t, df } = cur, L = Math.max(4.2, Math.abs(t) + 0.8), f = v => E.dt(v, df);
+      const red = 'rgba(192,57,43,.3)', c = alt === 'two' ? E.qt(1 - alpha / 2, df) : E.qt(1 - alpha, df);
+      S.plotHost.innerHTML = '';
+      const P = new UI.Plot(S.plotHost, { w: 640, h: 290, xlim: [-L, L], ylim: [0, 0.43], xlab: 't', ylab: 'density under H₀', margin: { t: 10 } });
+      if (alt !== 'left') P.area(f, c, L, { fill: red });
+      if (alt !== 'right') P.area(f, -L, -c, { fill: red });
+      let p;
+      if (alt === 'right') p = 1 - E.pt(t, df); else if (alt === 'left') p = E.pt(t, df); else p = 2 * (1 - E.pt(Math.abs(t), df));
+      if (showP) {
+        const pv = (a, b) => P.area(f, a, b, { fill: 'rgba(217,98,43,.45)' });
+        if (alt === 'right') pv(t, L); else if (alt === 'left') pv(-L, t); else { pv(Math.abs(t), L); pv(-L, -Math.abs(t)); }
+      }
       P.fn(f, { color: C.ink, width: 2.6, n: 300 });
+      const cs = alt === 'right' ? [c] : alt === 'left' ? [-c] : [-c, c];
+      cs.forEach(v => { P.vline(v, { color: C.red, width: 1.6, dash: '5 4' }); P.text(v, 0.3, v > 0 ? `${E.fmt(v, 3)} ` : ` ${E.fmt(v, 3)}`, { color: C.red, weight: 700, anchor: v > 0 ? 'end' : 'start' }); /* inside, clear of the t line */ });
       P.vline(t, { color: C.orange, width: 3.5 }); P.text(t, 0.405, ` t = ${E.fmt(t, 2)}`, { color: C.orange, weight: 700, anchor: t > L - 1.8 ? 'end' : 'start' });
-      const hyp = { right: 'H_0: \\beta_j = a \\;\\text{vs.}\\; H_1: \\beta_j > a', left: 'H_0: \\beta_j = a \\;\\text{vs.}\\; H_1: \\beta_j < a', two: 'H_0: \\beta_j = a \\;\\text{vs.}\\; H_1: \\beta_j \\neq a' }[alt];
-      out.innerHTML = (label ? `<b>${label}</b><br>` : '') + `\\(${hyp}\\)<br>` +
-        `df = ${df}, α = ${E.fmt(100 * alpha, 1)}%, critical value ${cTxt}<br>` +
-        `p-value = <span class="big">${E.fmtP(p)}</span><br>` +
-        (rej ? `<span class="bad">Reject H₀</span> at the ${E.fmt(100 * alpha, 1)}% level (t is in the red region).` : `<span class="good">Fail to reject H₀</span> at the ${E.fmt(100 * alpha, 1)}% level.`) +
-        `<br><span class="muted small"><b style="color:${C.red}">Red</b>: rejection region (area α). <b style="color:${C.orange}">Orange</b>: p-value, the tail area beyond t. We reject exactly when p &lt; α: move the α slider past ${E.fmtP(p)} and watch the decision flip.</span>`;
+      const rej = alt === 'right' ? t > c : alt === 'left' ? t < -c : Math.abs(t) > c;
+      const cTxt = alt === 'right' ? `c = ${E.fmt(c, 3)}` : alt === 'left' ? `−c = ${E.fmt(-c, 3)}` : `c = ±${E.fmt(c, 3)}`;
+      const rule = alt === 'right' ? `t ${rej ? '>' : '≤'} c` : alt === 'left' ? `t ${rej ? '<' : '≥'} −c` : `|t| ${rej ? '>' : '≤'} c`;
+      const a = 100 * alpha;
+      out.innerHTML = (all ? `<b>${cur.lab}</b><br>` : '') +
+        `\\(H_0: ${cur.par} = ${cur.a} \\;\\text{vs.}\\; H_1: ${cur.par} ${REL[alt]} ${cur.a}\\)<br>` +
+        `df = ${df}, α = ${a}%: <b style="color:${C.red}">${cTxt}</b><br>` +
+        `t = ${E.fmt(t, 2)}, so ${rule}: ` +
+        (rej ? `<span class="bad">reject H₀ at ${a}%</span>` : `<span class="good">fail to reject H₀ at ${a}%</span>`) +
+        (showP ? `<br>p-value = <span class="big">${E.fmtP(p)}</span> (orange). We reject exactly when p &lt; α.` : '') +
+        `<br><span class="muted small"><b style="color:${C.red}">Red</b>: the rejection region, area α.${showP ? ` <b style="color:${C.orange}">Orange</b>: the p-value, the area beyond t.` : ''}</span>`;
       UI.renderMath(out);
     }
     draw();
@@ -61,11 +89,10 @@
      ------------------------------------------------------------------ */
   UI.widget('ci-coverage', host => {
     const S = UI.scaffold(host);
-    const B0 = 1, B1 = 0.5, SIG = 2; let n = 20, level = 0.95, useZ = false, cis = [], rs = E.RNG(7);
+    const B0 = 1, B1 = 0.5, SIG = 2; let n = 20, level = 0.95, cis = [], rs = E.RNG(7);
     const P = new UI.Plot(S.plotHost, { w: 640, h: 390, xlim: [-0.5, 1.5], ylim: [0, 101], xlab: 'confidence interval for β₁ (true β₁ = 0.5)', ylab: 'sample', yticks: [] });
     UI.segmented(S.controls, { label: 'Confidence level', options: [{ value: 0.9, label: '90%' }, { value: 0.95, label: '95%' }, { value: 0.99, label: '99%' }], value: 0.95, onChange: v => { level = +v; cis = []; add(100); } });
     UI.slider(S.controls, { label: 'sample size n', min: 5, max: 200, step: 1, value: n, fmt: v => v, onInput: v => { n = v; }, onChange: () => { cis = []; add(100); } });
-    UI.toggle(S.controls, { label: 'use 1.96-type normal critical value instead of \\(t_{n-2}\\)', value: false, onChange: v => { useZ = v; cis = []; add(100); } });
     const row = UI.el('div', { class: 'row' }); S.controls.appendChild(row);
     UI.button(row, '+1 sample', () => add(1), 'small'); UI.button(row, '+100', () => add(100), 'small'); UI.button(row, 'Reset', () => { cis = []; add(1); }, 'small ghost');
     const out = UI.readout(S.out);
@@ -73,7 +100,7 @@
       for (let j = 0; j < k; j++) {
         const x = rs.vec(n, () => 10 * rs.unif()), y = x.map(v => B0 + B1 * v + SIG * rs.norm());
         const f = E.ols(y, { x }), b = f.coef[1], se = f.se[1];
-        const c = useZ ? E.qnorm(1 - (1 - level) / 2) : E.qt(1 - (1 - level) / 2, n - 2);
+        const c = E.qt(1 - (1 - level) / 2, n - 2);
         cis.push({ lo: b - c * se, hi: b + c * se, b });
       }
       draw();
@@ -87,7 +114,6 @@
       const miss = cis.filter(c => c.lo > B1 || c.hi < B1).length, cov = 1 - miss / cis.length;
       out.innerHTML = `Intervals drawn: <b>${cis.length}</b> (last 100 shown)<br>Contain the true β₁: <span class="big">${E.fmt(100 * cov, 1)}%</span><br>Nominal level: ${100 * level}%<br>` +
         `<span class="bad">${miss}</span> interval${miss === 1 ? '' : 's'} miss β₁ (red).` +
-        (useZ && n < 30 ? `<br><span class="or">With small n, the normal critical value is too small: coverage falls below ${100 * level}%.</span>` : '') +
         `<br><span class="muted small">The true β₁ never moves; the <b>intervals</b> are random. "95% confidence" is a property of the procedure: 95% of such intervals contain β₁. We never know whether our one interval does.</span>`;
       UI.renderMath(out);
     }
@@ -100,12 +126,13 @@
   UI.widget('ci-duality', host => {
     const S = UI.scaffold(host);
     const d = W.hprice1, f = E.ols(d.price.map(Math.log), { lsqrft: d.sqrft.map(Math.log), bdrms: d.bdrms });
-    const b = f.coef[1], se = f.se[1], df = f.df; let a = 1, alpha = 0.05;
-    const top = UI.el('div'), bot = UI.el('div'); S.plotHost.append(top, bot);
+    const b = f.coef[1], se = f.se[1], df = f.df; let a = 1, alpha = 0.05, showT = false;
+    const top = UI.el('div'), bot = UI.el('div'); S.plotHost.append(top, bot); bot.style.display = 'none';
     const P = new UI.Plot(top, { w: 640, h: 130, xlim: [0.3, 1.3], ylim: [0, 1], xlab: 'values of the elasticity β₁', yticks: [], margin: { t: 8, b: 42 } });
     const T = new UI.Plot(bot, { w: 640, h: 210, xlim: [-6, 6], ylim: [0, 0.43], xlab: '\\(t = (\\hat\\beta_1 - a)/\\text{se}\\)', yticks: [], margin: { t: 6, b: 42 } });
     UI.slider(S.controls, { label: 'hypothesized value \\(a\\)', min: 0.3, max: 1.3, step: 0.005, value: a, fmt: v => v.toFixed(3), onInput: v => { a = v; draw(); } });
     UI.segmented(S.controls, { label: 'level', options: [{ value: 0.1, label: '90% / α = 10%' }, { value: 0.05, label: '95% / α = 5%' }, { value: 0.01, label: '99% / α = 1%' }], value: 0.05, onChange: v => { alpha = +v; draw(); } });
+    UI.toggle(S.controls, { label: 'show the t test', value: false, onChange: v => { showT = v; bot.style.display = v ? '' : 'none'; draw(); } });
     const out = UI.readout(S.out);
     function draw() {
       const c = E.qt(1 - alpha / 2, df), lo = b - c * se, hi = b + c * se, t = (b - a) / se, rej = Math.abs(t) > c;
@@ -117,7 +144,7 @@
       T.fn(fd, { color: C.ink, width: 2.4, n: 250 }); T.vline(E.clamp(t, -5.9, 5.9), { color: rej ? C.red : C.green, width: 3.5 });
       out.innerHTML = `\\(\\widehat{\\log(price)} = ${E.fmt(f.coef[0], 3)} + ${E.fmt(b, 3)}\\log(sqrft) + ${E.fmt(f.coef[2], 3)}\\,bdrms\\), n = ${f.n}<br>` +
         `${100 * (1 - alpha)}% CI: \\([${E.fmt(lo, 3)},\\; ${E.fmt(hi, 3)}]\\)<br>` +
-        `\\(t = (${E.fmt(b, 3)} - ${E.fmt(a, 3)})/${E.fmt(se, 4)} = ${E.fmt(t, 2)}\\)<br>` +
+        (showT ? `\\(t = (${E.fmt(b, 3)} - ${E.fmt(a, 3)})/${E.fmt(se, 4)} = ${E.fmt(t, 2)}\\), \\(c = ${E.fmt(c, 3)}\\)<br>` : '') +
         (rej ? `<span class="bad">a is outside the CI ⇔ reject H₀: β₁ = a</span>` : `<span class="good">a is inside the CI ⇔ fail to reject H₀: β₁ = a</span>`) +
         `<br><span class="muted small">Try a = 1 (unit elasticity): it lies just inside the 95% interval.</span>`;
       UI.renderMath(out);

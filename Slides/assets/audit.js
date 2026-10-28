@@ -24,7 +24,7 @@ window.auditDeck = async function (minPx = 20) {
       const own = [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim().length > 1);
       if (!own) return;
       let px = parseFloat(getComputedStyle(el).fontSize);
-      if (el instanceof SVGElement) { const svg = el.ownerSVGElement; px = px * svg.getBoundingClientRect().width / svg.viewBox.baseVal.width / scale; }
+      if (el instanceof SVGElement) { const svg = el.ownerSVGElement; if (!svg.getBoundingClientRect().width) return; /* hidden plot */ px = px * svg.getBoundingClientRect().width / svg.viewBox.baseVal.width / scale; }
       if (px < minPx) small.add(`${px.toFixed(1)}px:"${el.textContent.trim().slice(0, 28)}"`);
     });
     // horizontal overflow: math wider than its column / card / slide (equations cannot wrap)

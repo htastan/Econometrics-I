@@ -459,7 +459,7 @@
     "href": "05-mlr-inference.html#sampling-distributions-of-the-ols-estimators",
     "title": "Multiple Regression Analysis II",
     "section": "Sampling distributions of the OLS estimators",
-    "text": "Sampling distributions of the OLS estimators\n\n\n\n\n\n\n\nTheorem 4.1: normal sampling distributions\n\n\nUnder MLR.1–MLR.6, conditional on the x’s:\n\n\\hat\\beta_j \\sim \\text{Normal}\\big(\\beta_j,\\; \\text{Var}(\\hat\\beta_j)\\big) \\qquad\\Rightarrow\\qquad \\frac{\\hat\\beta_j - \\beta_j}{\\text{sd}(\\hat\\beta_j)} \\sim \\text{Normal}(0,1)\n\n\n\n\n\nWhy: \\hat\\beta_j is a linear combination of the errors, and linear combinations of normal variables are normal.\n\n\n\n\n\n\n\n\nTheorem 4.2: the t distribution\n\n\nReplacing the unknown sd by the estimated se:\n\n\\frac{\\hat\\beta_j - \\beta_j}{\\text{se}(\\hat\\beta_j)} \\sim t_{n-k-1}\n\n\n\n\n\n\nThe t distribution has fatter tails than the normal because sigma-hat is itself estimated. As n-k-1 grows it approaches the standard normal. Show this in the t explorer by switching on N(0,1) and lowering df."
+    "text": "Sampling distributions of the OLS estimators\n\n\n\n\n\n\n\nTheorem 4.1: normal sampling distributions\n\n\nUnder MLR.1–MLR.6, conditional on the x’s:\n\n\\hat\\beta_j \\sim \\text{Normal}\\big(\\beta_j,\\; \\text{Var}(\\hat\\beta_j)\\big) \\qquad\\Rightarrow\\qquad \\frac{\\hat\\beta_j - \\beta_j}{\\text{sd}(\\hat\\beta_j)} \\sim \\text{Normal}(0,1)\n\n\n\n\n\nWhy: \\hat\\beta_j is a linear combination of the errors, and linear combinations of normal variables are normal.\n\n\n\n\n\n\n\n\nTheorem 4.2: the t distribution\n\n\nReplacing the unknown sd by the estimated se:\n\n\\frac{\\hat\\beta_j - \\beta_j}{\\text{se}(\\hat\\beta_j)} \\sim t_{n-k-1}\n\n\n\n\n\n\nThe t distribution has fatter tails than the normal because sigma-hat is itself estimated. As n-k-1 grows it approaches the standard normal: next slide."
   },
   {
     "objectID": "05-mlr-inference.html#the-recipe",
@@ -543,7 +543,7 @@
     "href": "05-mlr-inference.html#p-values",
     "title": "Multiple Regression Analysis II",
     "section": "p-values",
-    "text": "p-values\nInstead of fixing \\alpha in advance, ask: what is the smallest significance level at which H_0 would be rejected?\n\n\\text{two-sided: } p = P\\big(|T| &gt; |t|\\big), \\qquad T \\sim t_{n-k-1}\n\n\nSmall p-value = strong evidence against H_0. Reject H_0 at level \\alpha iff p &lt; \\alpha.\nR reports p-values for two-sided tests of H_0: \\beta_j = 0. For a one-sided test in the direction of the estimate, halve it.\nThe t explorer shows the p-value as the orange tail area beyond t."
+    "text": "p-values\nInstead of fixing \\alpha in advance, ask: what is the smallest significance level at which H_0 would be rejected? For a two-sided test, \\;p = P\\big(|T| &gt; |t|\\big) with T \\sim t_{n-k-1}.\n\nSmall p-value = strong evidence against H_0. Reject H_0 at level \\alpha iff p &lt; \\alpha.\nR reports p-values for two-sided tests of H_0: \\beta_j = 0. For a one-sided test in the direction of the estimate, halve it.\n\n\n\n\n\nTwo-sided test of exper, the number R prints: p = 0.017. At 10% and 5% p is below alpha and we reject; at 1% p is above alpha and we do not. The orange area is the p-value, the red area is alpha: we reject exactly when the orange area is smaller than the red one."
   },
   {
     "objectID": "05-mlr-inference.html#check-what-a-p-value-is-and-is-not",
@@ -2105,5 +2105,40 @@
     "title": "Multiple Regression Analysis I",
     "section": "Where the formula comes from",
     "text": "Where the formula comes from\nSplit x_1 into the part explained by x_2 and the rest: \\;x_{i1} = \\hat x_{i1} + \\hat r_{i1}, with \\hat x_{i1} = \\hat\\alpha_0 + \\hat\\alpha_1 x_{i2}. The auxiliary regression’s own first-order conditions give \\sum_i \\hat r_{i1} = 0 and \\sum_i x_{i2}\\hat r_{i1} = 0.\n\nStep 1. OLS gives \\sum_i x_{i1}\\hat u_i = 0 and \\sum_i \\hat x_{i1}\\hat u_i = 0 (\\hat x_{i1} is linear in x_{i2}), so \\sum_i \\hat r_{i1}\\hat u_i = 0.\n\n\nStep 2. Write out \\hat u_i:\n\n\\sum_i \\hat r_{i1}\\big(y_i - \\hat\\beta_0 - \\hat\\beta_1 x_{i1} - \\hat\\beta_2 x_{i2}\\big) = 0\n\nThe \\hat\\beta_0 term drops since \\sum_i \\hat r_{i1} = 0, the \\hat\\beta_2 term since \\sum_i x_{i2}\\hat r_{i1} = 0, and \\sum_i \\hat r_{i1}x_{i1} = \\sum_i \\hat r_{i1}^2 since \\sum_i \\hat r_{i1}\\hat x_{i1} = 0:\n\n\\sum_i \\hat r_{i1}\\,y_i - \\hat\\beta_1 \\sum_i \\hat r_{i1}^2 = 0\n\\quad\\Longrightarrow\\quad\n\\hat\\beta_1 = \\frac{\\sum_i \\hat r_{i1}\\, y_i}{\\sum_i \\hat r_{i1}^2}\n\nMLR.3 guarantees \\sum_i \\hat r_{i1}^2 &gt; 0. Wooldridge, Appendix 3A.2."
+  },
+  {
+    "objectID": "05-mlr-inference.html#interactive-t-versus-the-standard-normal",
+    "href": "05-mlr-inference.html#interactive-t-versus-the-standard-normal",
+    "title": "Multiple Regression Analysis II",
+    "section": "Interactive: t versus the standard normal",
+    "text": "Interactive: t versus the standard normal\nReplacing sd by se adds uncertainty. How much does it matter?\n\n\n\n\nStart at df = 3: the red tails beyond ±1.96 hold far more than 5%, so a normal critical value would reject a true H0 too often. Step through 5, 10, 30, 120: the two curves merge and the critical value falls toward 1.96. With df above about 120 the normal is a fine approximation, which is why 1.96 works in large samples."
+  },
+  {
+    "objectID": "05-mlr-inference.html#right-tail-test-the-picture",
+    "href": "05-mlr-inference.html#right-tail-test-the-picture",
+    "title": "Multiple Regression Analysis II",
+    "section": "Right-tail test: the picture",
+    "text": "Right-tail test: the picture\nThe whole rejection region (area \\alpha) sits in the right tail. Change \\alpha and watch the critical value move.\n\n\n\n\nAt 10% and 5% t = 2.39 is in the red region; at 1% the critical value 2.334 is still below t, so we reject at all three levels. Compare with the two-sided picture later: there the same t is not significant at 1%."
+  },
+  {
+    "objectID": "05-mlr-inference.html#left-tail-test-the-picture",
+    "href": "05-mlr-inference.html#left-tail-test-the-picture",
+    "title": "Multiple Regression Analysis II",
+    "section": "Left-tail test: the picture",
+    "text": "Left-tail test: the picture\nNow the rejection region is in the left tail: only clearly negative t values count against H_0."
+  },
+  {
+    "objectID": "05-mlr-inference.html#two-sided-test-the-picture",
+    "href": "05-mlr-inference.html#two-sided-test-the-picture",
+    "title": "Multiple Regression Analysis II",
+    "section": "Two-sided test: the picture",
+    "text": "Two-sided test: the picture\nWith H_1: \\beta_j \\neq 0 the area \\alpha is split between the two tails, \\alpha/2 each, so the critical value is larger than in a one-sided test."
+  },
+  {
+    "objectID": "05-mlr-inference.html#practice-todays-five-tests",
+    "href": "05-mlr-inference.html#practice-todays-five-tests",
+    "title": "Multiple Regression Analysis II",
+    "section": "Practice: today’s five tests",
+    "text": "Practice: today’s five tests\nPick an example and a significance level. Before looking at the decision, say it yourself: which tail, which critical value, reject or not?\n\n\n\n\nexper: right tail, rejected at all three levels. enroll: left tail, not rejected. skipped: two-sided, rejected even at 1%. crime: H0 elasticity = 1 against &gt; 1, rejected even at 1% (p = 0.008). nox: H0 elasticity = -1, two-sided, not rejected at any level."
   }
 ]

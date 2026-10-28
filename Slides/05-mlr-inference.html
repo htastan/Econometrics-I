@@ -373,7 +373,7 @@ Prof.&nbsp;Dr.&nbsp;Hüseyin Taştan
 </div>
 </div>
 <aside class="notes">
-<p>The t distribution has fatter tails than the normal because sigma-hat is itself estimated. As n-k-1 grows it approaches the standard normal. Show this in the t explorer by switching on N(0,1) and lowering df.</p>
+<p>The t distribution has fatter tails than the normal because sigma-hat is itself estimated. As n-k-1 grows it approaches the standard normal: next slide.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -386,6 +386,26 @@ Prof.&nbsp;Dr.&nbsp;Hüseyin Taştan
           display:block!important;
       }</style></aside>
 </div>
+</section>
+<section id="interactive-t-versus-the-standard-normal" class="slide level2 smaller">
+<h2>Interactive: <em>t</em> versus the standard normal</h2>
+<p>Replacing sd by se adds uncertainty. How much does it matter?</p>
+<div class="widget" data-widget="t-vs-normal">
+
+</div>
+<aside class="notes">
+<p>Start at df = 3: the red tails beyond ±1.96 hold far more than 5%, so a normal critical value would reject a true H0 too often. Step through 5, 10, 30, 120: the two curves merge and the critical value falls toward 1.96. With df above about 120 the normal is a fine approximation, which is why 1.96 works in large samples.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
 <section id="testing-a-single-parameter-the-t-test" class="title-slide slide level1 section-slide center">
@@ -495,13 +515,14 @@ t_{exper} = \frac{\hat\beta_{exper}}{\text{se}(\hat\beta_{exper})} = \frac{0.004
 <p><span class="math inline">2.39 &gt; 2.334</span>: <strong>reject <span class="math inline">H_0</span> at the 1% level.</strong> Holding education and tenure fixed, experience has a statistically significant positive effect on wages. Economically, one more year of experience raises the wage by about <strong>0.4%</strong>.</p>
 </div>
 </section>
-<section id="interactive-t-test-explorer" class="slide level2 smaller">
-<h2>Interactive: <em>t</em> test explorer</h2>
-<div class="widget" data-widget="t-explorer">
+<section id="right-tail-test-the-picture" class="slide level2 smaller">
+<h2>Right-tail test: the picture</h2>
+<p>The whole rejection region (area <span class="math inline">\alpha</span>) sits in the <strong>right</strong> tail. Change <span class="math inline">\alpha</span> and watch the critical value move.</p>
+<div class="widget" data-widget="t-fig" data-preset="exper">
 
 </div>
 <aside class="notes">
-<p>Load the examples one by one. exper: right tail, rejected at 5% and 1%. enroll: left tail, not rejected. skipped: two-sided, strongly rejected. crime: H0 elasticity = 1, rejected in favor of &gt; 1. nox: H0 = -1 two-sided, not rejected. Then move alpha across the p-value to show that the p-value is the smallest level at which H0 is rejected. Turn on N(0,1) and lower df to show the fatter tails of the t distribution.</p>
+<p>At 10% and 5% t = 2.39 is in the red region; at 1% the critical value 2.334 is still below t, so we reject at all three levels. Compare with the two-sided picture later: there the same t is not significant at 1%.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -559,6 +580,13 @@ t_{enroll} = \frac{-0.000198}{0.000215} = -0.92 \;&gt;\; -c_{0.05} = -1.65
 </div>
 </div>
 </div>
+</div>
+</section>
+<section id="left-tail-test-the-picture" class="slide level2 smaller">
+<h2>Left-tail test: the picture</h2>
+<p>Now the rejection region is in the <strong>left</strong> tail: only clearly negative <span class="math inline">t</span> values count against <span class="math inline">H_0</span>.</p>
+<div class="widget" data-widget="t-fig" data-preset="enroll">
+
 </div>
 </section>
 <section id="left-tail-test-a-level-log-model" class="slide level2 smaller">
@@ -619,6 +647,13 @@ t_{\log(enroll)} = \frac{-1.27}{0.693} = -1.83 \;&lt;\; -c_{0.05} = -1.65
 <p><span class="math inline">t_{hsGPA} = 0.412/0.0937 = 4.40</span>, <span class="math inline">\;t_{ACT} = 0.0147/0.0106 = 1.39</span>, <span class="math inline">\;t_{skipped} = -0.0831/0.0260 = -3.20</span></p>
 </div>
 </section>
+<section id="two-sided-test-the-picture" class="slide level2 smaller">
+<h2>Two-sided test: the picture</h2>
+<p>With <span class="math inline">H_1: \beta_j \neq 0</span> the area <span class="math inline">\alpha</span> is <strong>split</strong> between the two tails, <span class="math inline">\alpha/2</span> each, so the critical value is larger than in a one-sided test.</p>
+<div class="widget" data-widget="t-fig" data-preset="skipped">
+
+</div>
+</section>
 <section id="testing-other-values-h_0-beta_j-a_j" class="slide level2 smaller">
 <h2>Testing other values: <span class="math inline">H_0: \beta_j = a_j</span></h2>
 <p><span class="math display">
@@ -663,15 +698,27 @@ t = \frac{\hat\beta_j - a_j}{\text{se}(\hat\beta_j)} = \frac{\text{estimate} - \
 </section>
 <section id="p-values" class="slide level2 smaller">
 <h2>p-values</h2>
-<p>Instead of fixing <span class="math inline">\alpha</span> in advance, ask: <strong>what is the smallest significance level at which <span class="math inline">H_0</span> would be rejected?</strong></p>
-<p><span class="math display">
-\text{two-sided: } p = P\big(|T| &gt; |t|\big), \qquad T \sim t_{n-k-1}
-</span></p>
+<p>Instead of fixing <span class="math inline">\alpha</span> in advance, ask: <strong>what is the smallest significance level at which <span class="math inline">H_0</span> would be rejected?</strong> For a two-sided test, <span class="math inline">\;p = P\big(|T| &gt; |t|\big)</span> with <span class="math inline">T \sim t_{n-k-1}</span>.</p>
 <ul>
 <li><strong>Small</strong> p-value = strong evidence against <span class="math inline">H_0</span>. Reject <span class="math inline">H_0</span> at level <span class="math inline">\alpha</span> <strong>iff</strong> <span class="math inline">p &lt; \alpha</span>.</li>
 <li>R reports p-values for <strong>two-sided</strong> tests of <span class="math inline">H_0: \beta_j = 0</span>. For a one-sided test in the direction of the estimate, halve it.</li>
-<li>The <span class="math inline">t</span> explorer shows the p-value as the <strong>orange tail area</strong> beyond <span class="math inline">t</span>.</li>
 </ul>
+<div class="widget" data-widget="t-fig" data-preset="exper" data-alt="two" data-p="true">
+
+</div>
+<aside class="notes">
+<p>Two-sided test of exper, the number R prints: p = 0.017. At 10% and 5% p is below alpha and we reject; at 1% p is above alpha and we do not. The orange area is the p-value, the red area is alpha: we reject exactly when the orange area is smaller than the red one.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="check-what-a-p-value-is-and-is-not" class="slide level2">
 <h2>Check: what a p-value is (and is not)</h2>
@@ -684,6 +731,26 @@ t = \frac{\hat\beta_j - a_j}{\text{se}(\hat\beta_j)} = \frac{\text{estimate} - \
 <p>The p-value is computed <strong>assuming <span class="math inline">H_0</span> is true</strong>. It is not the probability that <span class="math inline">H_0</span> is true. With <span class="math inline">p = 0.03</span> we reject at 5% and 10%, but <strong>not</strong> at 1%.</p>
 </div>
 </div>
+</section>
+<section id="practice-todays-five-tests" class="slide level2 smaller">
+<h2>Practice: today’s five tests</h2>
+<p>Pick an example and a significance level. Before looking at the decision, say it yourself: which tail, which critical value, reject or not?</p>
+<div class="widget" data-widget="t-fig" data-preset="all" data-p="true">
+
+</div>
+<aside class="notes">
+<p>exper: right tail, rejected at all three levels. enroll: left tail, not rejected. skipped: two-sided, rejected even at 1%. crime: H0 elasticity = 1 against &gt; 1, rejected even at 1% (p = 0.008). nox: H0 elasticity = -1, two-sided, not rejected at any level.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="statistical-vs.-economic-significance" class="slide level2 smaller">
 <h2>Statistical vs.&nbsp;economic significance</h2>
