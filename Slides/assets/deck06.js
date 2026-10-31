@@ -10,17 +10,17 @@
     parents: () => {
       const ur = E.ols(bw.bwght, { cigs: bw.cigs, parity: bw.parity, faminc: bw.faminc, motheduc: bw.motheduc, fatheduc: bw.fatheduc });
       const r = E.ols(bw.bwght, { cigs: bw.cigs, parity: bw.parity, faminc: bw.faminc });
-      return { ur, r, q: 2, h0: 'H_0: \\beta_{motheduc} = 0,\\; \\beta_{fatheduc} = 0', title: 'bwght: parents\' education', note: 'Restricted model: drop motheduc and fatheduc (same 1,191 observations!).' };
+      return { ur, r, q: 2, h0: 'H_0: \\beta_{motheduc} = 0,\\; \\beta_{fatheduc} = 0', h1: 'H_1: \\beta_{motheduc} \\neq 0 \\text{ or } \\beta_{fatheduc} \\neq 0', title: 'bwght: parents\' education', note: 'Restricted model: drop motheduc and fatheduc (same 1,191 observations!).' };
     },
     overall: () => {
       const ur = E.ols(bw.bwght, { cigs: bw.cigs, parity: bw.parity, faminc: bw.faminc, motheduc: bw.motheduc, fatheduc: bw.fatheduc });
       const r = E.ols(bw.bwght, {});
-      return { ur, r, q: 5, h0: 'H_0: \\beta_1 = \\dots = \\beta_5 = 0', title: 'bwght: overall significance', note: 'Restricted model: intercept only, so SSR_r = SST.' };
+      return { ur, r, q: 5, h0: 'H_0: \\beta_1 = \\dots = \\beta_5 = 0', h1: 'H_1: \\beta_j \\neq 0 \\text{ for at least one } j', title: 'bwght: overall significance', note: 'Restricted model: intercept only, so SSR_r = SST.' };
     },
     rational: () => {
       const ur = E.ols(hp.lprice, { lassess: hp.lassess, llotsize: hp.llotsize, lsqrft: hp.lsqrft, bdrms: hp.bdrms });
       const r = E.ols(hp.lprice.map((v, i) => v - hp.lassess[i]), {});
-      return { ur, r, q: 4, h0: 'H_0: \\beta_1 = 1,\\; \\beta_2 = \\beta_3 = \\beta_4 = 0', title: 'hprice1: rational assessments', note: 'Restricted model: regress log(price) − log(assess) on a constant.' };
+      return { ur, r, q: 4, h0: 'H_0: \\beta_1 = 1,\\; \\beta_2 = \\beta_3 = \\beta_4 = 0', h1: 'H_1: \\beta_1 \\neq 1 \\text{ or } \\beta_2 \\neq 0 \\text{ or } \\beta_3 \\neq 0 \\text{ or } \\beta_4 \\neq 0', title: 'hprice1: rational assessments', note: 'Restricted model: regress log(price) − log(assess) on a constant.' };
     }
   };
 
@@ -49,7 +49,7 @@
       P.area(fy, c, L, { fill: 'rgba(192,57,43,.3)' }); P.fn(fy, { color: C.ink, width: 2.5, from: 0.01, n: 300 });
       P.vline(Math.min(F, L * 0.99), { color: C.orange, width: 3.5 }); P.text(Math.min(F, L * 0.99), ymax * 0.9, ` F = ${E.fmt(F, 2)}`, { color: C.orange, weight: 700, anchor: F > L * 0.7 ? 'end' : 'start' });
       const d = ex === 'rational' ? 4 : 0;
-      out.innerHTML = `<b>${X.title}</b><br>\\(${X.h0}\\)<br>` +
+      out.innerHTML = `<b>${X.title}</b><br>\\(${X.h0}\\)<br>\\(${X.h1}\\)<br>` +
         `\\(F = \\frac{(${E.fmt(SSRr, d)} - ${E.fmt(SSRur, d)})/${q}}{${E.fmt(SSRur, d)}/${df}} =\\) <span class="big">${E.fmt(F, 3)}</span><br>` +
         `critical value ${E.fmt(c, 2)}, p-value = <b>${E.fmtP(p)}</b><br>` +
         (F > c ? `<span class="bad">Reject H₀</span> at ${alpha * 100}%.` : `<span class="good">Fail to reject H₀</span> at ${alpha * 100}%.`) +
@@ -94,11 +94,10 @@
       P.text(0, 0, '  (0, 0)', { color: C.red, weight: 700, dy: -10 });
       const inBox = Math.abs(mx) < c * se1 && Math.abs(my) < c * se2, rejF = st.pF < 0.05;
       out.innerHTML = `\\(t_1 = ${E.fmt(st.f.t[1], 2)}\\) (p = ${E.fmtP(st.p1)}), \\(\\;t_2 = ${E.fmt(st.f.t[2], 2)}\\) (p = ${E.fmtP(st.p2)})<br>` +
-        `\\(F\\) for \\(H_0: \\beta_1 = \\beta_2 = 0\\): <span class="big">${E.fmt(st.F, 2)}</span> (p = ${E.fmtP(st.pF)})<br>` +
+        `\\(H_0: \\beta_1 = \\beta_2 = 0\\), \\(\\;H_1: \\beta_1 \\neq 0 \\text{ or } \\beta_2 \\neq 0\\)<br>\\(F\\) = <span class="big">${E.fmt(st.F, 2)}</span> (p = ${E.fmtP(st.pF)})<br>` +
         `<span style="color:${C.blue}"><b>Blue box</b></span>: pairs not rejected by the two separate t tests. <span style="color:${C.orange}"><b>Orange ellipse</b></span>: pairs not rejected by the joint F test (95%).<br>` +
         (inBox && rejF ? `<span class="bad">Puzzle solved:</span> (0,0) is inside the box but <b>outside the ellipse</b>. Each variable looks insignificant alone, but together they clearly matter.` :
-          `<span class="muted">(0,0) is ${inBox ? 'inside' : 'outside'} the box and ${rejF ? 'outside' : 'inside'} the ellipse.</span>`) +
-        `<br><span class="muted small">With highly correlated regressors the ellipse becomes long and thin: the data pin down β₁ + β₂ but not each coefficient.</span>`;
+          `<span class="muted">(0,0) is ${inBox ? 'inside' : 'outside'} the box and ${rejF ? 'outside' : 'inside'} the ellipse.</span>`);
       UI.renderMath(out);
     }
     draw();

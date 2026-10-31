@@ -1481,14 +1481,14 @@
     "href": "06-mlr-inference-ii.html#is-a-year-at-a-junior-college-worth-a-year-at-a-university",
     "title": "Multiple Regression Analysis III",
     "section": "Is a year at a junior college worth a year at a university?",
-    "text": "Is a year at a junior college worth a year at a university?\ntwoyear: \\;\\log(wage) = \\beta_0 + \\beta_1\\, jc + \\beta_2\\, univ + \\beta_3\\, exper + u\njc: years at a 2-year college, univ: years at a 4-year university.\n\ntw &lt;- lm(lwage ~ jc + univ + exper, data = twoyear)\n\n\n\\begin{aligned} \\widehat{\\log(wage)} &=  \\underset{\\small (0.0211)}{1.47} + \\underset{\\small (0.00683)}{0.0667}\\,jc + \\underset{\\small (0.00231)}{0.0769}\\,univ + \\underset{\\small (0.000157)}{0.00494}\\,exper \\\\ & n = 6763,\\quad R^2 = 0.222 \\end{aligned}\n\n\n\nH_0: \\beta_1 = \\beta_2 \\;\\;(\\beta_1 - \\beta_2 = 0) \\qquad\\text{vs.}\\qquad H_1: \\beta_1 &lt; \\beta_2\n\n\nt = \\frac{\\hat\\beta_1 - \\hat\\beta_2}{\\text{se}(\\hat\\beta_1 - \\hat\\beta_2)}, \\qquad\n\\text{Var}(\\hat\\beta_1 - \\hat\\beta_2) = \\text{Var}(\\hat\\beta_1) + \\text{Var}(\\hat\\beta_2) - 2\\,\\text{Cov}(\\hat\\beta_1, \\hat\\beta_2)\n\nThe problem: the covariance is not in the standard output."
+    "text": "Is a year at a junior college worth a year at a university?\ntwoyear: \\;\\log(wage) = \\beta_0 + \\beta_1\\, jc + \\beta_2\\, univ + \\beta_3\\, exper + u, with jc = years at a 2-year college and univ = years at a 4-year university.\n\ntw &lt;- lm(lwage ~ jc + univ + exper, data = twoyear)\n\n\n\\begin{aligned} \\widehat{\\log(wage)} &=  \\underset{\\small (0.0211)}{1.47} + \\underset{\\small (0.00683)}{0.0667}\\,jc + \\underset{\\small (0.00231)}{0.0769}\\,univ + \\underset{\\small (0.000157)}{0.00494}\\,exper \\\\ & n = 6763,\\quad R^2 = 0.222 \\end{aligned}\n\n\n\n\\begin{aligned}\nH_0&: \\beta_1 = \\beta_2 \\qquad (\\beta_1 - \\beta_2 = 0)\\\\\nH_1&: \\beta_1 &lt; \\beta_2 \\qquad (\\text{a university year is worth more})\n\\end{aligned}"
   },
   {
     "objectID": "06-mlr-inference-ii.html#the-trick-reparametrize-the-model",
     "href": "06-mlr-inference-ii.html#the-trick-reparametrize-the-model",
     "title": "Multiple Regression Analysis III",
     "section": "The trick: reparametrize the model",
-    "text": "The trick: reparametrize the model\nDefine \\theta_1 = \\beta_1 - \\beta_2, so \\beta_1 = \\theta_1 + \\beta_2. Substituting:\n\n\\log(wage) = \\beta_0 + \\theta_1\\, jc + \\beta_2\\,(jc + univ) + \\beta_3\\, exper + u = \\beta_0 + \\theta_1\\, jc + \\beta_2\\, totcoll + \\beta_3\\, exper + u\n\n\ntwoyear$totcoll &lt;- twoyear$jc + twoyear$univ\ntw2 &lt;- lm(lwage ~ jc + totcoll + exper, data = twoyear)\n\n\n\\begin{aligned} \\widehat{\\log(wage)} &=  \\underset{\\small (0.0211)}{1.47} - \\underset{\\small (0.00694)}{0.0102}\\,jc + \\underset{\\small (0.00231)}{0.0769}\\,totcoll + \\underset{\\small (0.000157)}{0.00494}\\,exper \\\\ & n = 6763,\\quad R^2 = 0.222 \\end{aligned}\n\n\nThe coefficient on jc is \\hat\\theta_1: \\;t = -0.0102/0.0069 = -1.47, one-sided p-value = 0.071.\nThere is some, but not strong, evidence that a year at a university is worth more than a year at a junior college."
+    "text": "The trick: reparametrize the model\nDefine \\theta_1 = \\beta_1 - \\beta_2, so \\beta_1 = \\theta_1 + \\beta_2. Substituting:\n\n\\begin{aligned}\n\\log(wage) &= \\beta_0 + \\theta_1\\, jc + \\beta_2\\,(jc + univ) + \\beta_3\\, exper + u\\\\\n&= \\beta_0 + \\theta_1\\, jc + \\beta_2\\, totcoll + \\beta_3\\, exper + u\n\\end{aligned}\n\n\ntwoyear$totcoll &lt;- twoyear$jc + twoyear$univ\ntw2 &lt;- lm(lwage ~ jc + totcoll + exper, data = twoyear)\n\n\n\\begin{aligned} \\widehat{\\log(wage)} &=  \\underset{\\small (0.0211)}{1.47} - \\underset{\\small (0.00694)}{0.0102}\\,jc + \\underset{\\small (0.00231)}{0.0769}\\,totcoll + \\underset{\\small (0.000157)}{0.00494}\\,exper \\\\ & n = 6763,\\quad R^2 = 0.222 \\end{aligned}\n\n\nThe coefficient on jc is \\hat\\theta_1: \\;t = -0.0102/0.0069 = -1.47, one-sided p-value = 0.071.\nThere is some, but not strong, evidence that a year at a university is worth more than a year at a junior college."
   },
   {
     "objectID": "06-mlr-inference-ii.html#exclusion-restrictions",
@@ -1502,7 +1502,7 @@
     "href": "06-mlr-inference-ii.html#the-f-statistic",
     "title": "Multiple Regression Analysis III",
     "section": "The F statistic",
-    "text": "The F statistic\n\nF = \\frac{(SSR_r - SSR_{ur})/q}{SSR_{ur}/(n-k-1)} \\;\\sim\\; F_{q,\\,n-k-1} \\quad\\text{under } H_0 \\text{ (CLM assumptions)}\n\n\n\n\nq = number of restrictions = numerator df = df_r - df_{ur}\nn - k - 1 = denominator df, from the unrestricted model\nF \\geq 0 always\nReject H_0 if F &gt; c, with c from F_{q,\\,n-k-1}\n\n\n\nR^2 form\nUsing SSR = SST(1-R^2):\n\nF = \\frac{(R^2_{ur} - R^2_r)/q}{(1 - R^2_{ur})/(n-k-1)}\n\nValid only when both models have the same dependent variable.\n\n\n\n\n\n\n\n\n\n\nSame sample!\n\n\nBoth models must be estimated on the same observations. If some observations have missing values only for the excluded variables, drop them from the restricted model too."
+    "text": "The F statistic\nUnder H_0 and assumptions MLR.1–MLR.6:\n\nF = \\frac{(SSR_r - SSR_{ur})/q}{SSR_{ur}/(n-k-1)} \\;\\sim\\; F_{q,\\,n-k-1}\n\n\nq = number of restrictions = numerator df = df_r - df_{ur}\nn - k - 1 = denominator df, from the unrestricted model\nF \\geq 0 always. Reject H_0 if F &gt; c, with c from F_{q,\\,n-k-1}\n\n\n\n\n\n\n\n\nSame sample!\n\n\nBoth models must be estimated on the same observations. If some observations have missing values only for the excluded variables, drop them from the restricted model too."
   },
   {
     "objectID": "06-mlr-inference-ii.html#example-parents-education-and-birth-weight",
@@ -1516,7 +1516,7 @@
     "href": "06-mlr-inference-ii.html#computing-the-f-statistic",
     "title": "Multiple Regression Analysis III",
     "section": "Computing the F statistic",
-    "text": "Computing the F statistic\nSSR_{ur} = 464{,}041, \\;SSR_r = 465{,}167, \\;q = 2, \\;n - k - 1 = 1191 - 5 - 1 = 1185:\n\nF = \\frac{(465{,}167 - 464{,}041)/2}{464{,}041/1185} = 1.44 \\;&lt;\\; c_{0.05} = 3.00 \\;\\Rightarrow\\; \\text{fail to reject } H_0"
+    "text": "Computing the F statistic\n\n\\begin{aligned}\nH_0&: \\beta_{motheduc} = 0,\\;\\; \\beta_{fatheduc} = 0\\\\\nH_1&: \\beta_{motheduc} \\neq 0 \\;\\text{ or }\\; \\beta_{fatheduc} \\neq 0\n\\end{aligned}\n\nSSR_{ur} = 464{,}041, \\;SSR_r = 465{,}167, \\;q = 2, \\;n - k - 1 = 1191 - 5 - 1 = 1185:\n\nF = \\frac{(465{,}167 - 464{,}041)/2}{464{,}041/1185} = 1.44 \\;&lt;\\; c_{0.05} = 3.00\n\nFail to reject H_0 at 5%: the data give no evidence that parents’ education matters for birth weight, once the other factors are held fixed."
   },
   {
     "objectID": "06-mlr-inference-ii.html#the-same-test-in-r",
@@ -1537,7 +1537,7 @@
     "href": "06-mlr-inference-ii.html#jointly-significant-individually-insignificant",
     "title": "Multiple Regression Analysis III",
     "section": "Jointly significant, individually insignificant",
-    "text": "Jointly significant, individually insignificant\nWith highly correlated regressors, each t test can fail to reject while the F test rejects.\n\n\n\n\nPress “Find a puzzling sample”. Both t tests fail to reject (0,0 is inside the blue box) but the F test rejects (0,0 is outside the orange ellipse). Then lower the correlation: the ellipse becomes rounder and the puzzle disappears. Typical case: several measures of firm performance in a CEO salary equation."
+    "text": "Jointly significant, individually insignificant\nWith highly correlated regressors, each t test can fail to reject while the F test rejects.\n\n\n\n\nWith highly correlated regressors the ellipse becomes long and thin: the data pin down beta1 + beta2 but not each coefficient. Press “Find a puzzling sample”. Both t tests fail to reject (0,0 is inside the blue box) but the F test rejects (0,0 is outside the orange ellipse). Then lower the correlation: the ellipse becomes rounder and the puzzle disappears. Typical case: several measures of firm performance in a CEO salary equation."
   },
   {
     "objectID": "06-mlr-inference-ii.html#relationship-between-t-and-f",
@@ -1551,7 +1551,7 @@
     "href": "06-mlr-inference-ii.html#overall-significance-of-a-regression",
     "title": "Multiple Regression Analysis III",
     "section": "Overall significance of a regression",
-    "text": "Overall significance of a regression\n\nH_0: \\beta_1 = \\beta_2 = \\dots = \\beta_k = 0 \\qquad (\\text{none of the regressors helps explain } y)\n\nThe restricted model is y = \\beta_0 + u, with R^2_r = 0:\n\nF = \\frac{R^2/k}{(1 - R^2)/(n-k-1)} \\;\\sim\\; F_{k,\\,n-k-1}\n\nR reports it at the bottom of summary(): for the birth weight model, F(5, 1185) = 9.55, p-value &lt; 0.0001.\n\n\n\n\n\n\n\nLow R², significant regression\n\n\nR^2 = 0.039 is small, yet the regressors are jointly highly significant. A low R^2 does not mean the regression is useless."
+    "text": "Overall significance of a regression\n\n\\begin{aligned}\nH_0&: \\beta_1 = \\beta_2 = \\dots = \\beta_k = 0 \\qquad (\\text{none of the regressors helps explain } y)\\\\\nH_1&: \\beta_j \\neq 0 \\;\\text{ for at least one } j = 1, \\dots, k\n\\end{aligned}\n\nThe restricted model is y = \\beta_0 + u, with R^2_r = 0:\n\nF = \\frac{R^2/k}{(1 - R^2)/(n-k-1)} \\;\\sim\\; F_{k,\\,n-k-1}\n\nR reports it at the bottom of summary(): for the birth weight model, F(5, 1185) = 9.55, p-value &lt; 0.0001."
   },
   {
     "objectID": "06-mlr-inference-ii.html#general-linear-restrictions-rational-house-valuations",
@@ -1579,14 +1579,14 @@
     "href": "06-mlr-inference-ii.html#r-toolkit-for-this-topic",
     "title": "Multiple Regression Analysis III",
     "section": "R toolkit for this topic",
-    "text": "R toolkit for this topic\n\nlibrary(car)\nur &lt;- lm(bwght ~ cigs + parity + faminc + motheduc + fatheduc, data = bwght)\nlinearHypothesis(ur, c(\"motheduc = 0\", \"fatheduc = 0\"))    # F test, exclusion\nsummary(ur)$fstatistic                                    # overall significance\n\nr  &lt;- lm(bwght ~ cigs + parity + faminc, data = model.frame(ur))  # same sample!\nanova(r, ur)                                              # F test via two models\n\n# LM test\naux &lt;- lm(resid(r) ~ cigs + parity + faminc + motheduc + fatheduc, data = model.frame(ur))\nLM  &lt;- nobs(aux) * summary(aux)$r.squared\npchisq(LM, df = 2, lower.tail = FALSE)\n\n# linear combination: H0 beta_jc = beta_univ\nlinearHypothesis(lm(lwage ~ jc + univ + exper, data = twoyear), \"jc = univ\")"
+    "text": "R toolkit for this topic\n\nlibrary(car)\nur &lt;- lm(bwght ~ cigs + parity + faminc + motheduc + fatheduc, data = bwght)\nlinearHypothesis(ur, c(\"motheduc = 0\", \"fatheduc = 0\"))    # F test, exclusion\nsummary(ur)$fstatistic                                    # overall significance\n\nr  &lt;- lm(bwght ~ cigs + parity + faminc, data = model.frame(ur))  # same sample!\nanova(r, ur)                                              # F test via two models\n\n# general linear restrictions\nw &lt;- lm(log(wage) ~ educ + exper + tenure, data = wage1)\nlinearHypothesis(w, \"exper = tenure\")                     # equal coefficients\n\n# LM test\naux &lt;- lm(resid(r) ~ cigs + parity + faminc + motheduc + fatheduc, data = model.frame(ur))\nLM  &lt;- nobs(aux) * summary(aux)$r.squared\npchisq(LM, df = 2, lower.tail = FALSE)"
   },
   {
     "objectID": "06-mlr-inference-ii.html#key-takeaways",
     "href": "06-mlr-inference-ii.html#key-takeaways",
     "title": "Multiple Regression Analysis III",
     "section": "Key takeaways",
-    "text": "Key takeaways\n\n\n\nA linear combination such as \\beta_1 - \\beta_2 can be tested with a t test after reparametrizing the model.\nThe F test compares SSR_r and SSR_{ur} for q restrictions: F \\sim F_{q,\\,n-k-1}.\nVariables can be jointly significant while individually insignificant, especially when they are correlated.\nOverall significance: F = \\frac{R^2/k}{(1-R^2)/(n-k-1)}.\nThe R^2 form works only when both models have the same dependent variable.\nThe LM test = n R^2_{\\tilde u} needs only the restricted model and is valid in large samples.\n\n\n\nNext topic\nLarge-sample properties of OLS: consistency and asymptotic normality.\nWooldridge ch. 5 Heiss ch. 5"
+    "text": "Key takeaways\n\n\n\nA linear combination such as \\beta_1 - \\beta_2 can be tested with a t test after reparametrizing the model.\nThe F test compares SSR_r and SSR_{ur} for q restrictions. Under H_0 and MLR.1–MLR.6, F \\sim F_{q,\\,n-k-1}.\nAlways write H_1 out: at least one restriction fails.\nVariables can be jointly significant while individually insignificant, especially when they are correlated.\nGeneral restrictions: fix a value (new y, SSR form only) or tie coefficients (new regressor).\nThe LM test = n R^2_{\\tilde u} needs only the restricted model and is valid in large samples under MLR.1–MLR.5.\n\n\n\nNext topic\nLarge-sample properties of OLS: consistency and asymptotic normality.\nWooldridge ch. 5 Heiss ch. 5"
   },
   {
     "objectID": "08-further-topics.html#todays-roadmap",
@@ -2140,5 +2140,89 @@
     "title": "Multiple Regression Analysis II",
     "section": "Practice: today’s five tests",
     "text": "Practice: today’s five tests\nPick an example and a significance level. Before looking at the decision, say it yourself: which tail, which critical value, reject or not?\n\n\n\n\nexper: right tail, rejected at all three levels. enroll: left tail, not rejected. skipped: two-sided, rejected even at 1%. crime: H0 elasticity = 1 against &gt; 1, rejected even at 1% (p = 0.008). nox: H0 elasticity = -1, two-sided, not rejected at any level."
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#the-test-statistic-needs-a-covariance",
+    "href": "06-mlr-inference-ii.html#the-test-statistic-needs-a-covariance",
+    "title": "Multiple Regression Analysis III",
+    "section": "The test statistic needs a covariance",
+    "text": "The test statistic needs a covariance\n\nt = \\frac{\\hat\\beta_1 - \\hat\\beta_2}{\\text{se}(\\hat\\beta_1 - \\hat\\beta_2)}\n\n\n\\text{Var}(\\hat\\beta_1 - \\hat\\beta_2) = \\text{Var}(\\hat\\beta_1) + \\text{Var}(\\hat\\beta_2) - 2\\,\\text{Cov}(\\hat\\beta_1, \\hat\\beta_2)\n\nThe two variances come from the standard errors, but the covariance is not in the standard output.\n\nTwo ways out: compute it from the variance–covariance matrix, vcov(tw), or let R do the work by rewriting the model so that \\beta_1 - \\beta_2 becomes a single coefficient."
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#exclusion-restrictions-the-hypotheses",
+    "href": "06-mlr-inference-ii.html#exclusion-restrictions-the-hypotheses",
+    "title": "Multiple Regression Analysis III",
+    "section": "Exclusion restrictions: the hypotheses",
+    "text": "Exclusion restrictions: the hypotheses\nUnrestricted model with k = 5 regressors:\n\ny = \\beta_0 + \\beta_1 x_1 + \\beta_2 x_2 + \\beta_3 x_3 + \\beta_4 x_4 + \\beta_5 x_5 + u\n\nDo x_3, x_4, x_5 matter once x_1, x_2 are controlled for?\n\n\\begin{aligned}\nH_0&: \\beta_3 = 0,\\;\\; \\beta_4 = 0,\\;\\; \\beta_5 = 0\\\\\nH_1&: \\beta_3 \\neq 0 \\;\\text{ or }\\; \\beta_4 \\neq 0 \\;\\text{ or }\\; \\beta_5 \\neq 0\n\\end{aligned}\n\nH_0 imposes q = 3 exclusion restrictions. H_1 says that at least one of the three coefficients is non-zero; it is enough that one restriction fails."
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#exclusion-restrictions-two-models",
+    "href": "06-mlr-inference-ii.html#exclusion-restrictions-two-models",
+    "title": "Multiple Regression Analysis III",
+    "section": "Exclusion restrictions: two models",
+    "text": "Exclusion restrictions: two models\nUnrestricted model, estimated as it is:\n\ny = \\beta_0 + \\beta_1 x_1 + \\beta_2 x_2 + \\beta_3 x_3 + \\beta_4 x_4 + \\beta_5 x_5 + u \\qquad \\rightarrow\\; SSR_{ur},\\; R^2_{ur}\n\nRestricted model, estimated with H_0 imposed:\n\ny = \\beta_0 + \\beta_1 x_1 + \\beta_2 x_2 + u \\qquad \\rightarrow\\; SSR_r,\\; R^2_r\n\n\nDropping variables can only increase the SSR. The question the F test answers: does it increase a lot, more than chance alone would produce if H_0 were true?"
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#the-r2-form-of-the-f-statistic",
+    "href": "06-mlr-inference-ii.html#the-r2-form-of-the-f-statistic",
+    "title": "Multiple Regression Analysis III",
+    "section": "The R^2 form of the F statistic",
+    "text": "The R^2 form of the F statistic\nSince SSR = SST\\,(1 - R^2) and both models share the same SST:\n\nF = \\frac{(R^2_{ur} - R^2_r)/q}{(1 - R^2_{ur})/(n-k-1)}\n\n\n\n\n\n\n\n\n\nOnly with the same dependent variable\n\n\nThe two models must have the same y, otherwise their SST differ and this form is wrong. The rational valuation example below is a case where it cannot be used."
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#a-low-r2-is-not-a-useless-regression",
+    "href": "06-mlr-inference-ii.html#a-low-r2-is-not-a-useless-regression",
+    "title": "Multiple Regression Analysis III",
+    "section": "A low R^2 is not a useless regression",
+    "text": "A low R^2 is not a useless regression\nFor the birth weight model, R^2 = 0.039: the five regressors explain only about 4% of the variation in birth weight.\n\nYet the overall F test rejects H_0 with a p-value below 0.0001: the regressors are jointly highly significant.\n\n\n\n\n\n\n\nTwo different questions\n\n\nR^2 asks how much of the variation in y we explain. The F test asks whether the regressors explain anything beyond chance. With 1,191 babies, even a small share of explained variation is clear evidence that the regressors matter."
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#rational-house-valuations",
+    "href": "06-mlr-inference-ii.html#rational-house-valuations",
+    "title": "Multiple Regression Analysis III",
+    "section": "Rational house valuations",
+    "text": "Rational house valuations\nhprice1: are assessed values rational? If so, once the assessment is known, nothing else should help predict the price.\n\nhr &lt;- lm(lprice ~ lassess + llotsize + lsqrft + bdrms, data = hprice1)\n\n\n\\begin{aligned} \\widehat{\\log(price)} &=  \\underset{\\small (0.570)}{0.264} + \\underset{\\small (0.151)}{1.04}\\,lassess + \\underset{\\small (0.0386)}{0.00744}\\,llotsize \\\\ & - \\underset{\\small (0.138)}{0.103}\\,lsqrft + \\underset{\\small (0.0221)}{0.0338}\\,bdrms \\\\ & n = 88,\\quad R^2 = 0.773 \\end{aligned}\n\n\n\\begin{aligned}\nH_0&: \\beta_1 = 1,\\;\\; \\beta_2 = 0,\\;\\; \\beta_3 = 0,\\;\\; \\beta_4 = 0 \\qquad (q = 4)\\\\\nH_1&: \\beta_1 \\neq 1 \\;\\text{ or }\\; \\beta_2 \\neq 0 \\;\\text{ or }\\; \\beta_3 \\neq 0 \\;\\text{ or }\\; \\beta_4 \\neq 0\n\\end{aligned}"
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#is-a-year-with-the-employer-worth-more-than-experience",
+    "href": "06-mlr-inference-ii.html#is-a-year-with-the-employer-worth-more-than-experience",
+    "title": "Multiple Regression Analysis III",
+    "section": "Is a year with the employer worth more than experience?",
+    "text": "Is a year with the employer worth more than experience?\nwage1, the wage equation from last week. exper = years in the labor market, tenure = years with the current employer.\n\nw &lt;- lm(log(wage) ~ educ + exper + tenure, data = wage1)\n\n\n\\begin{aligned} \\widehat{\\log(wage)} &=  \\underset{\\small (0.104)}{0.284} + \\underset{\\small (0.00733)}{0.0920}\\,educ + \\underset{\\small (0.00172)}{0.00412}\\,exper + \\underset{\\small (0.00309)}{0.0221}\\,tenure \\\\ & n = 526,\\quad R^2 = 0.316 \\end{aligned}\n\n\n\\begin{aligned}\nH_0&: \\beta_{exper} = \\beta_{tenure} \\qquad (\\text{a year with the employer adds nothing extra})\\\\\nH_1&: \\beta_{exper} \\neq \\beta_{tenure}\n\\end{aligned}\n\nOne restriction, q = 1, but neither coefficient is set to a known value: H_0 ties them together."
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#equal-coefficients-the-restricted-model",
+    "href": "06-mlr-inference-ii.html#equal-coefficients-the-restricted-model",
+    "title": "Multiple Regression Analysis III",
+    "section": "Equal coefficients: the restricted model",
+    "text": "Equal coefficients: the restricted model\nUnder H_0 both coefficients equal some common \\beta_2, so\n\n\\log(wage) = \\beta_0 + \\beta_1\\, educ + \\beta_2\\,(exper + tenure) + u\n\n\nwr &lt;- lm(log(wage) ~ educ + I(exper + tenure), data = wage1)\nc(SSR_r = sum(resid(wr)^2), SSR_ur = sum(resid(w)^2))\n\n#&gt;    SSR_r   SSR_ur \n#&gt; 104.9446 101.4556\n\n\n\nF = \\frac{(104.945 - 101.456)/1}{101.456/522} = 17.95 \\;&gt;\\; c_{0.01} = 6.68 \\;\\Rightarrow\\; \\text{reject } H_0\n\nA year with the current employer raises the wage by about 2.2%, a general year of experience by only 0.4%. Seniority pays."
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#two-ways-to-impose-a-general-restriction",
+    "href": "06-mlr-inference-ii.html#two-ways-to-impose-a-general-restriction",
+    "title": "Multiple Regression Analysis III",
+    "section": "Two ways to impose a general restriction",
+    "text": "Two ways to impose a general restriction\n\n\n\nFix a coefficient at a value\nH_0: \\beta_1 = 1 (rational valuations)\nMove the known term to the left: the restricted model has a new dependent variable, \\log(price) - \\log(assess).\nOnly the SSR form of F is valid.\n\n\n\nTie coefficients together\nH_0: \\beta_{exper} = \\beta_{tenure} (seniority)\nCombine the regressors: the restricted model has a new regressor, exper + tenure.\nThe dependent variable is unchanged, so the R^2 form also works: R^2_{ur} = 0.316, R^2_r = 0.2925 give the same F = 17.95.\n\n\n\nEither way R does it in one line: linearHypothesis(w, \"exper = tenure\"). With q = 1, F = t^2: the reparametrization trick gives t = -4.24, and (-4.24)^2 = 17.95."
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#the-lm-statistic-in-three-steps",
+    "href": "06-mlr-inference-ii.html#the-lm-statistic-in-three-steps",
+    "title": "Multiple Regression Analysis III",
+    "section": "The LM statistic in three steps",
+    "text": "The LM statistic in three steps\nThe Lagrange multiplier (score) statistic for q exclusion restrictions:\n\nEstimate the restricted model and save the residuals \\tilde u.\nRegress \\tilde u on all the regressors, including the excluded ones. Save its R^2_{\\tilde u}.\nCompute \\;LM = n\\,R^2_{\\tilde u}.\n\nUnder H_0 and MLR.1–MLR.5 (normality is not needed), \\;LM \\stackrel{a}{\\sim} \\chi^2_q\\; in large samples. Reject H_0 if LM &gt; c, with c from \\chi^2_q.\n\nIntuition: if the excluded variables matter, they should explain part of what the restricted model left in \\tilde u, and R^2_{\\tilde u} will not be close to zero."
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#interactive-the-lm-test-step-by-step",
+    "href": "06-mlr-inference-ii.html#interactive-the-lm-test-step-by-step",
+    "title": "Multiple Regression Analysis III",
+    "section": "Interactive: the LM test step by step",
+    "text": "Interactive: the LM test step by step\nParents’ education again: \\;H_0: \\beta_{motheduc} = 0,\\; \\beta_{fatheduc} = 0\\; vs. \\;H_1: \\beta_{motheduc} \\neq 0 \\text{ or } \\beta_{fatheduc} \\neq 0."
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#is-seniority-worth-more-than-experience",
+    "href": "06-mlr-inference-ii.html#is-seniority-worth-more-than-experience",
+    "title": "Multiple Regression Analysis III",
+    "section": "Is seniority worth more than experience?",
+    "text": "Is seniority worth more than experience?\nwage1, the wage equation from last week. exper = years in the labor market, tenure = years with the current employer.\n\nw &lt;- lm(log(wage) ~ educ + exper + tenure, data = wage1)\n\n\n\\begin{aligned} \\widehat{\\log(wage)} &=  \\underset{\\small (0.104)}{0.284} + \\underset{\\small (0.00733)}{0.0920}\\,educ + \\underset{\\small (0.00172)}{0.00412}\\,exper + \\underset{\\small (0.00309)}{0.0221}\\,tenure \\\\ & n = 526,\\quad R^2 = 0.316 \\end{aligned}\n\n\n\\begin{aligned}\nH_0&: \\beta_{exper} = \\beta_{tenure} \\qquad (\\text{a year with the employer adds nothing extra})\\\\\nH_1&: \\beta_{exper} \\neq \\beta_{tenure}\n\\end{aligned}\n\nOne restriction, q = 1, but neither coefficient is set to a known value: H_0 ties them together."
   }
 ]
