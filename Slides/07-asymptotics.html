@@ -244,6 +244,7 @@ Prof.&nbsp;Dr.&nbsp;Hüseyin Taştan
 <li>define <strong>consistency</strong> and explain why OLS is consistent under MLR.4′</li>
 <li>compute the <strong>asymptotic bias</strong> caused by an omitted variable</li>
 <li>state <strong>asymptotic normality</strong> and explain why <span class="math inline">t</span> and <span class="math inline">F</span> tests survive without normal errors</li>
+<li>compute the <strong>LM</strong> statistic and compare it with the <span class="math inline">F</span> test</li>
 <li>explain <strong>asymptotic efficiency</strong></li>
 </ul>
 </div>
@@ -449,9 +450,48 @@ Prof.&nbsp;Dr.&nbsp;Hüseyin Taştan
 </div>
 <p>By about 120 degrees of freedom the difference is in the third decimal. This is why, with a big sample, we can quote <strong>1.96</strong> and stop worrying about degrees of freedom — and why the <span class="math inline">F</span> and <span class="math inline">LM</span> tests agree.</p>
 </section>
+<section id="the-lagrange-multiplier-lm-test" class="slide level2">
+<h2>The Lagrange multiplier (LM) test</h2>
+<p>A large-sample alternative to the <span class="math inline">F</span> test for <span class="math inline">q</span> exclusion restrictions:</p>
+<p><span class="math display">
+\begin{aligned}
+H_0&amp;: \beta_{k-q+1} = 0,\; \dots,\; \beta_k = 0\\
+H_1&amp;: \beta_j \neq 0 \;\text{ for at least one } j = k-q+1, \dots, k
+\end{aligned}
+</span></p>
+<ol type="1">
+<li>Estimate the <strong>restricted</strong> model and save the residuals <span class="math inline">\tilde u</span>.</li>
+<li>Regress <span class="math inline">\tilde u</span> on <strong>all</strong> the regressors, including the excluded ones. Save its <span class="math inline">R^2_{\tilde u}</span>.</li>
+<li>Compute <span class="math inline">\;LM = n\,R^2_{\tilde u}</span>.</li>
+</ol>
+<p>Under <span class="math inline">H_0</span> and <strong>MLR.1–MLR.5</strong> (normality is <strong>not</strong> needed), <span class="math inline">\;LM \stackrel{a}{\sim} \chi^2_q</span>. Reject <span class="math inline">H_0</span> if <span class="math inline">LM &gt; c</span>, with <span class="math inline">c</span> from <span class="math inline">\chi^2_q</span>.</p>
+</section>
+<section id="why-it-works" class="slide level2">
+<h2>Why it works</h2>
+<p>If the excluded variables matter, they should explain part of what the restricted model left in <span class="math inline">\tilde u</span>, and <span class="math inline">R^2_{\tilde u}</span> will not be close to zero.</p>
+<div class="fragment">
+<ul>
+<li>Only the <strong>restricted</strong> model is estimated. This is the attraction of LM tests: the same idea returns in the tests for heteroskedasticity (Topic 11).</li>
+<li>The <span class="math inline">\chi^2</span> distribution is a <strong>large-sample</strong> result, like Theorem 5.2: no normality assumption, but <span class="math inline">n</span> must be large.</li>
+</ul>
+</div>
+</section>
+<section id="interactive-the-lm-test-step-by-step" class="slide level2 smaller">
+<h2>Interactive: the LM test step by step</h2>
+<p>Parents’ education and birth weight (<span class="math inline">n = 1{,}191</span>):</p>
+<p><span class="math display">
+\begin{aligned}
+H_0&amp;: \beta_{motheduc} = 0,\;\; \beta_{fatheduc} = 0\\
+H_1&amp;: \beta_{motheduc} \neq 0 \;\text{ or }\; \beta_{fatheduc} \neq 0
+\end{aligned}
+</span></p>
+<div class="widget" data-widget="lm-steps">
+
+</div>
+</section>
 <section id="f-and-lm-on-the-same-data" class="slide level2 smaller">
 <h2><span class="math inline">F</span> and <span class="math inline">LM</span> on the same data</h2>
-<p>Birth weights again (<span class="math inline">n = 1{,}191</span>), testing <span class="math inline">H_0: \beta_{motheduc} = \beta_{fatheduc} = 0</span>:</p>
+<p>Birth weights again: the <span class="math inline">F</span> test and the <span class="math inline">LM</span> test of the same <span class="math inline">H_0</span> against the same <span class="math inline">H_1</span>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"bwght"</span>)</span>
 <span id="cb3-2"><a aria-hidden="true" tabindex="-1"></a>ur  <span class="ot">&lt;-</span> <span class="fu">lm</span>(bwght <span class="sc">~</span> cigs <span class="sc">+</span> parity <span class="sc">+</span> faminc <span class="sc">+</span> motheduc <span class="sc">+</span> fatheduc, <span class="at">data =</span> bwght)</span>

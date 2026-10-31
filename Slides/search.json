@@ -333,7 +333,7 @@
     "href": "07-asymptotics.html#todays-roadmap",
     "title": "Large-Sample Properties of OLS",
     "section": "Today’s roadmap",
-    "text": "Today’s roadmap\n\n\n\nBy the end of this lecture you should be able to\n\ndistinguish finite-sample from asymptotic properties\ndefine consistency and explain why OLS is consistent under MLR.4′\ncompute the asymptotic bias caused by an omitted variable\nstate asymptotic normality and explain why t and F tests survive without normal errors\nexplain asymptotic efficiency\n\n\n\n\nReading\nFall 2026 · Week 6\nWooldridge ch. 5 Heiss ch. 5\n\n\nLab\nSimulations in R. See Lab 08 on the course page.\n\n\nPreviously\nUnbiasedness, BLUE and exact t/F distributions all hold for any sample size n, but the last one needs normal errors."
+    "text": "Today’s roadmap\n\n\n\nBy the end of this lecture you should be able to\n\ndistinguish finite-sample from asymptotic properties\ndefine consistency and explain why OLS is consistent under MLR.4′\ncompute the asymptotic bias caused by an omitted variable\nstate asymptotic normality and explain why t and F tests survive without normal errors\ncompute the LM statistic and compare it with the F test\nexplain asymptotic efficiency\n\n\n\n\nReading\nFall 2026 · Week 6\nWooldridge ch. 5 Heiss ch. 5\n\n\nLab\nSimulations in R. See Lab 08 on the course page.\n\n\nPreviously\nUnbiasedness, BLUE and exact t/F distributions all hold for any sample size n, but the last one needs normal errors."
   },
   {
     "objectID": "07-asymptotics.html#warm-up-what-does-a-big-sample-fix",
@@ -403,7 +403,7 @@
     "href": "07-asymptotics.html#f-and-lm-on-the-same-data",
     "title": "Large-Sample Properties of OLS",
     "section": "F and LM on the same data",
-    "text": "F and LM on the same data\nBirth weights again (n = 1{,}191), testing H_0: \\beta_{motheduc} = \\beta_{fatheduc} = 0:\n\ndata(\"bwght\")\nur  &lt;- lm(bwght ~ cigs + parity + faminc + motheduc + fatheduc, data = bwght)\nr   &lt;- lm(bwght ~ cigs + parity + faminc, data = model.frame(ur))\naux &lt;- lm(resid(r) ~ cigs + parity + faminc + motheduc + fatheduc, data = model.frame(ur))\nLM  &lt;- nobs(aux) * summary(aux)$r.squared\nround(c(F = anova(r, ur)$F[2],  p_F = anova(r, ur)$`Pr(&gt;F)`[2],\n        LM = LM, p_LM = pchisq(LM, df = 2, lower.tail = FALSE)), 4)\n\n#&gt;      F    p_F     LM   p_LM \n#&gt; 1.4373 0.2380 2.8821 0.2367\n\n\nThe finite-sample F test (p = 0.238) and the large-sample LM test (p = 0.237) give the same answer, as asymptotic theory promises."
+    "text": "F and LM on the same data\nBirth weights again: the F test and the LM test of the same H_0 against the same H_1.\n\ndata(\"bwght\")\nur  &lt;- lm(bwght ~ cigs + parity + faminc + motheduc + fatheduc, data = bwght)\nr   &lt;- lm(bwght ~ cigs + parity + faminc, data = model.frame(ur))\naux &lt;- lm(resid(r) ~ cigs + parity + faminc + motheduc + fatheduc, data = model.frame(ur))\nLM  &lt;- nobs(aux) * summary(aux)$r.squared\nround(c(F = anova(r, ur)$F[2],  p_F = anova(r, ur)$`Pr(&gt;F)`[2],\n        LM = LM, p_LM = pchisq(LM, df = 2, lower.tail = FALSE)), 4)\n\n#&gt;      F    p_F     LM   p_LM \n#&gt; 1.4373 0.2380 2.8821 0.2367\n\n\nThe finite-sample F test (p = 0.238) and the large-sample LM test (p = 0.237) give the same answer, as asymptotic theory promises."
   },
   {
     "objectID": "07-asymptotics.html#asymptotic-efficiency",
@@ -1467,7 +1467,7 @@
     "href": "06-mlr-inference-ii.html#todays-roadmap",
     "title": "Multiple Regression Analysis III",
     "section": "Today’s roadmap",
-    "text": "Today’s roadmap\n\n\n\nBy the end of this lecture you should be able to\n\ntest a hypothesis about a linear combination of parameters\ncarry out an F test for exclusion restrictions and for overall significance\nexplain why variables can be jointly significant but individually insignificant\ntest general linear restrictions\ncompute the LM statistic and explain when it is used\n\n\n\n\nReading\nFall 2026 · Week 6\nWooldridge ch. 4.4–4.6 Heiss ch. 4\n\n\nLab\nHypothesis tests in R. See Lab 07 on the course page.\n\n\nLast week\nt tests and confidence intervals for one parameter at a time."
+    "text": "Today’s roadmap\n\n\n\nBy the end of this lecture you should be able to\n\ntest a hypothesis about a linear combination of parameters\ncarry out an F test for exclusion restrictions and for overall significance\nexplain why variables can be jointly significant but individually insignificant\ntest general linear restrictions\n\n\n\n\nReading\nFall 2026 · Week 6\nWooldridge ch. 4.4–4.6 Heiss ch. 4\n\n\nLab\nHypothesis tests in R. See Lab 07 on the course page.\n\n\nLast week\nt tests and confidence intervals for one parameter at a time."
   },
   {
     "objectID": "06-mlr-inference-ii.html#warm-up-do-parents-education-matter",
@@ -1537,7 +1537,7 @@
     "href": "06-mlr-inference-ii.html#jointly-significant-individually-insignificant",
     "title": "Multiple Regression Analysis III",
     "section": "Jointly significant, individually insignificant",
-    "text": "Jointly significant, individually insignificant\nWith highly correlated regressors, each t test can fail to reject while the F test rejects.\n\n\n\n\nWith highly correlated regressors the ellipse becomes long and thin: the data pin down beta1 + beta2 but not each coefficient. Press “Find a puzzling sample”. Both t tests fail to reject (0,0 is inside the blue box) but the F test rejects (0,0 is outside the orange ellipse). Then lower the correlation: the ellipse becomes rounder and the puzzle disappears. Typical case: several measures of firm performance in a CEO salary equation."
+    "text": "Jointly significant, individually insignificant\nmlb1: salaries of 353 Major League Baseball players. Once career length is controlled for, does performance matter?\n\nmlb &lt;- lm(log(salary) ~ years + gamesyr + bavg + hrunsyr + rbisyr, data = mlb1)\n\n\n\\begin{aligned} \\widehat{\\log(salary)} &=  \\underset{\\small (0.289)}{11.19} + \\underset{\\small (0.0121)}{0.0689}\\,years + \\underset{\\small (0.00265)}{0.0126}\\,gamesyr + \\underset{\\small (0.00110)}{0.000979}\\,bavg \\\\ & + \\underset{\\small (0.0161)}{0.0144}\\,hrunsyr + \\underset{\\small (0.00717)}{0.0108}\\,rbisyr \\\\ & n = 353,\\quad R^2 = 0.628 \\end{aligned}\n\nbavg: batting average, hrunsyr: home runs per year, rbisyr: runs batted in per year.\n\n\\begin{aligned}\nH_0&: \\beta_{bavg} = 0,\\;\\; \\beta_{hrunsyr} = 0,\\;\\; \\beta_{rbisyr} = 0\\\\\nH_1&: \\beta_{bavg} \\neq 0 \\;\\text{ or }\\; \\beta_{hrunsyr} \\neq 0 \\;\\text{ or }\\; \\beta_{rbisyr} \\neq 0\n\\end{aligned}"
   },
   {
     "objectID": "06-mlr-inference-ii.html#relationship-between-t-and-f",
@@ -1579,14 +1579,14 @@
     "href": "06-mlr-inference-ii.html#r-toolkit-for-this-topic",
     "title": "Multiple Regression Analysis III",
     "section": "R toolkit for this topic",
-    "text": "R toolkit for this topic\n\nlibrary(car)\nur &lt;- lm(bwght ~ cigs + parity + faminc + motheduc + fatheduc, data = bwght)\nlinearHypothesis(ur, c(\"motheduc = 0\", \"fatheduc = 0\"))    # F test, exclusion\nsummary(ur)$fstatistic                                    # overall significance\n\nr  &lt;- lm(bwght ~ cigs + parity + faminc, data = model.frame(ur))  # same sample!\nanova(r, ur)                                              # F test via two models\n\n# general linear restrictions\nhs &lt;- lm(lprice ~ llotsize + lsqrft + bdrms, data = hprice1)\nlinearHypothesis(hs, c(\"llotsize + lsqrft = 1\", \"bdrms = 0\"))   # sum + exclusion\n\n# LM test\naux &lt;- lm(resid(r) ~ cigs + parity + faminc + motheduc + fatheduc, data = model.frame(ur))\nLM  &lt;- nobs(aux) * summary(aux)$r.squared\npchisq(LM, df = 2, lower.tail = FALSE)"
+    "text": "R toolkit for this topic\n\nlibrary(car)\nur &lt;- lm(bwght ~ cigs + parity + faminc + motheduc + fatheduc, data = bwght)\nlinearHypothesis(ur, c(\"motheduc = 0\", \"fatheduc = 0\"))    # F test, exclusion\nsummary(ur)$fstatistic                                    # overall significance\n\nr  &lt;- lm(bwght ~ cigs + parity + faminc, data = model.frame(ur))  # same sample!\nanova(r, ur)                                              # F test via two models\n\n# general linear restrictions\nhs &lt;- lm(lprice ~ llotsize + lsqrft + bdrms, data = hprice1)\nlinearHypothesis(hs, c(\"llotsize + lsqrft = 1\", \"bdrms = 0\"))   # sum + exclusion"
   },
   {
     "objectID": "06-mlr-inference-ii.html#key-takeaways",
     "href": "06-mlr-inference-ii.html#key-takeaways",
     "title": "Multiple Regression Analysis III",
     "section": "Key takeaways",
-    "text": "Key takeaways\n\n\n\nA linear combination such as \\beta_1 - \\beta_2 can be tested with a t test after reparametrizing the model.\nThe F test compares SSR_r and SSR_{ur} for q restrictions. Under H_0 and MLR.1–MLR.6, F \\sim F_{q,\\,n-k-1}.\nAlways write H_1 out: at least one restriction fails.\nVariables can be jointly significant while individually insignificant, especially when they are correlated.\nGeneral restrictions (a value, equal coefficients, a sum): impose H_0, use the SSR form of F.\nThe LM test = n R^2_{\\tilde u} needs only the restricted model and is valid in large samples under MLR.1–MLR.5.\n\n\n\nNext topic\nLarge-sample properties of OLS: consistency and asymptotic normality.\nWooldridge ch. 5 Heiss ch. 5"
+    "text": "Key takeaways\n\n\n\nA linear combination such as \\beta_1 - \\beta_2 can be tested with a t test after reparametrizing the model.\nThe F test compares SSR_r and SSR_{ur} for q restrictions. Under H_0 and MLR.1–MLR.6, F \\sim F_{q,\\,n-k-1}.\nAlways write H_1 out: at least one restriction fails.\nVariables can be jointly significant while individually insignificant, especially when they are correlated.\nGeneral linear restrictions: impose H_0 in the restricted model and use the SSR form of F.\n\n\n\nNext topic\nLarge-sample properties of OLS: consistency, asymptotic normality and the LM test.\nWooldridge ch. 5 Heiss ch. 5"
   },
   {
     "objectID": "08-further-topics.html#todays-roadmap",
@@ -2146,7 +2146,7 @@
     "href": "06-mlr-inference-ii.html#the-test-statistic-needs-a-covariance",
     "title": "Multiple Regression Analysis III",
     "section": "The test statistic needs a covariance",
-    "text": "The test statistic needs a covariance\n\nt = \\frac{\\hat\\beta_1 - \\hat\\beta_2}{\\text{se}(\\hat\\beta_1 - \\hat\\beta_2)}\n\n\n\\text{Var}(\\hat\\beta_1 - \\hat\\beta_2) = \\text{Var}(\\hat\\beta_1) + \\text{Var}(\\hat\\beta_2) - 2\\,\\text{Cov}(\\hat\\beta_1, \\hat\\beta_2)\n\nThe two variances come from the standard errors, but the covariance is not in the standard output.\n\nTwo ways out: compute it from the variance–covariance matrix, vcov(tw), or let R do the work by rewriting the model so that \\beta_1 - \\beta_2 becomes a single coefficient."
+    "text": "The test statistic needs a covariance\n\nt = \\frac{\\hat\\beta_1 - \\hat\\beta_2}{\\text{se}(\\hat\\beta_1 - \\hat\\beta_2)}\n\n\n\\text{Var}(\\hat\\beta_1 - \\hat\\beta_2) = \\text{Var}(\\hat\\beta_1) + \\text{Var}(\\hat\\beta_2) - 2\\,\\text{Cov}(\\hat\\beta_1, \\hat\\beta_2)\n\nThe standard error is the square root of this variance, \\;\\text{se}(\\hat\\beta_1 - \\hat\\beta_2) = \\sqrt{\\widehat{\\text{Var}}(\\hat\\beta_1 - \\hat\\beta_2)}. The two variances are the squared standard errors, but the covariance is not in the standard output.\n\nTwo ways out: compute it from the variance–covariance matrix, vcov(tw), or let R do the work by rewriting the model so that \\beta_1 - \\beta_2 becomes a single coefficient."
   },
   {
     "objectID": "06-mlr-inference-ii.html#exclusion-restrictions-the-hypotheses",
@@ -2245,5 +2245,33 @@
     "title": "Multiple Regression Analysis III",
     "section": "Three kinds of linear restrictions",
     "text": "Three kinds of linear restrictions\n\n\n\n\n\n\n\n\n\n\nRestriction\nExample in this lecture\nRestricted model\nR^2 form?\n\n\n\n\na coefficient equals a value: \\beta_1 = 1\nrational valuations\nnew y: \\log(price) - \\log(assess)\nno\n\n\ntwo coefficients are equal: \\beta_1 = \\beta_2\njunior college vs. university\nnew regressor: jc + univ\nyes\n\n\na sum equals a value: \\beta_1 + \\beta_2 = 1\nconstant returns to size\nnew y and new regressor\nno\n\n\n\n\n\n\nThe F statistic is always the same: compare SSR_r with SSR_{ur}, with q = number of restrictions.\nThe SSR form always works. The R^2 form works only if the restricted model keeps the same dependent variable.\nIn R, linearHypothesis() handles all three; building the restricted model once shows what is tested."
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#the-t-tests-say-no-the-f-test-says-yes",
+    "href": "06-mlr-inference-ii.html#the-t-tests-say-no-the-f-test-says-yes",
+    "title": "Multiple Regression Analysis III",
+    "section": "The t tests say no, the F test says yes",
+    "text": "The t tests say no, the F test says yes\nOne at a time: t_{bavg} = 0.89, \\;t_{hrunsyr} = 0.90, \\;t_{rbisyr} = 1.50. All are below c_{0.05} = 1.97: none is significant.\nTogether: dropping the three variables raises the SSR from 183.19 to 198.31, with q = 3 and n - k - 1 = 347:\n\nF = \\frac{(198.31 - 183.19)/3}{183.19/347} = 9.55 \\;&gt;\\; c_{0.01} = 3.84 \\qquad (p &lt; 0.0001)\n\n\nWhy? Home runs and runs batted in move together: \\text{Corr}(hrunsyr, rbisyr) = 0.89. Each t test asks what one of them adds holding the other fixed, and the data have little such variation, so the standard errors are large. The F test asks whether the group matters, and it clearly does. Drop rbisyr, and t_{hrunsyr} jumps from 0.90 to 4.96.\n\nWooldridge Section 4-5a. The lesson: never drop a group of variables because each t statistic is small; test them jointly. Link to multicollinearity in Topic 4: correlated regressors inflate the individual standard errors, but they do not hide the joint effect."
+  },
+  {
+    "objectID": "07-asymptotics.html#the-lagrange-multiplier-lm-test",
+    "href": "07-asymptotics.html#the-lagrange-multiplier-lm-test",
+    "title": "Large-Sample Properties of OLS",
+    "section": "The Lagrange multiplier (LM) test",
+    "text": "The Lagrange multiplier (LM) test\nA large-sample alternative to the F test for q exclusion restrictions:\n\n\\begin{aligned}\nH_0&: \\beta_{k-q+1} = 0,\\; \\dots,\\; \\beta_k = 0\\\\\nH_1&: \\beta_j \\neq 0 \\;\\text{ for at least one } j = k-q+1, \\dots, k\n\\end{aligned}\n\n\nEstimate the restricted model and save the residuals \\tilde u.\nRegress \\tilde u on all the regressors, including the excluded ones. Save its R^2_{\\tilde u}.\nCompute \\;LM = n\\,R^2_{\\tilde u}.\n\nUnder H_0 and MLR.1–MLR.5 (normality is not needed), \\;LM \\stackrel{a}{\\sim} \\chi^2_q. Reject H_0 if LM &gt; c, with c from \\chi^2_q."
+  },
+  {
+    "objectID": "07-asymptotics.html#why-it-works",
+    "href": "07-asymptotics.html#why-it-works",
+    "title": "Large-Sample Properties of OLS",
+    "section": "Why it works",
+    "text": "Why it works\nIf the excluded variables matter, they should explain part of what the restricted model left in \\tilde u, and R^2_{\\tilde u} will not be close to zero.\n\n\nOnly the restricted model is estimated. This is the attraction of LM tests: the same idea returns in the tests for heteroskedasticity (Topic 11).\nThe \\chi^2 distribution is a large-sample result, like Theorem 5.2: no normality assumption, but n must be large."
+  },
+  {
+    "objectID": "07-asymptotics.html#interactive-the-lm-test-step-by-step",
+    "href": "07-asymptotics.html#interactive-the-lm-test-step-by-step",
+    "title": "Large-Sample Properties of OLS",
+    "section": "Interactive: the LM test step by step",
+    "text": "Interactive: the LM test step by step\nParents’ education and birth weight (n = 1{,}191):\n\n\\begin{aligned}\nH_0&: \\beta_{motheduc} = 0,\\;\\; \\beta_{fatheduc} = 0\\\\\nH_1&: \\beta_{motheduc} \\neq 0 \\;\\text{ or }\\; \\beta_{fatheduc} \\neq 0\n\\end{aligned}"
   }
 ]

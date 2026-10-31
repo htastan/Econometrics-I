@@ -1,6 +1,8 @@
 /* Widgets for Deck 07 — Large-sample properties of OLS */
 (function () {
   const { E, UI } = window; const C = UI.C;
+  const W = window.WDATA;
+  const bw = E.complete(W.bwght, ['bwght', 'cigs', 'parity', 'faminc', 'motheduc', 'fatheduc']);
 
   const NS = [10, 25, 50, 100, 250, 500, 1000, 2500, 5000];
   /* ------------------------------------------------------------------
@@ -74,4 +76,34 @@
     run();
   });
 
+
+  /* ------------------------------------------------------------------
+     LM test step by step (bwght, parents' education)
+     ------------------------------------------------------------------ */
+  UI.widget('lm-steps', host => {
+    const S = UI.scaffold(host);
+    const r = E.ols(bw.bwght, { cigs: bw.cigs, parity: bw.parity, faminc: bw.faminc });
+    const aux = E.ols(r.resid, { cigs: bw.cigs, parity: bw.parity, faminc: bw.faminc, motheduc: bw.motheduc, fatheduc: bw.fatheduc });
+    const LM = aux.n * aux.R2, p = 1 - E.pchisq(LM, 2), c = E.qchisq(0.95, 2);
+    let step = 1;
+    UI.segmented(S.controls, { label: 'Step', options: [{ value: 1, label: '① restricted model' }, { value: 2, label: '② auxiliary regression' }, { value: 3, label: '③ LM = nR²' }], value: 1, onChange: v => { step = +v; draw(); } });
+    const out = UI.readout(S.out);
+    function draw() {
+      S.plotHost.innerHTML = '';
+      if (step === 1) {
+        S.plotHost.innerHTML = `<p><b>Estimate the model under H₀</b> (without motheduc, fatheduc), on the 1,191 observations with complete data. Save the residuals \\(\\tilde u\\).</p>` + UI.regTable(r, { names: ['(Intercept)', 'cigs', 'parity', 'faminc'], digits: 4 });
+        out.innerHTML = `Only the <b>restricted</b> model is estimated. This is the attraction of LM tests: we never estimate the unrestricted model directly.`;
+      } else if (step === 2) {
+        S.plotHost.innerHTML = `<p><b>Regress \\(\\tilde u\\) on all the regressors</b>, including the excluded ones:</p>` + UI.regTable(aux, { names: ['(Intercept)', 'cigs', 'parity', 'faminc', 'motheduc', 'fatheduc'], digits: 4 });
+        out.innerHTML = `\\(R^2_{\\tilde u} = ${E.fmt(aux.R2, 5)}\\)<br>If motheduc and fatheduc matter, they should explain part of what the restricted model left in \\(\\tilde u\\). A tiny \\(R^2\\) means they explain almost nothing.`;
+      } else {
+        const P = new UI.Plot(S.plotHost, { w: 640, h: 340, xlim: [0, 12], ylim: [0, 0.52], xlab: 'χ²(2)', yticks: [] });
+        const f = v => E.dchisq(v, 2); P.area(f, c, 12, { fill: 'rgba(192,57,43,.3)' }); P.fn(f, { color: C.ink, width: 2.5, from: 0.02, n: 200 });
+        P.vline(LM, { color: C.orange, width: 3.5 }); P.text(LM, 0.46, ` LM = ${E.fmt(LM, 2)}`, { color: C.orange, weight: 700 });
+        out.innerHTML = `\\(LM = n\\,R^2_{\\tilde u} = ${aux.n} \\times ${E.fmt(aux.R2, 5)} = \\) <span class="big">${E.fmt(LM, 2)}</span><br>Under H₀, \\(LM \\stackrel{a}{\\sim} \\chi^2_q\\) with \\(q = 2\\).<br>5% critical value: ${E.fmt(c, 2)}; p-value = <b>${E.fmt(p, 3)}</b><br><span class="good">Fail to reject H₀</span>, the same conclusion as the F test (p = 0.238).`;
+      }
+      UI.renderMath(S.plotHost); UI.renderMath(out);
+    }
+    draw();
+  });
 })();

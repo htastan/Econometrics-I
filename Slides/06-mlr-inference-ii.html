@@ -218,7 +218,7 @@
 
 <section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Multiple Regression Analysis III</h1>
-  <p class="subtitle">Topic 6 · Testing multiple linear restrictions: the F test and the LM test</p>
+  <p class="subtitle">Topic 6 · Testing multiple linear restrictions: the F test</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -244,7 +244,6 @@ Prof.&nbsp;Dr.&nbsp;Hüseyin Taştan
 <li>carry out an <strong>F test</strong> for exclusion restrictions and for overall significance</li>
 <li>explain why variables can be <strong>jointly</strong> significant but <strong>individually</strong> insignificant</li>
 <li>test <strong>general linear restrictions</strong></li>
-<li>compute the <strong>LM</strong> statistic and explain when it is used</li>
 </ul>
 </div>
 </div><div class="column" style="width:45%;">
@@ -330,7 +329,7 @@ t = \frac{\hat\beta_1 - \hat\beta_2}{\text{se}(\hat\beta_1 - \hat\beta_2)}
 <p><span class="math display">
 \text{Var}(\hat\beta_1 - \hat\beta_2) = \text{Var}(\hat\beta_1) + \text{Var}(\hat\beta_2) - 2\,\text{Cov}(\hat\beta_1, \hat\beta_2)
 </span></p>
-<p>The two variances come from the standard errors, but the <strong>covariance is not in the standard output</strong>.</p>
+<p>The standard error is the square root of this variance, <span class="math inline">\;\text{se}(\hat\beta_1 - \hat\beta_2) = \sqrt{\widehat{\text{Var}}(\hat\beta_1 - \hat\beta_2)}</span>. The two variances are the squared standard errors, but the <strong>covariance is not in the standard output</strong>.</p>
 <div class="fragment">
 <p>Two ways out: compute it from the variance–covariance matrix, <code>vcov(tw)</code>, or let R do the work by <strong>rewriting the model</strong> so that <span class="math inline">\beta_1 - \beta_2</span> becomes a single coefficient.</p>
 </div>
@@ -359,7 +358,7 @@ t = \frac{\hat\beta_1 - \hat\beta_2}{\text{se}(\hat\beta_1 - \hat\beta_2)}
 <section>
 <section id="multiple-restrictions-the-f-test" class="title-slide slide level1 section-slide center">
 <h1>Multiple restrictions: the <em>F</em> test</h1>
-<p>Restricted vs.&nbsp;unrestricted models, the <span class="math inline">F</span> statistic, joint significance and the LM test.</p>
+<p>Restricted vs.&nbsp;unrestricted models, the <span class="math inline">F</span> statistic and joint significance.</p>
 </section>
 <section id="exclusion-restrictions-the-hypotheses" class="slide level2">
 <h2>Exclusion restrictions: the hypotheses</h2>
@@ -499,12 +498,32 @@ F = \frac{(465{,}167 - 464{,}041)/2}{464{,}041/1185} = 1.44 \;&lt;\; c_{0.05} = 
 </section>
 <section id="jointly-significant-individually-insignificant" class="slide level2 smaller">
 <h2>Jointly significant, individually insignificant</h2>
-<p>With highly <strong>correlated</strong> regressors, each <span class="math inline">t</span> test can fail to reject while the <span class="math inline">F</span> test rejects.</p>
-<div class="widget" data-widget="joint-ellipse">
-
+<p><code>mlb1</code>: salaries of 353 Major League Baseball players. Once career length is controlled for, does <strong>performance</strong> matter?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a aria-hidden="true" tabindex="-1"></a>mlb <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(salary) <span class="sc">~</span> years <span class="sc">+</span> gamesyr <span class="sc">+</span> bavg <span class="sc">+</span> hrunsyr <span class="sc">+</span> rbisyr, <span class="at">data =</span> mlb1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p><span class="math display">
+\begin{aligned} \widehat{\log(salary)} &amp;=  \underset{\small (0.289)}{11.19} + \underset{\small (0.0121)}{0.0689}\,years + \underset{\small (0.00265)}{0.0126}\,gamesyr + \underset{\small (0.00110)}{0.000979}\,bavg \\ &amp; + \underset{\small (0.0161)}{0.0144}\,hrunsyr + \underset{\small (0.00717)}{0.0108}\,rbisyr \\ &amp; n = 353,\quad R^2 = 0.628 \end{aligned}
+</span></p>
+<p><span class="math inline">bavg</span>: batting average, <span class="math inline">hrunsyr</span>: home runs per year, <span class="math inline">rbisyr</span>: runs batted in per year.</p>
+<p><span class="math display">
+\begin{aligned}
+H_0&amp;: \beta_{bavg} = 0,\;\; \beta_{hrunsyr} = 0,\;\; \beta_{rbisyr} = 0\\
+H_1&amp;: \beta_{bavg} \neq 0 \;\text{ or }\; \beta_{hrunsyr} \neq 0 \;\text{ or }\; \beta_{rbisyr} \neq 0
+\end{aligned}
+</span></p>
+</section>
+<section id="the-t-tests-say-no-the-f-test-says-yes" class="slide level2">
+<h2>The <span class="math inline">t</span> tests say no, the <span class="math inline">F</span> test says yes</h2>
+<p><strong>One at a time:</strong> <span class="math inline">t_{bavg} = 0.89</span>, <span class="math inline">\;t_{hrunsyr} = 0.90</span>, <span class="math inline">\;t_{rbisyr} = 1.50</span>. All are below <span class="math inline">c_{0.05} = 1.97</span>: <strong>none</strong> is significant.</p>
+<p><strong>Together:</strong> dropping the three variables raises the SSR from 183.19 to 198.31, with <span class="math inline">q = 3</span> and <span class="math inline">n - k - 1 = 347</span>:</p>
+<p><span class="math display">
+F = \frac{(198.31 - 183.19)/3}{183.19/347} = 9.55 \;&gt;\; c_{0.01} = 3.84 \qquad (p &lt; 0.0001)
+</span></p>
+<div class="fragment">
+<p><strong>Why?</strong> Home runs and runs batted in move together: <span class="math inline">\text{Corr}(hrunsyr, rbisyr) = 0.89</span>. Each <span class="math inline">t</span> test asks what one of them adds <strong>holding the other fixed</strong>, and the data have little such variation, so the standard errors are large. The <span class="math inline">F</span> test asks whether the <strong>group</strong> matters, and it clearly does. Drop <span class="math inline">rbisyr</span>, and <span class="math inline">t_{hrunsyr}</span> jumps from 0.90 to 4.96.</p>
 <aside class="notes">
-<p>With highly correlated regressors the ellipse becomes long and thin: the data pin down beta1 + beta2 but not each coefficient. Press “Find a puzzling sample”. Both t tests fail to reject (0,0 is inside the blue box) but the F test rejects (0,0 is outside the orange ellipse). Then lower the correlation: the ellipse becomes rounder and the puzzle disappears. Typical case: several measures of firm performance in a CEO salary equation.</p>
+<p>Wooldridge Section 4-5a. The lesson: never drop a group of variables because each t statistic is small; test them jointly. Link to multicollinearity in Topic 4: correlated regressors inflate the individual standard errors, but they do not hide the joint effect.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -516,6 +535,7 @@ F = \frac{(465{,}167 - 464{,}041)/2}{464{,}041/1185} = 1.44 \;&lt;\; c_{0.05} = 
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</div>
 </section>
 <section id="relationship-between-t-and-f" class="slide level2">
 <h2>Relationship between <span class="math inline">t</span> and <span class="math inline">F</span></h2>
@@ -577,7 +597,7 @@ F = \frac{R^2/k}{(1 - R^2)/(n-k-1)} \;\sim\; F_{k,\,n-k-1}
 <h2>Rational house valuations</h2>
 <p><code>hprice1</code>: are assessed values <strong>rational</strong>? If so, once the assessment is known, nothing else should help predict the price.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a aria-hidden="true" tabindex="-1"></a>hr <span class="ot">&lt;-</span> <span class="fu">lm</span>(lprice <span class="sc">~</span> lassess <span class="sc">+</span> llotsize <span class="sc">+</span> lsqrft <span class="sc">+</span> bdrms, <span class="at">data =</span> hprice1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a aria-hidden="true" tabindex="-1"></a>hr <span class="ot">&lt;-</span> <span class="fu">lm</span>(lprice <span class="sc">~</span> lassess <span class="sc">+</span> llotsize <span class="sc">+</span> lsqrft <span class="sc">+</span> bdrms, <span class="at">data =</span> hprice1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><span class="math display">
 \begin{aligned} \widehat{\log(price)} &amp;=  \underset{\small (0.570)}{0.264} + \underset{\small (0.151)}{1.04}\,lassess + \underset{\small (0.0386)}{0.00744}\,llotsize \\ &amp; - \underset{\small (0.138)}{0.103}\,lsqrft + \underset{\small (0.0221)}{0.0338}\,bdrms \\ &amp; n = 88,\quad R^2 = 0.773 \end{aligned}
@@ -593,8 +613,8 @@ H_1&amp;: \beta_1 \neq 1 \;\text{ or }\; \beta_2 \neq 0 \;\text{ or }\; \beta_3 
 <h2>Rational valuations: the restricted model</h2>
 <p>Under <span class="math inline">H_0</span>: <span class="math inline">\;\log(price) = \beta_0 + \log(assess) + u \;\Leftrightarrow\; \log(price) - \log(assess) = \beta_0 + u</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a aria-hidden="true" tabindex="-1"></a>hr0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">I</span>(lprice <span class="sc">-</span> lassess) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> hprice1)</span>
-<span id="cb7-2"><a aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">SSR_r =</span> <span class="fu">sum</span>(<span class="fu">resid</span>(hr0)<span class="sc">^</span><span class="dv">2</span>), <span class="at">SSR_ur =</span> <span class="fu">sum</span>(<span class="fu">resid</span>(hr)<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a aria-hidden="true" tabindex="-1"></a>hr0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">I</span>(lprice <span class="sc">-</span> lassess) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> hprice1)</span>
+<span id="cb8-2"><a aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">SSR_r =</span> <span class="fu">sum</span>(<span class="fu">resid</span>(hr0)<span class="sc">^</span><span class="dv">2</span>), <span class="at">SSR_ur =</span> <span class="fu">sum</span>(<span class="fu">resid</span>(hr)<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt;    SSR_r   SSR_ur 
 #&gt; 1.880149 1.821529</code></pre>
@@ -624,7 +644,7 @@ F = \frac{(1.880 - 1.822)/4}{1.822/83} = 0.67 \;&lt;\; c_{0.05} = 2.48
 <h2>Constant returns to size?</h2>
 <p>Same houses, a different theory: if <strong>both</strong> the lot and the house are 10% larger, is the price 10% higher? And once size is known, do extra bedrooms add anything?</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a aria-hidden="true" tabindex="-1"></a>hs <span class="ot">&lt;-</span> <span class="fu">lm</span>(lprice <span class="sc">~</span> llotsize <span class="sc">+</span> lsqrft <span class="sc">+</span> bdrms, <span class="at">data =</span> hprice1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-hidden="true" tabindex="-1"></a>hs <span class="ot">&lt;-</span> <span class="fu">lm</span>(lprice <span class="sc">~</span> llotsize <span class="sc">+</span> lsqrft <span class="sc">+</span> bdrms, <span class="at">data =</span> hprice1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><span class="math display">
 \begin{aligned} \widehat{\log(price)} &amp;= - \underset{\small (0.651)}{1.30} + \underset{\small (0.0383)}{0.168}\,llotsize + \underset{\small (0.0929)}{0.700}\,lsqrft + \underset{\small (0.0275)}{0.0370}\,bdrms \\ &amp; n = 88,\quad R^2 = 0.643 \end{aligned}
@@ -648,8 +668,8 @@ H_1&amp;: \beta_1 + \beta_2 \neq 1 \;\text{ or }\; \beta_3 \neq 0
 </span></p>
 <p>Both the <strong>dependent variable</strong> and the <strong>regressor</strong> change: price per unit of land on the house-to-lot size ratio.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-hidden="true" tabindex="-1"></a>hs0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">I</span>(lprice <span class="sc">-</span> llotsize) <span class="sc">~</span> <span class="fu">I</span>(lsqrft <span class="sc">-</span> llotsize), <span class="at">data =</span> hprice1)</span>
-<span id="cb10-2"><a aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">SSR_r =</span> <span class="fu">sum</span>(<span class="fu">resid</span>(hs0)<span class="sc">^</span><span class="dv">2</span>), <span class="at">SSR_ur =</span> <span class="fu">sum</span>(<span class="fu">resid</span>(hs)<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a aria-hidden="true" tabindex="-1"></a>hs0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">I</span>(lprice <span class="sc">-</span> llotsize) <span class="sc">~</span> <span class="fu">I</span>(lsqrft <span class="sc">-</span> llotsize), <span class="at">data =</span> hprice1)</span>
+<span id="cb11-2"><a aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">SSR_r =</span> <span class="fu">sum</span>(<span class="fu">resid</span>(hs0)<span class="sc">^</span><span class="dv">2</span>), <span class="at">SSR_ur =</span> <span class="fu">sum</span>(<span class="fu">resid</span>(hs)<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt;    SSR_r   SSR_ur 
 #&gt; 2.951026 2.862563</code></pre>
@@ -660,98 +680,20 @@ F = \frac{(2.9510 - 2.8626)/2}{2.8626/84} = 1.30 \;&lt;\; c_{0.05} = 3.11 \;\Rig
 </span></p>
 <p>The estimated elasticities sum to <span class="math inline">0.168 + 0.700 = 0.87</span>, but the data cannot reject 1: house prices are compatible with <strong>constant returns to size</strong>. In R: <code>linearHypothesis(hs, c("llotsize + lsqrft = 1", "bdrms = 0"))</code>.</p>
 </section>
-<section id="three-kinds-of-linear-restrictions" class="slide level2">
-<h2>Three kinds of linear restrictions</h2>
-<div style="font-size: 1.2em">
-<table class="caption-top">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Restriction</th>
-<th style="text-align: left;">Example in this lecture</th>
-<th style="text-align: left;">Restricted model</th>
-<th style="text-align: center;"><span class="math inline">R^2</span> form?</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">a coefficient <strong>equals a value</strong>: <span class="math inline">\beta_1 = 1</span></td>
-<td style="text-align: left;">rational valuations</td>
-<td style="text-align: left;">new <span class="math inline">y</span>: <span class="math inline">\log(price) - \log(assess)</span></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">two coefficients are <strong>equal</strong>: <span class="math inline">\beta_1 = \beta_2</span></td>
-<td style="text-align: left;">junior college vs.&nbsp;university</td>
-<td style="text-align: left;">new regressor: <span class="math inline">jc + univ</span></td>
-<td style="text-align: center;">yes</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">a <strong>sum</strong> equals a value: <span class="math inline">\beta_1 + \beta_2 = 1</span></td>
-<td style="text-align: left;">constant returns to size</td>
-<td style="text-align: left;">new <span class="math inline">y</span> <strong>and</strong> new regressor</td>
-<td style="text-align: center;">no</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="fragment">
-<ul>
-<li>The <span class="math inline">F</span> statistic is always the same: compare <span class="math inline">SSR_r</span> with <span class="math inline">SSR_{ur}</span>, with <span class="math inline">q</span> = number of restrictions.</li>
-<li>The <strong>SSR form</strong> always works. The <span class="math inline">R^2</span> form works only if the restricted model keeps the <strong>same dependent variable</strong>.</li>
-<li>In R, <code>linearHypothesis()</code> handles all three; building the restricted model once shows <strong>what</strong> is tested.</li>
-</ul>
-</div>
-</section></section>
-<section>
-<section id="a-large-sample-test-the-lm-statistic" class="title-slide slide level1 section-slide center">
-<h1>A large-sample test: the LM statistic</h1>
-<p>The same hypotheses, but only the <strong>restricted</strong> model is estimated.</p>
-</section>
-<section id="the-lm-statistic-in-three-steps" class="slide level2">
-<h2>The LM statistic in three steps</h2>
-<p>The <strong>Lagrange multiplier</strong> (score) statistic for <span class="math inline">q</span> exclusion restrictions:</p>
-<ol type="1">
-<li>Estimate the <strong>restricted</strong> model and save the residuals <span class="math inline">\tilde u</span>.</li>
-<li>Regress <span class="math inline">\tilde u</span> on <strong>all</strong> the regressors, including the excluded ones. Save its <span class="math inline">R^2_{\tilde u}</span>.</li>
-<li>Compute <span class="math inline">\;LM = n\,R^2_{\tilde u}</span>.</li>
-</ol>
-<p>Under <span class="math inline">H_0</span> and <strong>MLR.1–MLR.5</strong> (normality is <strong>not</strong> needed), <span class="math inline">\;LM \stackrel{a}{\sim} \chi^2_q\;</span> in large samples. Reject <span class="math inline">H_0</span> if <span class="math inline">LM &gt; c</span>, with <span class="math inline">c</span> from <span class="math inline">\chi^2_q</span>.</p>
-<div class="fragment">
-<p>Intuition: if the excluded variables matter, they should explain part of what the restricted model left in <span class="math inline">\tilde u</span>, and <span class="math inline">R^2_{\tilde u}</span> will not be close to zero.</p>
-</div>
-</section>
-<section id="interactive-the-lm-test-step-by-step" class="slide level2 smaller">
-<h2>Interactive: the LM test step by step</h2>
-<p>Parents’ education again: <span class="math inline">\;H_0: \beta_{motheduc} = 0,\; \beta_{fatheduc} = 0\;</span> vs.&nbsp;<span class="math inline">\;H_1: \beta_{motheduc} \neq 0 \text{ or } \beta_{fatheduc} \neq 0</span>.</p>
-<div class="widget" data-widget="lm-steps">
-
-</div>
-</section>
 <section id="r-toolkit-for-this-topic" class="slide level2 smaller">
 <h2>R toolkit for this topic</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
-<span id="cb12-2"><a aria-hidden="true" tabindex="-1"></a>ur <span class="ot">&lt;-</span> <span class="fu">lm</span>(bwght <span class="sc">~</span> cigs <span class="sc">+</span> parity <span class="sc">+</span> faminc <span class="sc">+</span> motheduc <span class="sc">+</span> fatheduc, <span class="at">data =</span> bwght)</span>
-<span id="cb12-3"><a aria-hidden="true" tabindex="-1"></a><span class="fu">linearHypothesis</span>(ur, <span class="fu">c</span>(<span class="st">"motheduc = 0"</span>, <span class="st">"fatheduc = 0"</span>))    <span class="co"># F test, exclusion</span></span>
-<span id="cb12-4"><a aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ur)<span class="sc">$</span>fstatistic                                    <span class="co"># overall significance</span></span>
-<span id="cb12-5"><a aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-6"><a aria-hidden="true" tabindex="-1"></a>r  <span class="ot">&lt;-</span> <span class="fu">lm</span>(bwght <span class="sc">~</span> cigs <span class="sc">+</span> parity <span class="sc">+</span> faminc, <span class="at">data =</span> <span class="fu">model.frame</span>(ur))  <span class="co"># same sample!</span></span>
-<span id="cb12-7"><a aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(r, ur)                                              <span class="co"># F test via two models</span></span>
-<span id="cb12-8"><a aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-9"><a aria-hidden="true" tabindex="-1"></a><span class="co"># general linear restrictions</span></span>
-<span id="cb12-10"><a aria-hidden="true" tabindex="-1"></a>hs <span class="ot">&lt;-</span> <span class="fu">lm</span>(lprice <span class="sc">~</span> llotsize <span class="sc">+</span> lsqrft <span class="sc">+</span> bdrms, <span class="at">data =</span> hprice1)</span>
-<span id="cb12-11"><a aria-hidden="true" tabindex="-1"></a><span class="fu">linearHypothesis</span>(hs, <span class="fu">c</span>(<span class="st">"llotsize + lsqrft = 1"</span>, <span class="st">"bdrms = 0"</span>))   <span class="co"># sum + exclusion</span></span>
-<span id="cb12-12"><a aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-13"><a aria-hidden="true" tabindex="-1"></a><span class="co"># LM test</span></span>
-<span id="cb12-14"><a aria-hidden="true" tabindex="-1"></a>aux <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">resid</span>(r) <span class="sc">~</span> cigs <span class="sc">+</span> parity <span class="sc">+</span> faminc <span class="sc">+</span> motheduc <span class="sc">+</span> fatheduc, <span class="at">data =</span> <span class="fu">model.frame</span>(ur))</span>
-<span id="cb12-15"><a aria-hidden="true" tabindex="-1"></a>LM  <span class="ot">&lt;-</span> <span class="fu">nobs</span>(aux) <span class="sc">*</span> <span class="fu">summary</span>(aux)<span class="sc">$</span>r.squared</span>
-<span id="cb12-16"><a aria-hidden="true" tabindex="-1"></a><span class="fu">pchisq</span>(LM, <span class="at">df =</span> <span class="dv">2</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb13-2"><a aria-hidden="true" tabindex="-1"></a>ur <span class="ot">&lt;-</span> <span class="fu">lm</span>(bwght <span class="sc">~</span> cigs <span class="sc">+</span> parity <span class="sc">+</span> faminc <span class="sc">+</span> motheduc <span class="sc">+</span> fatheduc, <span class="at">data =</span> bwght)</span>
+<span id="cb13-3"><a aria-hidden="true" tabindex="-1"></a><span class="fu">linearHypothesis</span>(ur, <span class="fu">c</span>(<span class="st">"motheduc = 0"</span>, <span class="st">"fatheduc = 0"</span>))    <span class="co"># F test, exclusion</span></span>
+<span id="cb13-4"><a aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ur)<span class="sc">$</span>fstatistic                                    <span class="co"># overall significance</span></span>
+<span id="cb13-5"><a aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a aria-hidden="true" tabindex="-1"></a>r  <span class="ot">&lt;-</span> <span class="fu">lm</span>(bwght <span class="sc">~</span> cigs <span class="sc">+</span> parity <span class="sc">+</span> faminc, <span class="at">data =</span> <span class="fu">model.frame</span>(ur))  <span class="co"># same sample!</span></span>
+<span id="cb13-7"><a aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(r, ur)                                              <span class="co"># F test via two models</span></span>
+<span id="cb13-8"><a aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a aria-hidden="true" tabindex="-1"></a><span class="co"># general linear restrictions</span></span>
+<span id="cb13-10"><a aria-hidden="true" tabindex="-1"></a>hs <span class="ot">&lt;-</span> <span class="fu">lm</span>(lprice <span class="sc">~</span> llotsize <span class="sc">+</span> lsqrft <span class="sc">+</span> bdrms, <span class="at">data =</span> hprice1)</span>
+<span id="cb13-11"><a aria-hidden="true" tabindex="-1"></a><span class="fu">linearHypothesis</span>(hs, <span class="fu">c</span>(<span class="st">"llotsize + lsqrft = 1"</span>, <span class="st">"bdrms = 0"</span>))   <span class="co"># sum + exclusion</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="key-takeaways" class="slide level2">
@@ -763,13 +705,12 @@ F = \frac{(2.9510 - 2.8626)/2}{2.8626/84} = 1.30 \;&lt;\; c_{0.05} = 3.11 \;\Rig
 <li>The <strong>F test</strong> compares <span class="math inline">SSR_r</span> and <span class="math inline">SSR_{ur}</span> for <span class="math inline">q</span> restrictions. Under <span class="math inline">H_0</span> and MLR.1–MLR.6, <span class="math inline">F \sim F_{q,\,n-k-1}</span>.</li>
 <li>Always write <span class="math inline">H_1</span> out: <strong>at least one</strong> restriction fails.</li>
 <li>Variables can be <strong>jointly</strong> significant while <strong>individually</strong> insignificant, especially when they are correlated.</li>
-<li><strong>General restrictions</strong> (a value, equal coefficients, a sum): impose <span class="math inline">H_0</span>, use the SSR form of <span class="math inline">F</span>.</li>
-<li>The <strong>LM test</strong> <span class="math inline">= n R^2_{\tilde u}</span> needs only the restricted model and is valid in large samples under MLR.1–MLR.5.</li>
+<li><strong>General linear restrictions</strong>: impose <span class="math inline">H_0</span> in the restricted model and use the SSR form of <span class="math inline">F</span>.</li>
 </ol>
 </div><div class="column" style="width:40%;">
 <div class="card">
 <p><span class="ct">Next topic</span></p>
-<p><strong>Large-sample properties of OLS</strong>: consistency and asymptotic normality.</p>
+<p><strong>Large-sample properties of OLS</strong>: consistency, asymptotic normality and the <strong>LM test</strong>.</p>
 <p><span class="tag">Wooldridge ch.&nbsp;5</span> <span class="tag">Heiss ch.&nbsp;5</span></p>
 </div>
 <div class="score-box">
