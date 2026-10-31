@@ -571,7 +571,7 @@ F = \frac{R^2/k}{(1 - R^2)/(n-k-1)} \;\sim\; F_{k,\,n-k-1}
 <section>
 <section id="general-linear-restrictions" class="title-slide slide level1 section-slide center">
 <h1>General linear restrictions</h1>
-<p>Restrictions that fix coefficients at values other than zero, or tie coefficients together. Same <span class="math inline">F</span> test, a different restricted model.</p>
+<p>Restrictions that fix coefficients at values other than zero, or restrict their sum. Same <span class="math inline">F</span> test, a different restricted model.</p>
 </section>
 <section id="rational-house-valuations" class="slide level2">
 <h2>Rational house valuations</h2>
@@ -620,62 +620,92 @@ F = \frac{(1.880 - 1.822)/4}{1.822/83} = 0.67 \;&lt;\; c_{0.05} = 2.48
 </div>
 </div>
 </section>
-<section id="is-seniority-worth-more-than-experience" class="slide level2 smaller">
-<h2>Is seniority worth more than experience?</h2>
-<p><code>wage1</code>, the wage equation from last week. <span class="math inline">exper</span> = years in the labor market, <span class="math inline">tenure</span> = years with the <strong>current</strong> employer.</p>
+<section id="constant-returns-to-size" class="slide level2 smaller">
+<h2>Constant returns to size?</h2>
+<p>Same houses, a different theory: if <strong>both</strong> the lot and the house are 10% larger, is the price 10% higher? And once size is known, do extra bedrooms add anything?</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(wage) <span class="sc">~</span> educ <span class="sc">+</span> exper <span class="sc">+</span> tenure, <span class="at">data =</span> wage1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a aria-hidden="true" tabindex="-1"></a>hs <span class="ot">&lt;-</span> <span class="fu">lm</span>(lprice <span class="sc">~</span> llotsize <span class="sc">+</span> lsqrft <span class="sc">+</span> bdrms, <span class="at">data =</span> hprice1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><span class="math display">
-\begin{aligned} \widehat{\log(wage)} &amp;=  \underset{\small (0.104)}{0.284} + \underset{\small (0.00733)}{0.0920}\,educ + \underset{\small (0.00172)}{0.00412}\,exper + \underset{\small (0.00309)}{0.0221}\,tenure \\ &amp; n = 526,\quad R^2 = 0.316 \end{aligned}
+\begin{aligned} \widehat{\log(price)} &amp;= - \underset{\small (0.651)}{1.30} + \underset{\small (0.0383)}{0.168}\,llotsize + \underset{\small (0.0929)}{0.700}\,lsqrft + \underset{\small (0.0275)}{0.0370}\,bdrms \\ &amp; n = 88,\quad R^2 = 0.643 \end{aligned}
 </span></p>
 <p><span class="math display">
 \begin{aligned}
-H_0&amp;: \beta_{exper} = \beta_{tenure} \qquad (\text{a year with the employer adds nothing extra})\\
-H_1&amp;: \beta_{exper} \neq \beta_{tenure}
+H_0&amp;: \beta_1 + \beta_2 = 1,\;\; \beta_3 = 0 \qquad (q = 2)\\
+H_1&amp;: \beta_1 + \beta_2 \neq 1 \;\text{ or }\; \beta_3 \neq 0
 \end{aligned}
 </span></p>
-<p>One restriction, <span class="math inline">q = 1</span>, but neither coefficient is set to a known value: <span class="math inline">H_0</span> <strong>ties them together</strong>.</p>
+<p>The first restriction is about the <strong>sum</strong> of two elasticities: neither coefficient is fixed on its own.</p>
 </section>
-<section id="equal-coefficients-the-restricted-model" class="slide level2">
-<h2>Equal coefficients: the restricted model</h2>
-<p>Under <span class="math inline">H_0</span> both coefficients equal some common <span class="math inline">\beta_2</span>, so</p>
+<section id="constant-returns-to-size-the-restricted-model" class="slide level2 smaller">
+<h2>Constant returns to size: the restricted model</h2>
+<p>Impose <span class="math inline">H_0</span>: substitute <span class="math inline">\beta_1 = 1 - \beta_2</span> and drop <span class="math inline">bdrms</span>:</p>
 <p><span class="math display">
-\log(wage) = \beta_0 + \beta_1\, educ + \beta_2\,(exper + tenure) + u
+\begin{aligned}
+\log(price) &amp;= \beta_0 + (1 - \beta_2)\log(lotsize) + \beta_2 \log(sqrft) + u\\
+\log(price) - \log(lotsize) &amp;= \beta_0 + \beta_2\,\big[\log(sqrft) - \log(lotsize)\big] + u
+\end{aligned}
 </span></p>
+<p>Both the <strong>dependent variable</strong> and the <strong>regressor</strong> change: price per unit of land on the house-to-lot size ratio.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-hidden="true" tabindex="-1"></a>wr <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(wage) <span class="sc">~</span> educ <span class="sc">+</span> <span class="fu">I</span>(exper <span class="sc">+</span> tenure), <span class="at">data =</span> wage1)</span>
-<span id="cb10-2"><a aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">SSR_r =</span> <span class="fu">sum</span>(<span class="fu">resid</span>(wr)<span class="sc">^</span><span class="dv">2</span>), <span class="at">SSR_ur =</span> <span class="fu">sum</span>(<span class="fu">resid</span>(w)<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-hidden="true" tabindex="-1"></a>hs0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">I</span>(lprice <span class="sc">-</span> llotsize) <span class="sc">~</span> <span class="fu">I</span>(lsqrft <span class="sc">-</span> llotsize), <span class="at">data =</span> hprice1)</span>
+<span id="cb10-2"><a aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">SSR_r =</span> <span class="fu">sum</span>(<span class="fu">resid</span>(hs0)<span class="sc">^</span><span class="dv">2</span>), <span class="at">SSR_ur =</span> <span class="fu">sum</span>(<span class="fu">resid</span>(hs)<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt;    SSR_r   SSR_ur 
-#&gt; 104.9446 101.4556</code></pre>
+#&gt; 2.951026 2.862563</code></pre>
 </div>
 </div>
 <p><span class="math display">
-F = \frac{(104.945 - 101.456)/1}{101.456/522} = 17.95 \;&gt;\; c_{0.01} = 6.68 \;\Rightarrow\; \text{reject } H_0
+F = \frac{(2.9510 - 2.8626)/2}{2.8626/84} = 1.30 \;&lt;\; c_{0.05} = 3.11 \;\Rightarrow\; \text{fail to reject } H_0 \quad (p = 0.28)
 </span></p>
-<p>A year with the current employer raises the wage by about 2.2%, a general year of experience by only 0.4%. <strong>Seniority pays.</strong></p>
+<p>The estimated elasticities sum to <span class="math inline">0.168 + 0.700 = 0.87</span>, but the data cannot reject 1: house prices are compatible with <strong>constant returns to size</strong>. In R: <code>linearHypothesis(hs, c("llotsize + lsqrft = 1", "bdrms = 0"))</code>.</p>
 </section>
-<section id="two-ways-to-impose-a-general-restriction" class="slide level2">
-<h2>Two ways to impose a general restriction</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="card">
-<p><span class="ct">Fix a coefficient at a value</span></p>
-<p><span class="math inline">H_0: \beta_1 = 1</span> (rational valuations)</p>
-<p>Move the known term to the left: the restricted model has a <strong>new dependent variable</strong>, <span class="math inline">\log(price) - \log(assess)</span>.</p>
-<p>Only the <strong>SSR form</strong> of <span class="math inline">F</span> is valid.</p>
+<section id="three-kinds-of-linear-restrictions" class="slide level2">
+<h2>Three kinds of linear restrictions</h2>
+<div style="font-size: 1.2em">
+<table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Restriction</th>
+<th style="text-align: left;">Example in this lecture</th>
+<th style="text-align: left;">Restricted model</th>
+<th style="text-align: center;"><span class="math inline">R^2</span> form?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">a coefficient <strong>equals a value</strong>: <span class="math inline">\beta_1 = 1</span></td>
+<td style="text-align: left;">rational valuations</td>
+<td style="text-align: left;">new <span class="math inline">y</span>: <span class="math inline">\log(price) - \log(assess)</span></td>
+<td style="text-align: center;">no</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">two coefficients are <strong>equal</strong>: <span class="math inline">\beta_1 = \beta_2</span></td>
+<td style="text-align: left;">junior college vs.&nbsp;university</td>
+<td style="text-align: left;">new regressor: <span class="math inline">jc + univ</span></td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">a <strong>sum</strong> equals a value: <span class="math inline">\beta_1 + \beta_2 = 1</span></td>
+<td style="text-align: left;">constant returns to size</td>
+<td style="text-align: left;">new <span class="math inline">y</span> <strong>and</strong> new regressor</td>
+<td style="text-align: center;">no</td>
+</tr>
+</tbody>
+</table>
 </div>
-</div><div class="column" style="width:50%;">
-<div class="card">
-<p><span class="ct">Tie coefficients together</span></p>
-<p><span class="math inline">H_0: \beta_{exper} = \beta_{tenure}</span> (seniority)</p>
-<p>Combine the regressors: the restricted model has a <strong>new regressor</strong>, <span class="math inline">exper + tenure</span>.</p>
-<p>The dependent variable is unchanged, so the <strong><span class="math inline">R^2</span> form</strong> also works: <span class="math inline">R^2_{ur} = 0.316</span>, <span class="math inline">R^2_r = 0.2925</span> give the same <span class="math inline">F = 17.95</span>.</p>
-</div>
-</div></div>
 <div class="fragment">
-<p>Either way R does it in one line: <code>linearHypothesis(w, "exper = tenure")</code>. With <span class="math inline">q = 1</span>, <span class="math inline">F = t^2</span>: the reparametrization trick gives <span class="math inline">t = -4.24</span>, and <span class="math inline">(-4.24)^2 = 17.95</span>.</p>
+<ul>
+<li>The <span class="math inline">F</span> statistic is always the same: compare <span class="math inline">SSR_r</span> with <span class="math inline">SSR_{ur}</span>, with <span class="math inline">q</span> = number of restrictions.</li>
+<li>The <strong>SSR form</strong> always works. The <span class="math inline">R^2</span> form works only if the restricted model keeps the <strong>same dependent variable</strong>.</li>
+<li>In R, <code>linearHypothesis()</code> handles all three; building the restricted model once shows <strong>what</strong> is tested.</li>
+</ul>
 </div>
 </section></section>
 <section>
@@ -715,8 +745,8 @@ F = \frac{(104.945 - 101.456)/1}{101.456/522} = 17.95 \;&gt;\; c_{0.01} = 6.68 \
 <span id="cb12-7"><a aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(r, ur)                                              <span class="co"># F test via two models</span></span>
 <span id="cb12-8"><a aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-9"><a aria-hidden="true" tabindex="-1"></a><span class="co"># general linear restrictions</span></span>
-<span id="cb12-10"><a aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(wage) <span class="sc">~</span> educ <span class="sc">+</span> exper <span class="sc">+</span> tenure, <span class="at">data =</span> wage1)</span>
-<span id="cb12-11"><a aria-hidden="true" tabindex="-1"></a><span class="fu">linearHypothesis</span>(w, <span class="st">"exper = tenure"</span>)                     <span class="co"># equal coefficients</span></span>
+<span id="cb12-10"><a aria-hidden="true" tabindex="-1"></a>hs <span class="ot">&lt;-</span> <span class="fu">lm</span>(lprice <span class="sc">~</span> llotsize <span class="sc">+</span> lsqrft <span class="sc">+</span> bdrms, <span class="at">data =</span> hprice1)</span>
+<span id="cb12-11"><a aria-hidden="true" tabindex="-1"></a><span class="fu">linearHypothesis</span>(hs, <span class="fu">c</span>(<span class="st">"llotsize + lsqrft = 1"</span>, <span class="st">"bdrms = 0"</span>))   <span class="co"># sum + exclusion</span></span>
 <span id="cb12-12"><a aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-13"><a aria-hidden="true" tabindex="-1"></a><span class="co"># LM test</span></span>
 <span id="cb12-14"><a aria-hidden="true" tabindex="-1"></a>aux <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">resid</span>(r) <span class="sc">~</span> cigs <span class="sc">+</span> parity <span class="sc">+</span> faminc <span class="sc">+</span> motheduc <span class="sc">+</span> fatheduc, <span class="at">data =</span> <span class="fu">model.frame</span>(ur))</span>
@@ -733,7 +763,7 @@ F = \frac{(104.945 - 101.456)/1}{101.456/522} = 17.95 \;&gt;\; c_{0.01} = 6.68 \
 <li>The <strong>F test</strong> compares <span class="math inline">SSR_r</span> and <span class="math inline">SSR_{ur}</span> for <span class="math inline">q</span> restrictions. Under <span class="math inline">H_0</span> and MLR.1–MLR.6, <span class="math inline">F \sim F_{q,\,n-k-1}</span>.</li>
 <li>Always write <span class="math inline">H_1</span> out: <strong>at least one</strong> restriction fails.</li>
 <li>Variables can be <strong>jointly</strong> significant while <strong>individually</strong> insignificant, especially when they are correlated.</li>
-<li><strong>General restrictions</strong>: fix a value (new <span class="math inline">y</span>, SSR form only) or tie coefficients (new regressor).</li>
+<li><strong>General restrictions</strong> (a value, equal coefficients, a sum): impose <span class="math inline">H_0</span>, use the SSR form of <span class="math inline">F</span>.</li>
 <li>The <strong>LM test</strong> <span class="math inline">= n R^2_{\tilde u}</span> needs only the restricted model and is valid in large samples under MLR.1–MLR.5.</li>
 </ol>
 </div><div class="column" style="width:40%;">

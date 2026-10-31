@@ -1579,14 +1579,14 @@
     "href": "06-mlr-inference-ii.html#r-toolkit-for-this-topic",
     "title": "Multiple Regression Analysis III",
     "section": "R toolkit for this topic",
-    "text": "R toolkit for this topic\n\nlibrary(car)\nur &lt;- lm(bwght ~ cigs + parity + faminc + motheduc + fatheduc, data = bwght)\nlinearHypothesis(ur, c(\"motheduc = 0\", \"fatheduc = 0\"))    # F test, exclusion\nsummary(ur)$fstatistic                                    # overall significance\n\nr  &lt;- lm(bwght ~ cigs + parity + faminc, data = model.frame(ur))  # same sample!\nanova(r, ur)                                              # F test via two models\n\n# general linear restrictions\nw &lt;- lm(log(wage) ~ educ + exper + tenure, data = wage1)\nlinearHypothesis(w, \"exper = tenure\")                     # equal coefficients\n\n# LM test\naux &lt;- lm(resid(r) ~ cigs + parity + faminc + motheduc + fatheduc, data = model.frame(ur))\nLM  &lt;- nobs(aux) * summary(aux)$r.squared\npchisq(LM, df = 2, lower.tail = FALSE)"
+    "text": "R toolkit for this topic\n\nlibrary(car)\nur &lt;- lm(bwght ~ cigs + parity + faminc + motheduc + fatheduc, data = bwght)\nlinearHypothesis(ur, c(\"motheduc = 0\", \"fatheduc = 0\"))    # F test, exclusion\nsummary(ur)$fstatistic                                    # overall significance\n\nr  &lt;- lm(bwght ~ cigs + parity + faminc, data = model.frame(ur))  # same sample!\nanova(r, ur)                                              # F test via two models\n\n# general linear restrictions\nhs &lt;- lm(lprice ~ llotsize + lsqrft + bdrms, data = hprice1)\nlinearHypothesis(hs, c(\"llotsize + lsqrft = 1\", \"bdrms = 0\"))   # sum + exclusion\n\n# LM test\naux &lt;- lm(resid(r) ~ cigs + parity + faminc + motheduc + fatheduc, data = model.frame(ur))\nLM  &lt;- nobs(aux) * summary(aux)$r.squared\npchisq(LM, df = 2, lower.tail = FALSE)"
   },
   {
     "objectID": "06-mlr-inference-ii.html#key-takeaways",
     "href": "06-mlr-inference-ii.html#key-takeaways",
     "title": "Multiple Regression Analysis III",
     "section": "Key takeaways",
-    "text": "Key takeaways\n\n\n\nA linear combination such as \\beta_1 - \\beta_2 can be tested with a t test after reparametrizing the model.\nThe F test compares SSR_r and SSR_{ur} for q restrictions. Under H_0 and MLR.1–MLR.6, F \\sim F_{q,\\,n-k-1}.\nAlways write H_1 out: at least one restriction fails.\nVariables can be jointly significant while individually insignificant, especially when they are correlated.\nGeneral restrictions: fix a value (new y, SSR form only) or tie coefficients (new regressor).\nThe LM test = n R^2_{\\tilde u} needs only the restricted model and is valid in large samples under MLR.1–MLR.5.\n\n\n\nNext topic\nLarge-sample properties of OLS: consistency and asymptotic normality.\nWooldridge ch. 5 Heiss ch. 5"
+    "text": "Key takeaways\n\n\n\nA linear combination such as \\beta_1 - \\beta_2 can be tested with a t test after reparametrizing the model.\nThe F test compares SSR_r and SSR_{ur} for q restrictions. Under H_0 and MLR.1–MLR.6, F \\sim F_{q,\\,n-k-1}.\nAlways write H_1 out: at least one restriction fails.\nVariables can be jointly significant while individually insignificant, especially when they are correlated.\nGeneral restrictions (a value, equal coefficients, a sum): impose H_0, use the SSR form of F.\nThe LM test = n R^2_{\\tilde u} needs only the restricted model and is valid in large samples under MLR.1–MLR.5.\n\n\n\nNext topic\nLarge-sample properties of OLS: consistency and asymptotic normality.\nWooldridge ch. 5 Heiss ch. 5"
   },
   {
     "objectID": "08-further-topics.html#todays-roadmap",
@@ -2224,5 +2224,26 @@
     "title": "Multiple Regression Analysis III",
     "section": "Is seniority worth more than experience?",
     "text": "Is seniority worth more than experience?\nwage1, the wage equation from last week. exper = years in the labor market, tenure = years with the current employer.\n\nw &lt;- lm(log(wage) ~ educ + exper + tenure, data = wage1)\n\n\n\\begin{aligned} \\widehat{\\log(wage)} &=  \\underset{\\small (0.104)}{0.284} + \\underset{\\small (0.00733)}{0.0920}\\,educ + \\underset{\\small (0.00172)}{0.00412}\\,exper + \\underset{\\small (0.00309)}{0.0221}\\,tenure \\\\ & n = 526,\\quad R^2 = 0.316 \\end{aligned}\n\n\n\\begin{aligned}\nH_0&: \\beta_{exper} = \\beta_{tenure} \\qquad (\\text{a year with the employer adds nothing extra})\\\\\nH_1&: \\beta_{exper} \\neq \\beta_{tenure}\n\\end{aligned}\n\nOne restriction, q = 1, but neither coefficient is set to a known value: H_0 ties them together."
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#constant-returns-to-size",
+    "href": "06-mlr-inference-ii.html#constant-returns-to-size",
+    "title": "Multiple Regression Analysis III",
+    "section": "Constant returns to size?",
+    "text": "Constant returns to size?\nSame houses, a different theory: if both the lot and the house are 10% larger, is the price 10% higher? And once size is known, do extra bedrooms add anything?\n\nhs &lt;- lm(lprice ~ llotsize + lsqrft + bdrms, data = hprice1)\n\n\n\\begin{aligned} \\widehat{\\log(price)} &= - \\underset{\\small (0.651)}{1.30} + \\underset{\\small (0.0383)}{0.168}\\,llotsize + \\underset{\\small (0.0929)}{0.700}\\,lsqrft + \\underset{\\small (0.0275)}{0.0370}\\,bdrms \\\\ & n = 88,\\quad R^2 = 0.643 \\end{aligned}\n\n\n\\begin{aligned}\nH_0&: \\beta_1 + \\beta_2 = 1,\\;\\; \\beta_3 = 0 \\qquad (q = 2)\\\\\nH_1&: \\beta_1 + \\beta_2 \\neq 1 \\;\\text{ or }\\; \\beta_3 \\neq 0\n\\end{aligned}\n\nThe first restriction is about the sum of two elasticities: neither coefficient is fixed on its own."
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#constant-returns-to-size-the-restricted-model",
+    "href": "06-mlr-inference-ii.html#constant-returns-to-size-the-restricted-model",
+    "title": "Multiple Regression Analysis III",
+    "section": "Constant returns to size: the restricted model",
+    "text": "Constant returns to size: the restricted model\nImpose H_0: substitute \\beta_1 = 1 - \\beta_2 and drop bdrms:\n\n\\begin{aligned}\n\\log(price) &= \\beta_0 + (1 - \\beta_2)\\log(lotsize) + \\beta_2 \\log(sqrft) + u\\\\\n\\log(price) - \\log(lotsize) &= \\beta_0 + \\beta_2\\,\\big[\\log(sqrft) - \\log(lotsize)\\big] + u\n\\end{aligned}\n\nBoth the dependent variable and the regressor change: price per unit of land on the house-to-lot size ratio.\n\nhs0 &lt;- lm(I(lprice - llotsize) ~ I(lsqrft - llotsize), data = hprice1)\nc(SSR_r = sum(resid(hs0)^2), SSR_ur = sum(resid(hs)^2))\n\n#&gt;    SSR_r   SSR_ur \n#&gt; 2.951026 2.862563\n\n\n\nF = \\frac{(2.9510 - 2.8626)/2}{2.8626/84} = 1.30 \\;&lt;\\; c_{0.05} = 3.11 \\;\\Rightarrow\\; \\text{fail to reject } H_0 \\quad (p = 0.28)\n\nThe estimated elasticities sum to 0.168 + 0.700 = 0.87, but the data cannot reject 1: house prices are compatible with constant returns to size. In R: linearHypothesis(hs, c(\"llotsize + lsqrft = 1\", \"bdrms = 0\"))."
+  },
+  {
+    "objectID": "06-mlr-inference-ii.html#three-kinds-of-linear-restrictions",
+    "href": "06-mlr-inference-ii.html#three-kinds-of-linear-restrictions",
+    "title": "Multiple Regression Analysis III",
+    "section": "Three kinds of linear restrictions",
+    "text": "Three kinds of linear restrictions\n\n\n\n\n\n\n\n\n\n\nRestriction\nExample in this lecture\nRestricted model\nR^2 form?\n\n\n\n\na coefficient equals a value: \\beta_1 = 1\nrational valuations\nnew y: \\log(price) - \\log(assess)\nno\n\n\ntwo coefficients are equal: \\beta_1 = \\beta_2\njunior college vs. university\nnew regressor: jc + univ\nyes\n\n\na sum equals a value: \\beta_1 + \\beta_2 = 1\nconstant returns to size\nnew y and new regressor\nno\n\n\n\n\n\n\nThe F statistic is always the same: compare SSR_r with SSR_{ur}, with q = number of restrictions.\nThe SSR form always works. The R^2 form works only if the restricted model keeps the same dependent variable.\nIn R, linearHypothesis() handles all three; building the restricted model once shows what is tested."
   }
 ]
