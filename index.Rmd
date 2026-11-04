@@ -14,11 +14,20 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{css, echo = FALSE}
+/* larger text: the flatly default (15px) is hard to read on most screens */
+body { font-size: 19px; line-height: 1.6; }
+h1.title { font-size: 2.4em; }
+h2 { font-size: 1.6em; margin-top: 1.4em; }
+.author, .date { font-size: 1em; }
+li { margin-bottom: .25em; }
+```
+
 Undergraduate Introductory Econometrics
 
 2026-27 Fall (Wednesday: 10.00-12.50)
 
-Each topic below has a PDF handout and a set of [interactive slides](Slides/) that run in the browser (simulations, quizzes and interactive figures).
+Each topic below has a PDF handout and a set of [interactive slides](Slides/) that run in the browser (simulations, quizzes and interactive figures). Practice problem sets, with open-ended and multiple-choice questions, are listed under the last topic they cover.
 
 ## Lecture Schedule 
 
@@ -39,10 +48,12 @@ Each topic below has a PDF handout and a set of [interactive slides](Slides/) th
 4. **Multiple Regression Analysis - Estimation**
     * Handout: [pdf](Slide-Handouts/Handout-04-Multiple-Regression-Analysis-Estimation.pdf) | [interactive slides](Slides/04-mlr-estimation.html)
     * Lab 05: [Estimation of Multiple Regression in R](Labs/Lab-05-MLR-estimation.html) | [.Rmd](Labs/Lab-05-MLR-estimation.Rmd)
+    * Practice Problem Set 1 (Wooldridge ch. 1–3): [problems](Problem-Sets/PPS-01-Econometrics-I.pdf) | [multiple choice](Problem-Sets/PPS-01-Multiple-Choice-Econometrics-I.pdf)
 
 5. **Multiple Regression Analysis - Inference: PART 1**
     * Handout: [pdf](Slide-Handouts/Handout-05-Multiple-Regression-Analysis-Inference.pdf) | [interactive slides](Slides/05-mlr-inference.html)
     * Lab 06: [Inference in Multiple Regression in R - t test](Labs/Lab-06-MLR-inference-part-1.html) | [.Rmd](Labs/Lab-06-MLR-inference-part-1.Rmd)
+    * Practice Problem Set 2 (Wooldridge ch. 3–4, without the F test): [problems](Problem-Sets/PPS-02-Econometrics-I.pdf) | [multiple choice](Problem-Sets/PPS-02-Multiple-Choice-Econometrics-I.pdf)
 
 6. **Multiple Regression Analysis - Inference: PART 2**
     * Handout: [pdf](Slide-Handouts/Handout-06-Multiple-Regression-Analysis-Inference-II.pdf) | [interactive slides](Slides/06-mlr-inference-ii.html)
@@ -55,6 +66,7 @@ Each topic below has a PDF handout and a set of [interactive slides](Slides/) th
 8. **Further Topics in OLS regressions**
     * Handout: [pdf](Slide-Handouts/Handout-08-MLR-Further-Topics.pdf) | [interactive slides](Slides/08-further-topics.html)
     * Lab 09: [R applications](Labs/Lab-09-MLR-further-topics.html) | [.Rmd](Labs/Lab-09-MLR-further-topics.Rmd)
+    * Practice Problem Set 3 (Wooldridge ch. 4–6): [problems](Problem-Sets/PPS-03-Econometrics-I.pdf) | [multiple choice](Problem-Sets/PPS-03-Multiple-Choice-Econometrics-I.pdf)
     
 9. **Qualitative Explanatory Variables**
     * Handout: [pdf](Slide-Handouts/Handout-09-Qualitative-Variables.pdf) | [interactive slides](Slides/09-qualitative-variables.html)
@@ -71,6 +83,7 @@ Each topic below has a PDF handout and a set of [interactive slides](Slides/) th
 12. **Misspecification and Data Problems**
     * Handout: [pdf](Slide-Handouts/Handout-12-Misspecification-and-Data-Problems.pdf) | [interactive slides](Slides/12-misspecification.html)
     * Lab 13: [R applications](Labs/Lab-13-Misspecification.html) | [.Rmd](Labs/Lab-13-Misspecification.Rmd)
+    * Practice Problem Set 4 (Wooldridge ch. 7–9): [problems](Problem-Sets/PPS-04-Econometrics-I.pdf) | [multiple choice](Problem-Sets/PPS-04-Multiple-Choice-Econometrics-I.pdf)
     
 ## Scope and Purpose 
 
